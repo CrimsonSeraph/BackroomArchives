@@ -1,6 +1,6 @@
-# Contributing to DG-LAB-Client
+# Contributing to BackroomsArchives
 
-感谢你考虑为 DG-LAB-Client 贡献代码！我们欢迎任何形式的贡献，包括提交 Bug 报告、功能请求、代码改进、文档更新等。
+感谢你考虑为 BackroomsArchives 贡献代码！我们欢迎任何形式的贡献，包括提交 Bug 报告、功能请求、代码改进、文档更新等。
 
 在参与贡献之前，请花一点时间阅读本指南，以确保你的贡献能够顺利被合并。
 
@@ -40,8 +40,6 @@
 
 **环境信息**
 - 操作系统: Windows 10 / macOS 14 / Ubuntu 22.04
-- Qt 版本: 5.15.2 / 6.5.0
-- Python 版本: 3.9 / 3.11
 - 项目版本或 commit hash: v0.5.1 或 xxxxxx
 
 **额外信息**
