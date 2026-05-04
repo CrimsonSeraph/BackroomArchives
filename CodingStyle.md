@@ -50,6 +50,7 @@ BackroomsArchives/
 ├── CodingStyle.md                      # 代码规范文档
 ├── LICENSE.txt                         # GPL-3.0 许可证
 ├── NOTICE.txt                          # 声明
+├── README.en.md                        # 英文项目说明文档
 └── README.md                           # 项目说明文档
 ```
 

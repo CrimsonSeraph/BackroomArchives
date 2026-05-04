@@ -1,5 +1,7 @@
 # BackroomsArchives
 
+**[English](README.en.md) | 中文**
+
 > **目录**  
 > - [一、项目简介](#一项目简介)  
 > - [二、功能特性](#二功能特性)  
