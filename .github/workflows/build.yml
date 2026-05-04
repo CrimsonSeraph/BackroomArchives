@@ -1,0 +1,70 @@
+name: Build and Package on Tag
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, windows-latest, macos-latest]
+        archive: [wikidot, fandom]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      # 配置 CMake，传递 ARCHIVE_VERSION
+      - name: Configure CMake with ${{ matrix.archive }}
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_ARCHIVES=ON -DARCHIVE_VERSION=${{ matrix.archive }}
+
+      - name: Build all
+        run: cmake --build build --config Release
+
+      - name: Install all
+        run: cmake --install build --prefix install_full
+
+      # 生成完整包（包含 core + archives）
+      - name: Package full version with CPack
+        run: cpack --config build/CPackConfig.cmake -B package_full -G ZIP
+
+      # 生成仅 core 的包（通过 CPACK_COMPONENTS_ALL=core）
+      - name: Package core-only version
+        run: |
+          cd build
+          cpack -C Release -G ZIP -D CPACK_COMPONENTS_ALL=core -D CPACK_PACKAGE_NAME="BackroomsArchives-core"
+          mv *.zip ../package_core/
+        working-directory: build
+
+      # 重命名包文件，包含档案版本信息
+      - name: Rename artifacts
+        shell: bash
+        run: |
+          # 完整包命名：BackroomsArchives-<archive>-<os>.zip
+          for f in package_full/*.zip; do
+            mv "$f" "package_full/BackroomsArchives-${{ matrix.archive }}-${{ runner.os }}.zip"
+          done
+          # 核心包命名：BackroomsArchives-core-${{ matrix.archive }}-${{ runner.os }}.zip
+          for f in package_core/*.zip; do
+            mv "$f" "package_core/BackroomsArchives-core-${{ matrix.archive }}-${{ runner.os }}.zip"
+          done
+
+      - name: Upload full artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: BackroomsArchives-${{ matrix.archive }}-${{ matrix.os }}
+          path: package_full/*.zip
+
+      - name: Upload core-only artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: BackroomsArchives-core-${{ matrix.archive }}-${{ matrix.os }}
+          path: package_core/*.zip

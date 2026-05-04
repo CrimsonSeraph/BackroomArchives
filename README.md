@@ -1,1 +1,379 @@
-# BackroomArchives
+# BackroomsArchives
+
+> **目录**  
+> - [一、项目简介](#一项目简介)  
+> - [二、功能特性](#二功能特性)  
+> - [三、依赖项](#三依赖项)  
+> - [四、快速开始](#四快速开始)  
+> - [五、自动化构建](#五自动化构建)  
+> - [六、使用说明](#六使用说明)  
+> - [七、项目结构](#七项目结构)  
+> - [八、截图](#八截图)  
+> - [九、编码规范](#九编码规范)  
+> - [十、FAQ](#十faq)  
+> - [十一、贡献指南](#十一贡献指南)  
+> - [十二、许可证](#十二许可证)  
+> - [十三、联系方式](#十三联系方式)
+
+一个**模块化、插件化的后室主题文字游戏**。
+
+本体仅提供基础框架、插件加载与游戏核心循环，所有层级、BUFF、文本、配置等内容均由**档案插件**动态提供。支持多档案版本（如 Wikidot、Fandom 等），每个版本独立打包，运行时切换。
+
+当前版本号: `v0.1.0`  
+> 详细请查看: [更新日志](CHANGELOG.md)。
+
+---
+
+## 一、项目简介
+
+**BackroomsArchives** 是一款受后室（Backrooms）设定启发的文字游戏。与传统的单一游戏不同，本项目的所有内容——包括层级、规则、BUFF、文本——都以**插件形式**存在，存储在不同的“档案版本”下（例如基于 Wikidot 社区的后室档案、Fandom 档案等）。本体只负责提供：
+
+- 跨平台动态库加载（Windows `.dll`、Linux `.so`、macOS `.dylib`）
+- 插件接口（`ILevel`, `IBuff`, `ArchiveCore`）
+- 游戏主循环（回合制或实时，由插件定义）
+- 轻量级图形界面（用于展示文本、按钮、选择列表等，控制台专用于日志）
+- 简单的配置管理（玩家基础属性、语言等）
+- 日志系统
+
+每个档案版本完全独立，包含自己的 **核心插件**（管理全局规则）与 **层级插件**（具体层级逻辑）。玩家下载对应的完整包后，即可探索该版本下所有已实现的层级。未来可以轻松添加新层级或全新档案版本，无需修改本体。
+
+> **当前状态**: 搭建基础框架中。
+
+---
+
+## 二、功能特性
+
+- **纯 C++20 实现**，跨平台（Windows / macOS / Linux）
+- **轻量级图形界面**：控制台仅用于日志，交互通过窗口控件进行
+- **插件化层级系统**：每个层级编译为独立动态库，与私有资源（文本、配置、图片等）存放在同一目录
+- **档案版本分离**：不同后室维基（Wikidot、Fandom 等）的数据与逻辑完全隔离，可独立打包发布
+- **动态加载机制**：本体自动扫描 `archives/` 下的版本目录，运行时让用户选择或通过配置文件指定
+- **核心插件支持**：每个档案版本可提供一个核心插件（`wikidot_core`），用于全局 BUFF 管理、跨层级数据、入口/出口规则等
+- **基于 JSON 的配置与文本**：使用 `nlohmann/json` 解析，支持多语言文本（按层级或全局存放）
+- **组件化打包**：利用 CPack 生成 `core-only` 包（仅本体）和完整包（本体+指定档案版本）
+- **自动化 CI**：GitHub Actions 自动构建多平台、多档案版本，并发布到 Releases
+
+---
+
+## 三、依赖项
+
+### 1. 系统依赖
+- **C++ 编译器**: 支持 C++20 标准（GCC 11+、Clang 14+、MSVC 2022）
+- **CMake**: 3.16 或更高版本
+- **动态链接器 / 加载库**: 各平台自带（Windows `LoadLibrary`、Linux/macOS `dlopen`）
+
+### 2. 第三方库
+- **[nlohmann/json](https://github.com/nlohmann/json)** (版本 3.12.0)  
+  用于 JSON 解析。CMake 会在配置时自动从 GitHub 下载单头文件到构建目录。
+
+### 3. 运行时依赖
+- 无额外依赖。所有档案插件均为动态库，由本体在运行时加载。
+
+---
+
+## 四、快速开始
+
+### 1. 获取源码
+
+```bash
+git clone https://github.com/CrimsonSeraph/BackroomsArchives.git
+cd BackroomsArchives
+```
+
+### 2. 配置 CMake（以 wikidot 档案版本为例）
+
+```bash
+cmake -B build -DCMAKE_BUILD_TYPE=Release -DARCHIVE_VERSION=wikidot -DBUILD_ARCHIVES=ON
+```
+
+- `ARCHIVE_VERSION`: 选择要构建的档案版本（对应 `archives/` 下的子目录）
+- `BUILD_ARCHIVES`: 设为 `ON` 时编译档案插件；若只需本体可设为 `OFF`
+
+### 3. 编译
+
+```bash
+cmake --build build --config Release
+```
+
+### 4. 安装到临时目录（查看结果）
+
+```bash
+cmake --install build --prefix install_full
+```
+
+安装后的目录结构参见下文 [项目结构](#七项目结构)。
+
+### 5. 运行
+
+```bash
+# Windows
+./install_full/BackroomsArchives.exe
+
+# Linux / macOS
+./install_full/BackroomsArchives
+```
+
+程序会扫描 `install_full/archives/` 下的可用档案版本，提示用户选择（若只有一个版本则直接加载），然后进入游戏主循环。
+
+### 6. 打包（生成分发包）
+
+```bash
+cpack --config build/CPackConfig.cmake -B package -G ZIP
+```
+
+生成的完整包位于 `package/` 目录下，命名如 `BackroomsArchives-wikidot-Windows.zip`。
+
+---
+
+## 五、自动化构建
+
+本项目利用 GitHub Actions 实现持续集成与交付，配置文件位于 `.github/workflows/`：
+
+- **`build.yml`**：当推送以 `v` 开头的标签（如 `v0.1.0`）或手动触发时，会在 Ubuntu、Windows、macOS 三个平台上，分别以 `wikidot` 和 `fandom`（可调整矩阵）为档案版本进行构建、安装、打包，并上传 artifacts。
+- **`release.yml`**：在上一个工作流成功完成后，自动下载所有 artifacts，提取 `CHANGELOG.md` 中对应版本的发布说明，创建 GitHub Release 并附上所有安装包。
+
+你可以根据实际支持的档案版本修改 `build.yml` 中的 `matrix.archive` 列表。
+
+---
+
+## 六、使用说明
+
+### 1. 档案版本选择
+
+游戏启动时，会扫描 `archives/` 目录下的所有子目录，每个子目录视为一个档案版本（如 `wikidot`、`fandom`）。如果没有配置文件记录上次选择的版本，程序会列出所有可用版本并要求用户输入编号。选择后，该版本的档案核心插件（若存在）被加载，然后扫描该版本下的所有层级目录，加载每个层级的插件。
+
+用户可通过配置文件 `config/game.json`（本体配置）中的 `"active_archive"` 字段固定默认版本，避免每次手动选择。
+
+### 2. 档案版本结构（以 `wikidot` 为例）
+
+```
+archives/wikidot/
+├── wikidot_core.dll      # 档案核心插件（可选，编译自 core.cpp）
+├── version.json          # 档案元信息（名称、描述、版本等）
+├── texts/                # 档案公共文本（多语言）
+│   ├── en/
+│   └── zh/
+├── config/               # 档案公共配置（全局规则、BUFF 定义等）
+├── level-0/              # 层级目录（名称可自定义，建议 level- 前缀）
+│   ├── level-0.dll       # 层级插件（编译自 level-0.cpp）
+│   └── level_text.json   # 该层级的私有资源
+├── level-1/
+└── ...
+```
+
+### 3. 编写层级插件
+
+每个层级目录下需要包含一个与目录同名的 `.cpp` 源文件，实现以下导出函数（使用 `extern "C"` 避免名称修饰）：
+
+```cpp
+#include "plugin_api/ILevel.h"
+
+extern "C" ILevel* create_level() {
+    return new MyLevel();
+}
+
+extern "C" void destroy_level(ILevel* p) {
+    delete p;
+}
+```
+
+其中 `ILevel` 是定义在 `include/plugin_api/ILevel.h` 中的纯虚类：
+
+```cpp
+class ILevel {
+public:
+    virtual ~ILevel() = default;
+    virtual std::string get_name() const = 0;
+    virtual void on_enter(GameContext& ctx) = 0;
+    virtual void on_tick(GameContext& ctx) = 0;
+    virtual void on_exit(GameContext& ctx) = 0;
+};
+```
+
+`GameContext` 提供对玩家属性、日志、全局状态等的访问接口。
+
+### 4. 档案核心插件
+
+如果档案需要全局管理（如跨层级 BUFF、自动卸载规则、统一入口逻辑），可以在档案根目录提供 `core.cpp`，编译为 `${ARCHIVE_VERSION}_core` 插件。核心插件需实现 `ArchiveCore` 接口（定义在 `plugin_api/ArchiveCore.h`），并在导出函数中返回实例。
+
+主程序加载档案版本时会优先加载该核心插件，并调用其初始化方法。
+
+### 5. 配置文件
+
+本体配置位于 `config/`（JSON 格式）。
+
+<details>
+<summary><b>`game.json` 示例：</b></summary>
+
+```json
+{
+
+}
+```
+
+</details>
+
+档案版本的公共配置文件位于 `archives/wikidot/config/` 下，具体内容由档案核心插件定义。
+
+### 6. 多语言文本
+
+- **全局文本**：放在 `texts/{lang}/` 下，由本体读取（如欢迎信息、错误提示等）
+- **档案公共文本**：放在 `archives/wikidot/texts/{lang}/` 下，由档案核心插件负责加载
+- **层级私有文本**：放在层级目录内（如 `level-0/description.json`），由层级插件自行读取
+
+### 7. 日志
+
+日志系统提供宏 `LOG_DEBUG`、`LOG_INFO`、`LOG_WARN`、`LOG_ERROR`，可输出到控制台和文件（若启用）。日志级别可在本体配置中调整。
+
+---
+
+## 七、项目结构
+
+<details>
+<summary> 点击展开目录树 </summary>
+
+```
+BackroomsArchives/
+├── .github/                            # GitHub 配置目录
+│   └── workflows/                      # CI/CD 工作流
+│       ├── build.yml                   # 构建与测试工作流
+│       └── release.yml                 # 发布工作流
+├── archives/                           # 档案版本目录
+│   ├── wikidot/                        # wikidot 档案版本
+│   │   ├── assets/                     # 全局静态资源（如全局图片）
+│   │   ├── config/                     # 全局配置文件（如全局 BUFF 定义）
+│   │   ├── level-0/                    # 层级 level-0 目录
+│   │   ├── ......                      # 其他层级目录
+│   │   ├── texts/                      # 全局文本（多语言）
+│   │   ├── CMakeLists.txt              # wikidot 档案版本的构建脚本
+│   │   ├── core.cpp                    # wikidot 档案核心插件源文件
+│   │   ├── core.h                      # wikidot 档案核心插件头文件
+│   │   ├── README.md                   # wikidot 档案说明
+│   │   └── version.json                # 档案元信息
+│   └── README.md                       # archives 目录说明
+├── assets/                             # 静态资源（图片等）
+│   └── README.md                       # assets 目录说明
+├── config/                             # 默认配置文件目录
+│   ├── game.json                       # 游戏配置文件
+│   └── README.md                       # config 目录说明
+├── include/                            # 公共头文件（含 UI 文件）
+│   ├── plugin_api/                     # 插件接口头文件
+│   │   └── README.md                   # plugin_api 目录说明
+│   └── README.md                       # include 目录说明
+├── licenses/                           # 第三方许可证文件
+│   └── LICENSE.MIT.txt                 # nlohmann/json 的 MIT 许可证
+├── screenshot/                         # 截屏资源文件
+│   └── README.md                       # screenshot 目录说明
+├── src/                                # C++ 源文件
+│   ├── main.cpp                        # 程序主入口
+│   └── README.md                       # src 目录说明
+├── .editorconfig                       # 编辑器代码风格配置
+├── .gitattributes                      # Git 属性配置（换行符等）
+├── .gitignore                          # Git 忽略文件规则
+├── CHANGELOG.md                        # 更新日志
+├── CMakeLists.txt                      # CMake 主构建脚本
+├── CONTRIBUTING.md                     # 贡献指南
+├── CodingStyle.md                      # 代码规范文档
+├── LICENSE.txt                         # GPL-3.0 许可证
+├── NOTICE.txt                          # 声明
+└── README.md                           # 项目说明文档
+```
+
+</details>
+
+---
+
+## 八、截图
+
+暂时留空
+
+更多截图请查看 [`screenshot/`](screenshot/README.md) 目录。
+
+---
+
+## 九、编码规范
+
+项目遵循统一的 C++ 编码风格，详见根目录下的 **[CodingStyle.md](CodingStyle.md)**。主要约定包括：
+
+- 缩进使用 4 个空格，K&R 括号风格
+- 类名 `PascalCase`，变量/函数 `snake_case`，接口类前缀 `I`
+- 头文件使用 `#pragma once`
+- 日志宏分级输出，避免热点路径过度打印
+
+在提交代码前，请确保遵循上述规范。
+
+---
+
+## 十、FAQ
+
+<details>
+<summary><b>Q1: 编译时提示找不到 nlohmann/json.hpp</b></summary>
+
+CMake 会在配置时自动从 GitHub 下载该头文件。如果网络问题导致下载失败，可以手动下载 [json.hpp](https://github.com/nlohmann/json/releases/download/v3.12.0/json.hpp) 并放入构建目录的 `include/nlohmann/` 下，或者修改 `CMakeLists.txt` 使用本地路径。
+
+</details>
+
+<details>
+<summary><b>Q2: 插件动态库无法加载，提示找不到符号</b></summary>
+
+确保插件的源文件中正确导出了 `create_level` 和 `destroy_level` 函数，并且使用 `extern "C"` 避免 C++ 名称修饰。同时检查插件文件名是否与目录名一致（例如 `level-0.dll` 应位于 `level-0/` 目录内）。
+
+</details>
+
+<details>
+<summary><b>Q3: 如何添加一个新层级？</b></summary>
+
+1. 在对应档案版本目录下（如 `archives/wikidot/`）创建一个新文件夹，例如 `level-2/`。
+2. 在文件夹内创建 `level-2.cpp`，实现 `ILevel` 接口并导出工厂函数。
+3. 将私有资源（文本文件等）放入同一文件夹。
+4. 重新运行 CMake 配置与构建，新层级会自动被扫描、编译并安装。
+
+</details>
+
+<details>
+<summary><b>Q4: 如何添加一个全新的档案版本（例如 Fandom）？</b></summary>
+
+1. 在 `archives/` 下创建 `fandom/` 目录。
+2. 复制 `archives/wikidot/CMakeLists.txt` 到 `fandom/CMakeLists.txt`。
+3. 按层级结构添加内容。
+4. 在 `build.yml` 的矩阵中加入 `fandom`。
+5. 推送标签后，CI 会自动构建 `fandom` 版本并生成独立安装包。
+
+</details>
+
+---
+
+## 十一、贡献指南
+
+欢迎提交 Issue 和 Pull Request。贡献前请确保：
+
+- 代码遵循 [CodingStyle.md](CodingStyle.md) 规范。
+- 新功能或 bug 修复经过本地测试。
+- 更新相关文档（如 README、CHANGELOG）。
+- 对于较大改动，建议先开 Issue 讨论设计。
+
+详细流程请参考 [CONTRIBUTING.md](CONTRIBUTING.md)。
+
+---
+
+## 十二、许可证
+
+本项目自身源代码采用 **GNU General Public License v3.0 only**（GPL-3.0-only）开源。详情请参阅项目根目录下的 [LICENSE](LICENSE.txt) 文件。
+
+本项目依赖的第三方组件适用不同的许可证:
+- **nlohmann/json**: MIT 许可证
+
+有关第三方许可证的完整声明和文本，请查看 [NOTICE.txt](NOTICE.txt) 及 `licenses/` 目录。
+
+---
+
+## 十三、联系方式
+
+- 作者: [CrimsonSeraph]
+- GitHub: [CrimsonSeraph](https://github.com/CrimsonSeraph)
+- 项目地址: [https://github.com/CrimsonSeraph/BackroomsArchives](https://github.com/CrimsonSeraph/BackroomsArchives)
+- 如有问题或建议，欢迎提交 Issue。
+
+---
+
+*祝你安全穿越后室，愿你找到出口。*
