@@ -1,0 +1,146 @@
+/*
+ * Copyright (c) 2026 CrimsonSeraph(ltyy.leoyu@gmail.com)
+ * SPDX-License-Identifier: GPL-3.0-only
+ */
+
+#include "Console.h"
+
+#include "DebugLog.h"
+
+#ifdef _WIN32
+#include <iostream>
+#include <windows.h>
+#else
+#include <iostream>
+#endif
+
+// ============================================
+// 构造/析构（private）
+// ============================================
+
+Console::Console() : is_created_(false) {
+    // 构造函数不自动创建控制台
+}
+
+Console::~Console() {
+    destroy();
+}
+
+// ============================================
+// 单例（public）
+// ============================================
+
+Console& Console::get_instance() {
+    static Console instance;
+    return instance;
+}
+
+// ============================================
+// 公共接口（public）
+// ============================================
+
+bool Console::create() {
+    if (is_created_) {
+        return true;
+    }
+
+#ifdef _WIN32
+    is_created_ = create_debug_console();
+#else
+    LOG_MODULE("Console", "Create", LOG_WARN, "当前操作系统不支持控制台输出！");
+    is_created_ = false;
+#endif
+    return is_created_;
+}
+
+void Console::destroy() {
+#ifdef _WIN32
+    if (is_created_) {
+        FreeConsole();
+        is_created_ = false;
+    }
+#else
+    is_created_ = false;
+#endif
+}
+
+// ============================================
+// 私有辅助函数（private）
+// ============================================
+
+#ifdef _WIN32
+bool Console::create_debug_console() {
+    // 分配控制台
+    if (!AllocConsole()) {
+        DWORD error = GetLastError();
+        // 如果已经分配了控制台，这也是成功的
+        if (error == ERROR_ACCESS_DENIED) {
+            if (!AttachConsole(ATTACH_PARENT_PROCESS)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+    }
+
+    // 获取标准输出句柄
+    HANDLE hOutput = GetStdHandle(STD_OUTPUT_HANDLE);
+    HANDLE hInput = GetStdHandle(STD_INPUT_HANDLE);
+    HANDLE hError = GetStdHandle(STD_ERROR_HANDLE);
+
+    if (hOutput == INVALID_HANDLE_VALUE ||
+        hInput == INVALID_HANDLE_VALUE ||
+        hError == INVALID_HANDLE_VALUE) {
+        return false;
+    }
+
+    // 设置控制台代码页为UTF-8
+    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
+
+    // 重定向标准流到控制台
+    FILE* fp;
+
+    freopen_s(&fp, "CONOUT$", "w", stdout);
+    freopen_s(&fp, "CONOUT$", "w", stderr);
+    freopen_s(&fp, "CONIN$", "r", stdin);
+
+    // 同步C++标准流与C流
+    std::ios::sync_with_stdio(true);
+
+    // 清除流状态
+    std::cout.clear();
+    std::cerr.clear();
+    std::cin.clear();
+
+    // 设置控制台字体
+    CONSOLE_FONT_INFOEX cf = { 0 };
+    cf.cbSize = sizeof(cf);
+    cf.dwFontSize.Y = 14;
+
+    const wchar_t* fontNames[] = {
+        L"Consolas",
+        L"Lucida Console",
+        L"DejaVu Sans Mono",
+        L"MS Gothic"
+    };
+
+    for (const wchar_t* fontName : fontNames) {
+        wcscpy_s(cf.FaceName, fontName);
+        if (SetCurrentConsoleFontEx(hOutput, FALSE, &cf)) {
+            break;
+        }
+    }
+
+    // 启用虚拟终端处理
+    DWORD dwMode = 0;
+    if (GetConsoleMode(hOutput, &dwMode)) {
+        dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+        SetConsoleMode(hOutput, dwMode);
+    }
+
+    SetConsoleTitleW(L"BackroomsArchives Debug Console");
+    return true;
+}
+#endif
