@@ -256,18 +256,37 @@ BackroomsArchives/
 ├── assets/                             # 静态资源（图片等）
 │   └── README.md                       # assets 目录说明
 ├── config/                             # 默认配置文件目录
-│   ├── game.json                       # 游戏配置文件
-│   └── README.md                       # config 目录说明
-├── include/                            # 公共头文件（含 UI 文件）
+│   ├── main.json                       # 主配置文件
+│   ├── README.md                       # config 目录说明
+│   └── user.json                       # 用户配置文件
+├── include/                            # 公共头文件
 │   ├── plugin_api/                     # 插件接口头文件
 │   │   └── README.md                   # plugin_api 目录说明
+│   ├── AppConfig.h                     # 配置系统主接口
+│   ├── AppConfig_impl.hpp              # 配置系统模板实现
+│   ├── AppConfig_utils.hpp             # 配置辅助工具类
+│   ├── ConfigManager.h                 # 单配置文件管理器
+│   ├── ConfigManager_impl.hpp          # ConfigManager 模板实现
+│   ├── ConfigStructs.h                 # 配置数据结构体
+│   ├── Console.h                       # 控制台管理
+│   ├── DebugLog.h                      # 日志系统
+│   ├── DebugLog_utils.hpp              # 日志辅助工具
+│   ├── DefaultConfigs.h                # 默认配置工厂
+│   ├── MultiConfigManager.h            # 多配置管理器
+│   ├── MultiConfigManager_impl.hpp     # MultiConfigManager 模板实现
 │   └── README.md                       # include 目录说明
 ├── licenses/                           # 第三方许可证文件
 │   └── LICENSE.MIT.txt                 # nlohmann/json 的 MIT 许可证
 ├── screenshot/                         # 截屏资源文件
 │   └── README.md                       # screenshot 目录说明
 ├── src/                                # C++ 源文件
-│   ├── main.cpp                        # 程序主入口
+│   ├── AppConfig.cpp                   # 配置系统实现
+│   ├── ConfigManager.cpp               # 单配置管理器实现
+│   ├── ConfigStructs.cpp               # 配置结构体实现
+│   ├── Console.cpp                     # 控制台管理实现
+│   ├── DebugLog.cpp                    # 日志系统实现
+│   ├── DefaultConfigs.cpp              # 默认配置工厂实现
+│   ├── MultiConfigManager.cpp          # 多配置管理器实现
 │   └── README.md                       # src 目录说明
 ├── .editorconfig                       # 编辑器代码风格配置
 ├── .gitattributes                      # Git 属性配置（换行符等）
@@ -279,7 +298,8 @@ BackroomsArchives/
 ├── LICENSE.txt                         # GPL-3.0 许可证
 ├── NOTICE.txt                          # 声明
 ├── README.en.md                        # 英文项目说明文档
-└── README.md                           # 项目说明文档
+├── README.md                           # 中文项目说明文档
+└── main.cpp                            # 程序主入口
 ```
 
 </details>
