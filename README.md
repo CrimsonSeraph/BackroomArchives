@@ -2,26 +2,26 @@
 
 **[English](README.en.md) | 中文**
 
-> **目录**  
-> - [一、项目简介](#一项目简介)  
-> - [二、功能特性](#二功能特性)  
-> - [三、依赖项](#三依赖项)  
-> - [四、快速开始](#四快速开始)  
-> - [五、自动化构建](#五自动化构建)  
-> - [六、使用说明](#六使用说明)  
-> - [七、项目结构](#七项目结构)  
-> - [八、截图](#八截图)  
-> - [九、编码规范](#九编码规范)  
-> - [十、FAQ](#十faq)  
-> - [十一、贡献指南](#十一贡献指南)  
-> - [十二、许可证](#十二许可证)  
+> **目录**
+> - [一、项目简介](#一项目简介)
+> - [二、功能特性](#二功能特性)
+> - [三、依赖项](#三依赖项)
+> - [四、快速开始](#四快速开始)
+> - [五、自动化构建](#五自动化构建)
+> - [六、使用说明](#六使用说明)
+> - [七、项目结构](#七项目结构)
+> - [八、截图](#八截图)
+> - [九、编码规范](#九编码规范)
+> - [十、FAQ](#十faq)
+> - [十一、贡献指南](#十一贡献指南)
+> - [十二、许可证](#十二许可证)
 > - [十三、联系方式](#十三联系方式)
 
 一个**模块化、插件化的后室主题文字游戏**。
 
 本体仅提供基础框架、插件加载与游戏核心循环，所有层级、BUFF、文本、配置等内容均由**档案插件**动态提供。支持多档案版本（如 Wikidot、Fandom 等），每个版本独立打包，运行时切换。
 
-当前版本号: `v0.1.0`  
+当前版本号: `v0.1.0`
 > 详细请查看: [更新日志](CHANGELOG.md)。
 
 ---
@@ -65,7 +65,7 @@
 - **动态链接器 / 加载库**: 各平台自带（Windows `LoadLibrary`、Linux/macOS `dlopen`）
 
 ### 2. 第三方库
-- **[nlohmann/json](https://github.com/nlohmann/json)** (版本 3.12.0)  
+- **[nlohmann/json](https://github.com/nlohmann/json)** (版本 3.12.0)
   用于 JSON 解析。CMake 会在配置时自动从 GitHub 下载单头文件到构建目录。
 
 ### 3. 运行时依赖
@@ -393,9 +393,9 @@ CMake 会在配置时自动从 GitHub 下载该头文件。如果网络问题导
 ## 十三、联系方式
 
 - 作者: [CrimsonSeraph]
-- GitHub: [CrimsonSeraph](https://github.com/CrimsonSeraph)
-- 项目地址: [https://github.com/CrimsonSeraph/BackroomsArchives](https://github.com/CrimsonSeraph/BackroomsArchives)
-- 如有问题或建议，欢迎提交 Issue。
+- BiliBili: [浪天幽影(UID: 1741002917)](https://space.bilibili.com/1741002917?spm_id_from=333.1007.0.0)
+- X: [𝒞𝓇𝒾𝓂𝓈𝑜𝓃𝒮𝑒𝓇𝒶𝓅𝒽✟升天✟(@CrimSeraph_QwQ)](https://x.com/CrimSeraph_QwQ)
+- 项目主页: [https://github.com/CrimsonSeraph/DG-LAB-Client](https://github.com/CrimsonSeraph/DG-LAB-Client)
 
 ---
 
