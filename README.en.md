@@ -2,26 +2,26 @@
 
 **[中文](README.md) | English**
 
-> **Navigation**  
-> - [I. Introduction](#i-introduction)  
-> - [II. Features](#ii-features)  
-> - [III. Dependencies](#iii-dependencies)  
-> - [IV. Quick Start](#iv-quick-start)  
-> - [V. Automated Build](#v-automated-build)  
-> - [VI. User Guide](#vi-user-guide)  
-> - [VII. Project Structure](#vii-project-structure)  
-> - [VIII. Screenshots](#viii-screenshots)  
-> - [IX. Coding Style](#ix-coding-style)  
-> - [X. FAQ](#x-faq)  
-> - [XI. Contributing](#xi-contributing)  
-> - [XII. License](#xii-license)  
+> **Navigation**
+> - [I. Introduction](#i-introduction)
+> - [II. Features](#ii-features)
+> - [III. Dependencies](#iii-dependencies)
+> - [IV. Quick Start](#iv-quick-start)
+> - [V. Automated Build](#v-automated-build)
+> - [VI. User Guide](#vi-user-guide)
+> - [VII. Project Structure](#vii-project-structure)
+> - [VIII. Screenshots](#viii-screenshots)
+> - [IX. Coding Style](#ix-coding-style)
+> - [X. FAQ](#x-faq)
+> - [XI. Contributing](#xi-contributing)
+> - [XII. License](#xii-license)
 > - [XIII. Contact](#xiii-contact)
 
 A **modular, plugin-based Backrooms text adventure game** with a lightweight GUI.
 
 The core provides only the basic framework, plugin loading, and game loop. All levels, BUFFs, texts, and configurations are dynamically provided by **archive plugins**. Supports multiple archive versions (e.g., Wikidot, Fandom), each packaged independently, switchable at runtime.
 
-Current version: `v0.1.0`  
+Current version: `v0.1.0`
 > See [CHANGELOG.md](CHANGELOG.md) for details.
 
 ---
@@ -65,7 +65,7 @@ Each archive version is completely self‑contained, with its own **core plugin*
 - **Dynamic linker/loader**: platform native (Windows `LoadLibrary`, Linux/macOS `dlopen`)
 
 ### 2. Third‑party libraries
-- **[nlohmann/json](https://github.com/nlohmann/json)** (version 3.12.0)  
+- **[nlohmann/json](https://github.com/nlohmann/json)** (version 3.12.0)
   Used for JSON parsing. CMake automatically downloads the single header at configure time.
 
 ### 3. Runtime dependencies
@@ -355,9 +355,9 @@ For full license texts, see [NOTICE.txt](NOTICE.txt) and the `licenses/` directo
 ## XIII. Contact
 
 - Author: [CrimsonSeraph]
-- GitHub: [CrimsonSeraph](https://github.com/CrimsonSeraph)
+- BiliBili: [浪天幽影(UID: 1741002917)](https://space.bilibili.com/1741002917?spm_id_from=333.1007.0.0)
+- X: [𝒞𝓇𝒾𝓂𝓈𝑜𝓃𝒮𝑒𝓇𝒶𝓅𝒽✟升天✟(@CrimSeraph_QwQ)](https://x.com/CrimSeraph_QwQ)
 - Project homepage: [https://github.com/CrimsonSeraph/BackroomsArchives](https://github.com/CrimsonSeraph/BackroomsArchives)
-- For questions or suggestions, please open an Issue.
 
 ---
 
