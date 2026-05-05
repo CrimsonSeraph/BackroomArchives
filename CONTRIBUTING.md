@@ -12,7 +12,7 @@
 
 ## 如何报告问题（Issue）
 
-如果你发现了 Bug、有功能建议或对文档有疑问，请在 [GitHub Issues](https://github.com/CrimsonSeraph/DG-LAB-Client/issues) 页面提交。
+如果你发现了 Bug、有功能建议或对文档有疑问，请在 [GitHub Issues](https://github.com/CrimsonSeraph/BackroomsArchives/issues) 页面提交。
 
 ### 提交前请先检查
 
@@ -21,7 +21,7 @@
 
 ### Bug 报告模板
 
-请尽量使用以下模板填写: 
+请尽量使用以下模板填写:
 
 ```markdown
 **描述**
@@ -76,10 +76,10 @@
 
 本项目有详细的编码规范，请务必遵守 **[CodingStyle.md](CodingStyle.md)** 中的规则。
 
-关键要点回顾: 
+关键要点回顾:
 - **编码**: UTF‑8 without BOM，换行符 CRLF（Windows 风格），文件末尾保留一个空行。
 - **缩进**: 4 个空格，不使用 Tab。
-- **命名**: 
+- **命名**:
   - C++ 类: `PascalCase`
   - 变量/函数: `snake_case`
   - 常量/宏: `UPPER_CASE`
@@ -95,7 +95,7 @@
 
 ### 3. Commit 规范
 
-我们推荐使用语义化的提交信息格式: 
+我们推荐使用语义化的提交信息格式:
 
 ```
 <type>(<scope>): <subject>
@@ -111,7 +111,7 @@
 - **body**（可选）: 详细描述改动的原因和内容
 - **footer**（可选）: 关闭 Issue 用 `Closes #123`
 
-**示例**: 
+**示例**:
 
 ```
 feat(rule): add formula builder dialog
@@ -136,7 +136,7 @@ Prevent Bridge.py from hanging when server is unreachable.
 ### 5. 提交 PR
 
 - 推送到你自己的 fork 仓库后，在 GitHub 上发起 Pull Request。
-- PR 标题应简明扼要，内容描述: 
+- PR 标题应简明扼要，内容描述:
   - 解决了什么问题（关联 Issue 编号）。
   - 改动的简要概述。
   - 如果引入破坏性更改，请说明。
