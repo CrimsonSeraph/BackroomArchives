@@ -5,6 +5,10 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+if(MSVC)
+    add_compile_options("/utf-8")
+endif()
+
 # 选择要构建的档案版本（默认为 wikidot）
 set(ARCHIVE_VERSION "wikidot" CACHE STRING "Which archive version to build (subdir under archives/)")
 
@@ -33,7 +37,33 @@ target_link_libraries(BackroomsAPI INTERFACE nlohmann_json)
 
 # -------------------- 本体可执行文件 --------------------
 set(PROJECT_SOURCES
-    src/main.cpp
+    main.cpp
+
+    src/AppConfig.cpp
+    include/AppConfig.h
+    include/AppConfig_impl.hpp
+    include/AppConfig_utils.hpp
+
+    src/ConfigManager.cpp
+    include/ConfigManager.h
+    include/ConfigManager_impl.hpp
+
+    src/ConfigStructs.cpp
+    include/ConfigStructs.h
+
+    src/Console.cpp
+    include/Console.h
+
+    src/DebugLog.cpp
+    include/DebugLog.h
+    include/DebugLog_utils.hpp
+
+    src/DefaultConfigs.cpp
+    include/DefaultConfigs.h
+
+    src/MultiConfigManager.cpp
+    include/MultiConfigManager.h
+    include/MultiConfigManager_impl.hpp
 )
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json BackroomsAPI)
