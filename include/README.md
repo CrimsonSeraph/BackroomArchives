@@ -12,6 +12,7 @@
 | `AppConfig.h` | 应用配置主类 `AppConfig`（单例）的声明。提供全局配置读写接口，支持多级配置（`main` / `user`）优先级合并、热重载、配置变更监听。内部集成 `MultiConfigManager` 实现配置管理。 |
 | `AppConfig_impl.hpp` | `AppConfig` 的模板方法实现，包括 `get_value<T>`、`set_value<T>`、批量更新等模板函数。 |
 | `AppConfig_utils.hpp` | 配置辅助工具类：`ConfigValue<T>` 用于简单类型配置项（带缓存和回调），`ConfigObject<T>` 用于复杂结构体配置（支持 JSON 序列化与验证），以及配置构建器、验证器等辅助工具。 |
+| `BackroomArchives.h` | Qt 主窗口类 `BackroomArchives` 的声明，继承自 `QWidget`。负责界面初始化、按钮事件处理。 |
 | `ConfigManager.h` | 单配置文件管理器 `ConfigManager` 的声明。封装 JSON 文件的加载、保存、键值访问（支持点分隔路径如 `"app.debug"`）、批量更新、删除及变更通知（观察者模式）。内部使用递归互斥锁保证线程安全。 |
 | `ConfigManager_impl.hpp` | `ConfigManager` 的模板方法实现，提供 `get<T>`、`set<T>` 等类型安全的配置读写函数。 |
 | `ConfigStructs.h` | 配置结构体定义。包含 `MainConfig`（游戏名称、版本、调试开关、日志等级等）和 `UserConfig`（玩家偏好，如最近档案版本、语言等）。每个结构体提供 `to_json` / `from_json` 静态方法和 `validate()` 验证方法。 |

@@ -10,6 +10,7 @@
 | 文件名 | 描述 |
 | ------ | ---- |
 | `AppConfig.cpp` | 应用配置主类（`AppConfig`）的实现，单例模式。负责配置系统的初始化、销毁、配置项读写（支持点分隔路径）、配置监听器管理，并集成 `MultiConfigManager` 实现多级配置（`main` / `user`）的优先级合并与热重载。为游戏本体和档案插件提供统一的配置访问接口。 |
+| `BackroomArchives.cpp` | Qt 主窗口类（`BackroomArchives`）的实现，继承自 `QWidget`。负责界面初始化、按钮事件处理。 |
 | `ConfigManager.cpp` | 单配置文件管理器（`ConfigManager`）的实现。封装 JSON 配置文件的加载、保存、键值访问（支持默认值）、批量更新（`merge_patch`）、删除指定键路径及变更通知（观察者模式）。内部使用递归互斥锁保证线程安全，并缓存键路径分割结果以提升性能。 |
 | `ConfigStructs.cpp` | 配置结构体的定义与实现，包含 `MainConfig` 和 `UserConfig` 两个结构体。每个结构体均提供与 JSON 的相互转换（`to_json` / `from_json`）及基本的字段有效性验证（`validate`）方法，用于类型安全的配置访问。`MainConfig` 管理游戏名称、版本、调试开关、日志级别等；`UserConfig` 管理玩家偏好（如最近使用的档案版本、语言等）。 |
 | `Console.cpp` | Windows 控制台辅助类（`Console`）的实现，单例模式。用于在 GUI 程序启动时分配或附加调试控制台，设置 UTF‑8 代码页、字体，并重定向 `stdout` / `stderr` / `stdin`，方便在图形界面之外输出日志信息（日志系统同时输出到文件和控制台）。非 Windows 平台下该功能为空操作。 |

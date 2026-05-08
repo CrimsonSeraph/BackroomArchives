@@ -37,6 +37,7 @@ BackroomsArchives/
 │   ├── AppConfig.h                     # 配置系统主接口
 │   ├── AppConfig_impl.hpp              # 配置系统模板实现
 │   ├── AppConfig_utils.hpp             # 配置辅助工具类
+│   ├── BackroomArchives.h              # 核心档案管理模块头文件
 │   ├── ConfigManager.h                 # 单配置文件管理器
 │   ├── ConfigManager_impl.hpp          # ConfigManager 模板实现
 │   ├── ConfigStructs.h                 # 配置数据结构体
@@ -53,6 +54,7 @@ BackroomsArchives/
 │   └── README.md                       # screenshot 目录说明
 ├── src/                                # C++ 源文件
 │   ├── AppConfig.cpp                   # 配置系统实现
+│   ├── BackroomArchives.cpp            # 核心档案管理模块实现
 │   ├── ConfigManager.cpp               # 单配置管理器实现
 │   ├── ConfigStructs.cpp               # 配置结构体实现
 │   ├── Console.cpp                     # 控制台管理实现
@@ -63,15 +65,18 @@ BackroomsArchives/
 ├── .editorconfig                       # 编辑器代码风格配置
 ├── .gitattributes                      # Git 属性配置（换行符等）
 ├── .gitignore                          # Git 忽略文件规则
+├── BackroomArchives.qrc                # Qt 资源文件，用于打包静态资源
 ├── CHANGELOG.md                        # 更新日志
 ├── CMakeLists.txt                      # CMake 主构建脚本
+├── CMakePresets.json                   # CMake 预设配置，简化构建选项
 ├── CONTRIBUTING.md                     # 贡献指南
 ├── CodingStyle.md                      # 代码规范文档
 ├── LICENSE.txt                         # GPL-3.0 许可证
 ├── NOTICE.txt                          # 声明
 ├── README.en.md                        # 英文项目说明文档
 ├── README.md                           # 中文项目说明文档
-└── main.cpp                            # 程序主入口
+├── main.cpp                            # 程序主入口
+└── qt.cmake                            # Qt 相关的 CMake 配置模块
 ```
 
 ## 编码规范
