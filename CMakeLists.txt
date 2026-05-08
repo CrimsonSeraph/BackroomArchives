@@ -74,6 +74,7 @@ target_link_libraries(BackroomsAPI INTERFACE nlohmann_json)
 # -------------------- 本体可执行文件 --------------------
 set(PROJECT_SOURCES
     main.cpp
+    BackroomArchives.ui
     BackroomArchives.qrc
 
     src/AppConfig.cpp

@@ -5,17 +5,21 @@
 
 #pragma once
 
-class BackroomArchives {
+#include <QWidget>
+#include "../ui_BackroomArchives.h"
+
+ // ============================================
+ // BackroomArchives - 主窗口类
+ // ============================================
+class BackroomArchives : public QWidget {
+    Q_OBJECT
+
 public:
-    static BackroomArchives& instance();
-
-    BackroomArchives(const BackroomArchives&) = delete;
-    BackroomArchives& operator=(const BackroomArchives&) = delete;
-
-    void start_game();
-
-private:
-    BackroomArchives();
+    // -------------------- 构造/析构 --------------------
+    explicit BackroomArchives(QWidget* parent = nullptr);
     ~BackroomArchives();
+    
+private:
+    Ui::BackroomArchives ui;
 
 };
