@@ -73,7 +73,7 @@ bool AppConfig::initialize(const std::string& config_dir) {
                 if (!fs::create_directories(actual_config_dir, ec)) {
                     LOG_MODULE("AppConfig", "initialize", LOG_ERROR, "无法创建配置目录: " << actual_config_dir
                         << " 错误: " << ec.message());
-                    auto temp_dir = fs::temp_directory_path() / "DG-LAB-Client";
+                    auto temp_dir = fs::temp_directory_path() / "BackroomArchives";
                     fs::create_directories(temp_dir, ec);
                     actual_config_dir = temp_dir.string();
                     LOG_MODULE("AppConfig", "initialize", LOG_INFO, "使用临时目录: " << actual_config_dir);
@@ -409,7 +409,7 @@ void AppConfig::initialize_configs_unsafe() {
 
     main_config_obj_ = ConfigObject<MainConfig>(main_config_, "main",
         MainConfig{
-            .app_name_ = get_value_unsafe<std::string>("app.name", "DG-LAB-Client"),
+            .app_name_ = get_value_unsafe<std::string>("app.name", "BackroomArchives"),
             .app_version_ = get_value_unsafe<std::string>("app.version", "1.0.0"),
             .debug_mode_ = get_value_unsafe<bool>("app.debug", false),
             .console_level_ = get_value_unsafe<int>("app.log.console_level", 0),

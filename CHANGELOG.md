@@ -1,6 +1,6 @@
 # Changelog
 
-本文档记录 DG-LAB-Client 所有 notable 的版本变更。
+本文档记录 BackroomArchives 所有 notable 的版本变更。
 
 版本号格式遵循 [语义化版本 2.0.0](https://semver.org/lang/zh-CN/)
 
@@ -52,7 +52,7 @@
 
 ## 其他
 
-**变动**:[v0.1.0]: https://github.com/CrimsonSeraph/DG-LAB-Client/compare/v0.1.0...v0.1.0
+**变动**:[v0.1.0]: https://github.com/CrimsonSeraph/BackroomArchives/compare/v0.1.0...v0.1.0
 
 **变更分类**:
   - `Added` – 新增功能

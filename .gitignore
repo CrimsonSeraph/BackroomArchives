@@ -427,3 +427,14 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Others
+.idea/
+CMakeUserPresets.json
+pybind11-3.0.1/
+build/
+venv/
+.vscode/
+CLAUDE.md
+.claude/
+doc/
