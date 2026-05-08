@@ -66,6 +66,7 @@ BackroomsArchives/
 ├── .gitattributes                      # Git 属性配置（换行符等）
 ├── .gitignore                          # Git 忽略文件规则
 ├── BackroomArchives.qrc                # Qt 资源文件，用于打包静态资源
+├── BackroomArchives.ui                 # Qt 界面文件，用于生成 UI 类
 ├── CHANGELOG.md                        # 更新日志
 ├── CMakeLists.txt                      # CMake 主构建脚本
 ├── CMakePresets.json                   # CMake 预设配置，简化构建选项

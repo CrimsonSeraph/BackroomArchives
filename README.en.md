@@ -1,75 +1,83 @@
 # BackroomsArchives
 
-**[中文](README.md) | English**
+**[English](README.en.md) | 中文**
 
-> **Navigation**
-> - [I. Introduction](#i-introduction)
+> **Table of Contents**
+> - [I. Project Introduction](#i-project-introduction)
 > - [II. Features](#ii-features)
 > - [III. Dependencies](#iii-dependencies)
 > - [IV. Quick Start](#iv-quick-start)
-> - [V. Automated Build](#v-automated-build)
-> - [VI. User Guide](#vi-user-guide)
+> - [V. Automated Builds](#v-automated-builds)
+> - [VI. Usage Guide](#vi-usage-guide)
 > - [VII. Project Structure](#vii-project-structure)
 > - [VIII. Screenshots](#viii-screenshots)
 > - [IX. Coding Style](#ix-coding-style)
 > - [X. FAQ](#x-faq)
-> - [XI. Contributing](#xi-contributing)
+> - [XI. Contributing Guide](#xi-contributing-guide)
 > - [XII. License](#xii-license)
 > - [XIII. Contact](#xiii-contact)
 
-A **modular, plugin-based Backrooms text adventure game** with a lightweight GUI.
+A **modular, plug-in based Backrooms-themed text game**.
 
-The core provides only the basic framework, plugin loading, and game loop. All levels, BUFFs, texts, and configurations are dynamically provided by **archive plugins**. Supports multiple archive versions (e.g., Wikidot, Fandom), each packaged independently, switchable at runtime.
+A Qt-based text game written in C++20.  
+The core provides only the basic framework, plugin loading, and main game loop; all levels, BUFFs, text, configuration, etc., are dynamically supplied by **Archive plugins**. Supports multiple archive versions (e.g., Wikidot, Fandom, etc.), each packaged independently and switchable at runtime.
 
-Current version: `v0.1.0`
-> See [CHANGELOG.md](CHANGELOG.md) for details.
+> 👉 Want to develop an archive plugin? Check [FAQ - Plugin Development](#faq---plugin-development)
+
+Current version: `v0.1.0`  
+> See [Changelog](CHANGELOG.md) for details.
 
 ---
 
-## I. Introduction
+## I. Project Introduction
 
-**BackroomsArchives** is a text adventure game inspired by the Backrooms lore. Unlike traditional single games, all content (levels, rules, BUFFs, texts) exists as **plugins** under different "archive versions" (e.g., the Wikidot Backrooms archive, Fandom archive, etc.). The core only provides:
+**BackroomsArchives** is a text game inspired by the Backrooms setting. Unlike traditional single games, all content – levels, rules, BUFFs, texts – exist as **plugins** stored under different "archive versions" (e.g., the Wikidot community Backrooms archive, Fandom archive, etc.). The core only provides:
 
-- Cross‑platform dynamic library loading (`.dll` / `.so` / `.dylib`)
+- Basic content and resource loading framework
+- Cross-platform dynamic library loading (Windows `.dll`, Linux `.so`, macOS `.dylib`)
 - Plugin interfaces (`ILevel`, `IBuff`, `ArchiveCore`)
-- Game loop (turn‑based or real‑time, defined by plugins)
-- Lightweight GUI (text display, buttons, selection lists; console used only for logging)
+- Main game loop (turn-based or real-time, defined by plugins)
+- Lightweight graphical UI (for displaying text, buttons, choice lists, etc.; console is reserved for logs)
 - Simple configuration management (player base attributes, language, etc.)
 - Logging system
 
-Each archive version is completely self‑contained, with its own **core plugin** (global rules) and **level plugins** (specific level logic). Players download the complete package for a version and explore all implemented levels. New levels or entire archive versions can be added easily without modifying the core.
+Each archive version is completely independent, containing its own **core plugin** (manages global rules) and **level plugins** (specific level logic). After downloading the corresponding complete package, players can explore all implemented levels under that version. New levels or entirely new archive versions can be added later without modifying the core.
 
-> **Current status**: core framework under construction.
+> **Current status**: Basic framework under construction.
 
 ---
 
 ## II. Features
 
-- **Pure C++20 implementation**, cross‑platform (Windows / macOS / Linux)
-- **Lightweight GUI** – console only for logging, interaction via window controls
-- **Plugin‑based level system** – each level compiled as a standalone dynamic library, stored together with its private resources (texts, configs, images, etc.)
-- **Separate archive versions** – different Backrooms wikis (Wikidot, Fandom, ...) completely isolated, independently packaged
-- **Dynamic loading** – the core scans `archives/` at runtime, user selects version via GUI or config file
-- **Core plugin support** – each archive can provide a core plugin (`wikidot_core`) for global BUFF management, cross‑level data, entry/exit rules, etc.
-- **JSON‑based config & texts** – `nlohmann/json` used for parsing, supports multi‑language texts (per‑level or global)
-- **Component‑based packaging** – CPack generates `core‑only` packages (just the core) and full packages (core + selected archive)
-- **Automated CI** – GitHub Actions builds multiple platforms and archive versions, then publishes releases
+- **Pure C++20 implementation**, cross-platform (Windows / macOS / Linux)
+- **Lightweight graphical UI**: console only for logs, interactions via window controls
+- **Plugin-based level system**: each level compiled as an independent dynamic library, stored together with its private resources (texts, config, images, etc.) in the same directory
+- **Separated archive versions**: data and logic from different Backrooms wikis (Wikidot, Fandom, etc.) are completely isolated, can be packaged and released independently
+- **Dynamic loading mechanism**: core automatically scans version directories under `archives/`, lets user choose at runtime or specify via configuration
+- **Core plugin support**: each archive version can provide a core plugin (e.g., `wikidot_core`) for global BUFF management, cross‑level data, entry/exit rules, etc.
+- **JSON-based configuration & text**: uses `nlohmann/json` for parsing, supports multi‑language texts (per level or global)
+- **Componentised packaging**: uses CPack to generate `core-only` package (core only) and complete packages (core + specified archive version)
+- **Automated CI**: GitHub Actions automatically builds multi‑platform, multi‑archive versions and publishes them to Releases
 
 ---
 
 ## III. Dependencies
 
-### 1. System dependencies
-- **C++ compiler**: C++20 support (GCC 11+, Clang 14+, MSVC 2022)
+### 1. System Dependencies
+- **C++ Compiler**: with C++20 support (GCC 11+, Clang 14+, MSVC 2022)
 - **CMake**: 3.16 or higher
-- **Dynamic linker/loader**: platform native (Windows `LoadLibrary`, Linux/macOS `dlopen`)
+- **Qt**: 5.15 or 6.x (Core, Gui, Widgets)
+- **Dynamic linker / loader**: platform native (Windows `LoadLibrary`, Linux/macOS `dlopen`)
 
-### 2. Third‑party libraries
-- **[nlohmann/json](https://github.com/nlohmann/json)** (version 3.12.0)
-  Used for JSON parsing. CMake automatically downloads the single header at configure time.
+> Qt 6.x is recommended; CMake will auto-detect and configure it.  
+  VS2022/2026 (MSVC) is recommended for Windows development; use GCC or Clang on Linux/macOS.
 
-### 3. Runtime dependencies
-- None. All archive plugins are dynamic libraries loaded by the core at runtime.
+### 2. Third-party Libraries
+- **[nlohmann/json](https://github.com/nlohmann/json)** (version 3.12.0)  
+  Used for JSON parsing. CMake will automatically download the single header from GitHub into the build directory during configuration.
+
+### 3. Runtime Dependencies
+- None. All archive plugins are dynamic libraries loaded at runtime by the core.
 
 ---
 
@@ -82,14 +90,17 @@ git clone https://github.com/CrimsonSeraph/BackroomsArchives.git
 cd BackroomsArchives
 ```
 
-### 2. Configure CMake (using `wikidot` archive as an example)
+### 2. Configure CMake (using wikidot archive version as an example)
 
 ```bash
 cmake -B build -DCMAKE_BUILD_TYPE=Release -DARCHIVE_VERSION=wikidot -DBUILD_ARCHIVES=ON
 ```
 
-- `ARCHIVE_VERSION`: selects the archive version (subdirectory under `archives/`)
-- `BUILD_ARCHIVES`: set to `ON` to build archive plugins; `OFF` for core‑only
+- `ARCHIVE_VERSION`: choose which archive version to build (subdirectory under `archives/`)
+- `BUILD_ARCHIVES`: set to `ON` to build archive plugins; set to `OFF` if you only need the core
+- For Qt6, CMake usually finds it automatically; if using Qt5, ensure the `Qt5` package is available.
+
+> 👉 Configuration or build failure? See [FAQ - Compilation & Runtime](#faq---compilation--runtime)
 
 ### 3. Build
 
@@ -97,13 +108,13 @@ cmake -B build -DCMAKE_BUILD_TYPE=Release -DARCHIVE_VERSION=wikidot -DBUILD_ARCH
 cmake --build build --config Release
 ```
 
-### 4. Install to a temporary directory (to inspect the result)
+### 4. Install to a temporary directory (to inspect results)
 
 ```bash
 cmake --install build --prefix install_full
 ```
 
-The installed directory structure is described in [Project Structure](#vii-project-structure).
+See [Project Structure](#vii-project-structure) for the installed directory layout.
 
 ### 5. Run
 
@@ -115,55 +126,57 @@ The installed directory structure is described in [Project Structure](#vii-proje
 ./install_full/BackroomsArchives
 ```
 
-The program will scan `install_full/archives/` for available archive versions, let the user select one (with GUI controls), and then start the game loop.
+The program will scan for available archive versions under `install_full/archives/`, prompt the user to select one (if only one exists it loads it automatically), and then enter the main game loop.
 
-### 6. Package (create distribution archives)
+### 6. Package (create distributable packages)
 
 ```bash
 cpack --config build/CPackConfig.cmake -B package -G ZIP
 ```
 
-Generated full packages are placed under `package/`, named like `BackroomsArchives-wikidot-Windows.zip`.
+The generated complete packages are located in the `package/` directory, named like `BackroomsArchives-wikidot-Windows.zip`.
 
 ---
 
-## V. Automated Build
+## V. Automated Builds
 
-This project uses GitHub Actions for continuous integration and delivery. Workflow files are located in `.github/workflows/`:
+This project uses GitHub Actions for continuous integration and delivery. The configuration files are in `.github/workflows/`:
 
-- **`build.yml`** – triggered when a tag starting with `v` is pushed (e.g., `v0.1.0`) or manually. Builds on Ubuntu, Windows, macOS, for each archive version in the matrix (`wikidot`, `fandom`), then installs and packages.
-- **`release.yml`** – after a successful build workflow, downloads all artifacts, extracts the corresponding release notes from `CHANGELOG.md`, creates a GitHub Release and attaches all packages.
+- **`build.yml`**: On push of a tag starting with `v` (e.g., `v0.1.0`) or manual trigger, builds on Ubuntu, Windows, and macOS for each archive version (e.g., `wikidot`, `fandom` – adjust the matrix as needed), then installs, packages, and uploads artifacts.
+- **`release.yml`**: After the previous workflow completes successfully, downloads all artifacts, extracts the release notes for the corresponding version from `CHANGELOG.md`, creates a GitHub Release and attaches all packages.
 
-You can modify `matrix.archive` in `build.yml` to add or remove archive versions.
+You can modify the `matrix.archive` list in `build.yml` according to the archive versions you actually support.
 
 ---
 
-## VI. User Guide
+## VI. Usage Guide
 
 ### 1. Archive version selection
 
-At startup, the GUI window lists all subdirectories under `archives/` (each is an archive version, e.g., `wikidot`, `fandom`). The user selects one via dropdown or button. A default version can be set in `config/game.json` (`active_archive` field). After selection, the core loads the archive’s core plugin (if present) and then scans the version directory for level subdirectories, loading each level plugin.
+When the game starts, it scans all subdirectories under `archives/` – each subdirectory is considered an archive version (e.g., `wikidot`, `fandom`). If no configuration file records the previously selected version, the program lists all available versions and asks the user to enter a number. After selection, the archive's core plugin (if present) is loaded, then all level directories under that version are scanned and each level's plugin is loaded.
 
-### 2. Archive version structure (example for `wikidot`)
+Users can fix the default version by setting the `"active_archive"` field in the core configuration file `config/game.json` to avoid manual selection each time.
+
+### 2. Archive version structure (using `wikidot` as example)
 
 ```
 archives/wikidot/
-├── wikidot_core.dll      # archive core plugin (optional, built from core.cpp)
-├── version.json          # archive metadata (name, description, version, etc.)
-├── texts/                # archive public texts (multi‑language)
+├── wikidot_core.dll      # Archive core plugin (optional, compiled from core.cpp)
+├── version.json          # Archive metadata (name, description, version, etc.)
+├── texts/                # Archive common texts (multi‑language)
 │   ├── en/
 │   └── zh/
-├── config/               # archive public configuration (global rules, BUFF definitions, ...)
-├── level-0/              # level directory (name can be arbitrary, but `level-` prefix recommended)
-│   ├── level-0.dll       # level plugin (built from level-0.cpp)
-│   └── level_text.json   # private resources for this level
+├── config/               # Archive common config (global rules, BUFF definitions, etc.)
+├── level-0/              # Level directory (name can be customised, but level- prefix recommended)
+│   ├── level-0.dll       # Level plugin (compiled from level-0.cpp)
+│   └── level_text.json   # Private resources for this level
 ├── level-1/
 └── ...
 ```
 
 ### 3. Writing a level plugin
 
-Each level directory must contain a `.cpp` file with the same name as the directory. The file must export the following functions (using `extern "C"` to avoid name mangling):
+Each level directory must contain a `.cpp` source file with the same name as the directory, implementing the following exported functions (use `extern "C"` to avoid name mangling):
 
 ```cpp
 #include "plugin_api/ILevel.h"
@@ -177,7 +190,7 @@ extern "C" void destroy_level(ILevel* p) {
 }
 ```
 
-`ILevel` is a pure abstract class defined in `include/plugin_api/ILevel.h`:
+Where `ILevel` is a pure virtual class defined in `include/plugin_api/ILevel.h`:
 
 ```cpp
 class ILevel {
@@ -194,21 +207,49 @@ public:
 
 ### 4. Archive core plugin
 
-If an archive needs global management (cross‑level BUFFs, auto‑unload rules, unified entry logic), you can provide `core.cpp` at the archive root. It will be compiled into a plugin named `${ARCHIVE_VERSION}_core`. The core plugin must implement the `ArchiveCore` interface (defined in `plugin_api/ArchiveCore.h`) and export a factory function.
+If an archive requires global management (e.g., cross‑level BUFFs, automatic unloading rules, unified entry logic), you can provide `core.cpp` in the archive root, compiled into `${ARCHIVE_VERSION}_core` plugin. The core plugin must implement the `ArchiveCore` interface (defined in `plugin_api/ArchiveCore.h`) and return an instance in the exported function.
 
-### 5. Configuration
+When loading an archive version, the main program will first load this core plugin and call its initialisation method.
 
-Core configuration resides in `config/` (JSON format). The structure is still being finalized.
+### 5. Configuration files
+
+The system uses two configuration files, ordered by priority from low to high:
+
+- `main.json`: main config, priority 0
+- `user.json`: user config, priority 1
+
+Higher priority config values override same‑path values from lower priority configs.  
+**Note:** Even with override logic, it is still not recommended to define identical properties in different config files.  
+The `__priority` field in the config files defines the priority and must not be deleted.
+
+> If a config file is missing, defaults will be loaded from `DefaultConfigs.cpp`, and the missing config file will be auto‑generated at runtime.
+
+> 👉 Configuration issues? See [FAQ - Configuration Issues](#faq---configuration-issues)
+
+<details>
+<summary><b>`game.json` example:</b></summary>
+
+```json
+{
+
+}
+```
+
+</details>
+
+**Note:** The `"version"` and `"BackroomsArchives"` fields are mandatory. Their content can be anything, but **do not delete or modify** these fields.
+
+Archive common configuration files are located under `archives/wikidot/config/`; their specific content is defined by the archive core plugin.
 
 ### 6. Multi‑language texts
 
-- **Global texts**: placed in `texts/{lang}/`, loaded by the core (e.g., welcome messages, error prompts)
-- **Archive public texts**: placed in `archives/wikidot/texts/{lang}/`, loaded by the archive core plugin
-- **Level private texts**: placed inside the level directory (e.g., `level-0/description.json`), loaded by the level plugin itself
+- **Global texts**: placed under `texts/{lang}/`, read by the core (e.g., welcome message, error prompts, etc.)
+- **Archive common texts**: placed under `archives/wikidot/texts/{lang}/`, loaded by the archive core plugin
+- **Level private texts**: placed inside the level directory (e.g., `level-0/description.json`), read by the level plugin itself
 
 ### 7. Logging
 
-The logging system provides macros `LOG_DEBUG`, `LOG_INFO`, `LOG_WARN`, `LOG_ERROR`. Output goes to the console (a separate window). Log levels can be adjusted in the core configuration.
+The logging system provides macros `LOG_DEBUG`, `LOG_INFO`, `LOG_WARN`, `LOG_ERROR`, which can output to the console and to a file (if enabled). The log level can be adjusted in the core configuration.
 
 ---
 
@@ -223,132 +264,224 @@ BackroomsArchives/
 │   └── workflows/                      # CI/CD workflows
 │       ├── build.yml                   # Build & test workflow
 │       └── release.yml                 # Release workflow
-├── archives/                           # Archive versions
-│   ├── wikidot/                        # Wikidot archive
-│   │   ├── assets/                     # Global static resources
-│   │   ├── config/                     # Global configuration
-│   │   ├── level-0/                    # Level directory
-│   │   ├── ......                      # Other levels
+├── archives/                           # Archive versions directory
+│   ├── wikidot/                        # wikidot archive version
+│   │   ├── assets/                     # Global static resources (e.g., global images)
+│   │   ├── config/                     # Global config files (e.g., global BUFF definitions)
+│   │   ├── level-0/                    # Level level-0 directory
+│   │   ├── ......                      # Other level directories
 │   │   ├── texts/                      # Global texts (multi‑language)
-│   │   ├── CMakeLists.txt              # Build script for this archive
-│   │   ├── core.cpp                    # Core plugin source (optional)
-│   │   ├── core.h                      # Core plugin header
-│   │   ├── README.md                   # Archive description
+│   │   ├── CMakeLists.txt              # Build script for wikidot archive version
+│   │   ├── core.cpp                    # Source file for wikidot archive core plugin
+│   │   ├── core.h                      # Header for wikidot archive core plugin
+│   │   ├── README.md                   # wikidot archive description
 │   │   └── version.json                # Archive metadata
-│   └── README.md                       # Archives directory description
+│   └── README.md                       # Description of archives directory
 ├── assets/                             # Static resources (images, etc.)
-│   └── README.md                       # Assets description
+│   └── README.md                       # Description of assets directory
 ├── config/                             # Default configuration directory
-│   ├── game.json                       # Game configuration file
-│   └── README.md                       # Config description
-├── include/                            # Public headers (including plugin_api)
+│   ├── main.json                       # Main config file
+│   ├── README.md                       # Description of config directory
+│   └── user.json                       # User config file
+├── include/                            # Public headers
 │   ├── plugin_api/                     # Plugin interface headers
-│   │   └── README.md                   # Plugin API description
-│   └── README.md                       # Include description
-├── licenses/                           # Third‑party licenses
+│   │   └── README.md                   # Description of plugin_api directory
+│   ├── AppConfig.h                     # Configuration system main interface
+│   ├── AppConfig_impl.hpp              # Template implementation of configuration system
+│   ├── AppConfig_utils.hpp             # Configuration helper utilities
+│   ├── BackroomArchives.h              # Core archive management module header
+│   ├── ConfigManager.h                 # Single config file manager
+│   ├── ConfigManager_impl.hpp          # ConfigManager template implementation
+│   ├── ConfigStructs.h                 # Configuration structure definitions
+│   ├── Console.h                       # Console management
+│   ├── DebugLog.h                      # Logging system
+│   ├── DebugLog_utils.hpp              # Logging helper utilities
+│   ├── DefaultConfigs.h                # Default configuration factory
+│   ├── MultiConfigManager.h            # Multi‑config manager
+│   ├── MultiConfigManager_impl.hpp     # MultiConfigManager template implementation
+│   └── README.md                       # Description of include directory
+├── licenses/                           # Third‑party license files
 │   └── LICENSE.MIT.txt                 # MIT license for nlohmann/json
-├── screenshot/                         # Screenshots
-│   └── README.md                       # Screenshot description
+├── screenshot/                         # Screenshot resource files
+│   └── README.md                       # Description of screenshot directory
 ├── src/                                # C++ source files
-│   ├── main.cpp                        # Main entry point
-│   └── README.md                       # Source description
-├── .editorconfig                       # Editor style configuration
+│   ├── AppConfig.cpp                   # Configuration system implementation
+│   ├── BackroomArchives.cpp            # Core archive management module implementation
+│   ├── ConfigManager.cpp               # Single config file manager implementation
+│   ├── ConfigStructs.cpp               # Configuration structures implementation
+│   ├── Console.cpp                     # Console management implementation
+│   ├── DebugLog.cpp                    # Logging system implementation
+│   ├── DefaultConfigs.cpp              # Default configuration factory implementation
+│   ├── MultiConfigManager.cpp          # Multi‑config manager implementation
+│   └── README.md                       # Description of src directory
+├── .editorconfig                       # Editor code style configuration
 ├── .gitattributes                      # Git attributes (line endings, etc.)
 ├── .gitignore                          # Git ignore rules
+├── BackroomArchives.qrc                # Qt resource file, bundles static assets
+├── BackroomArchives.ui                 # Qt UI file, generates UI class
 ├── CHANGELOG.md                        # Changelog
 ├── CMakeLists.txt                      # Main CMake build script
+├── CMakePresets.json                   # CMake presets, simplifies build options
 ├── CONTRIBUTING.md                     # Contributing guide
-├── CodingStyle.md                      # Coding style document
+├── CodingStyle.md                      # Code style document
 ├── LICENSE.txt                         # GPL-3.0 license
 ├── NOTICE.txt                          # Notices
-├── README.en.md                        # English README
-└── README.md                           # Project README
+├── README.en.md                        # English project documentation
+├── README.md                           # Chinese project documentation
+├── main.cpp                            # Program main entry point
+└── qt.cmake                            # Qt‑related CMake configuration module
 ```
+
 </details>
 
 ---
 
 ## VIII. Screenshots
 
-(Temporarily empty)
+Temporarily left blank.
 
-See the [`screenshot/`](screenshot/README.md) directory for more.
+More screenshots can be found in the [`screenshot/`](screenshot/README.md) directory.
 
 ---
 
 ## IX. Coding Style
 
-The project follows a unified C++ coding style. See [CodingStyle.md](CodingStyle.md) in the root directory. Main conventions:
+The project follows a unified C++ coding style, detailed in the root **[CodingStyle.md](CodingStyle.md)**. Main conventions:
 
-- 4 spaces for indentation, K&R brace style
-- Class names `PascalCase`, variables/functions `snake_case`, interface prefix `I`
-- Header files use `#pragma once`
+- Indentation: 4 spaces, K&R brace style
+- Classes: `PascalCase`, variables/functions: `snake_case`, interface prefix `I`
+- Headers: use `#pragma once`
 - Logging macros with levels, avoid excessive logging in hot paths
 
-Please adhere to the style before submitting code.
+Before submitting code, please ensure it adheres to the above style.
 
 ---
 
 ## X. FAQ
 
-<details>
-<summary><b>Q1: Compilation fails because nlohmann/json.hpp cannot be found</b></summary>
+### Compilation & Runtime
 
-CMake automatically downloads the header from GitHub. If network issues cause a failure, manually download [json.hpp](https://github.com/nlohmann/json/releases/download/v3.12.0/json.hpp) and place it under `include/nlohmann/` in the build directory, or modify `CMakeLists.txt` to use a local path.
+<details>
+<summary><b>Q1: CMake configuration cannot find Qt</b></summary>
+
+**Symptom**:
+```
+Could not find a package configuration file provided by "Qt6" or "Qt5"
+```
+
+**Solution**:
+- Make sure Qt is installed correctly and `CMAKE_PREFIX_PATH` points to the Qt installation directory (e.g., `C:/Qt/6.5.0/msvc2019_64`).
+- Or set the environment variable `Qt6_DIR` / `Qt5_DIR`.
+- On Linux, install the Qt development package via the package manager (e.g., `qt6-base-dev`); CMake will usually find it automatically.
 
 </details>
 
 <details>
-<summary><b>Q2: Plugin dynamic library fails to load – symbol not found</b></summary>
+<summary><b>Q2: nlohmann/json download fails</b></summary>
 
-Ensure the plugin source correctly exports `create_level` and `destroy_level` functions with `extern "C"`. Also verify that the plugin file name matches the directory name (e.g., `level-0.dll` inside `level-0/`).
+**Symptom**:
+During CMake configuration, an error occurs when downloading `json.hpp` from GitHub.
 
-</details>
-
-<details>
-<summary><b>Q3: How do I add a new level?</b></summary>
-
-1. Create a new folder under the archive version (e.g., `archives/wikidot/level-2/`).
-2. Inside that folder, create `level-2.cpp` implementing `ILevel` and exporting the factory functions.
-3. Place any private resources (text files, etc.) in the same folder.
-4. Re‑run CMake configuration and build. The new level will be automatically detected, compiled, and installed.
+**Solution**:
+- Check your network connection and ensure access to `raw.githubusercontent.com`.
+- Download [json.hpp](https://github.com/nlohmann/json/releases/download/v3.12.0/json.hpp) manually and place it under `/include/nlohmann/` in the build directory (adjust path according to CMake output).
+- Or modify `CMakeLists.txt` to use a local path of the header.
 
 </details>
 
 <details>
-<summary><b>Q4: How do I add a completely new archive version (e.g., Fandom)?</b></summary>
+<summary><b>Q3: Plugin dynamic library fails to load with symbol not found</b></summary>
 
-1. Create `archives/fandom/`.
-2. Copy `archives/wikidot/CMakeLists.txt` into `archives/fandom/CMakeLists.txt`.
-3. Add levels inside `fandom/` following the same structure.
-4. Add `fandom` to `matrix.archive` in `build.yml`.
-5. Push a tag, and CI will build the `fandom` version and produce separate packages.
+Ensure that the plugin source correctly exports `create_level` and `destroy_level` functions using `extern "C"` to avoid C++ name mangling. Also verify that the plugin filename matches the directory name (e.g., `level-0.dll` inside the `level-0/` directory).
+
+</details>
+
+<details>
+<summary><b>Q4: Compilation errors related to C++20 features</b></summary>
+
+**Symptom**:
+Compiler errors such as `'std::span' is not a member of 'std'` or requirement of C++20 standard.
+
+**Solution**:
+- Verify compiler version: GCC ≥10, Clang ≥12, MSVC ≥2022.
+- Explicitly specify C++ standard in CMake configuration: `-DCMAKE_CXX_STANDARD=20`.
+- If using an older IDE (e.g., VS2019), upgrade to VS2022 or install a toolset that supports C++20.
+
+</details>
+
+### Configuration Issues
+
+<details>
+<summary><b>Q5: Configuration changes do not take effect</b></summary>
+
+**Symptom**:
+Changed a value in `user.json`, but the program still uses the old value.
+
+**Solution**:
+- Confirm you are editing the correct file (priority order: `user.json` > `system.json` > `main.json`). If `system.json` or `main.json` define the same configuration path, they will be overridden but not deleted.
+- Re‑run CMake to rebuild the project, or manually copy the modified config file to the `config/` directory under the build output.
+- Check for JSON syntax errors (e.g., extra commas) using an online JSON validator.
+
+</details>
+
+<details>
+<summary><b>Q6: How to recover lost configuration files?</b></summary>
+
+**Symptom**:
+Accidentally deleted a JSON file under the `config/` directory; the program reports errors or uses default values.
+
+**Solution**:
+- The program has built‑in default configurations (defined in `DefaultConfigs.cpp`). Missing files will be auto‑generated at runtime (provided the directory is writable).
+- Alternatively, copy the example files from the `config/` directory in the source repository to the runtime directory.
+
+</details>
+
+### Plugin Development
+
+<details>
+<summary><b>Q7: How to add a new level?</b></summary>
+
+1. Create a new folder under the corresponding archive version directory (e.g., `archives/wikidot/`), for example `level-2/`.
+2. Inside the folder, create `level-2.cpp` that implements the `ILevel` interface and exports the factory functions.
+3. Place private resources (text files, etc.) in the same folder.
+4. Re‑run CMake configuration and build; the new level will be automatically scanned, compiled, and installed.
+
+</details>
+
+<details>
+<summary><b>Q8: How to add a completely new archive version (e.g., Fandom)?</b></summary>
+
+1. Create a `fandom/` directory under `archives/`.
+2. Copy `archives/wikidot/CMakeLists.txt` to `fandom/CMakeLists.txt`.
+3. Add levels as needed.
+4. Add `fandom` to the matrix in `build.yml`.
+5. After pushing a tag, CI will automatically build the `fandom` version and generate independent packages.
 
 </details>
 
 ---
 
-## XI. Contributing
+## XI. Contributing Guide
 
-Issues and pull requests are welcome. Before contributing, please ensure:
+Issues and Pull Requests are welcome. Before contributing, please ensure:
 
-- Code follows [CodingStyle.md](CodingStyle.md).
-- New features or bug fixes are tested locally.
-- Relevant documentation (README, CHANGELOG) is updated.
-- For larger changes, open an issue for discussion first.
+- Code follows the [CodingStyle.md](CodingStyle.md) guidelines.
+- New features or bug fixes have been tested locally.
+- Relevant documentation (e.g., README, CHANGELOG) is updated.
+- For major changes, open an issue first to discuss the design.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed process.
 
 ---
 
 ## XII. License
 
-The source code of this project is licensed under **GNU General Public License v3.0 only** (GPL-3.0-only). See [LICENSE.txt](LICENSE.txt) for details.
+The source code of this project itself is open‑sourced under the **GNU General Public License v3.0 only** (GPL-3.0-only). See the [LICENSE](LICENSE.txt) file in the project root for details.
 
-Third‑party dependencies have their own licenses:
+Third‑party components used by this project are subject to their own licenses:
 - **nlohmann/json**: MIT License
 
-For full license texts, see [NOTICE.txt](NOTICE.txt) and the `licenses/` directory.
+For the full text of third‑party licenses and notices, see [NOTICE.txt](NOTICE.txt) and the `licenses/` directory.
 
 ---
 
@@ -361,4 +494,4 @@ For full license texts, see [NOTICE.txt](NOTICE.txt) and the `licenses/` directo
 
 ---
 
-*Stay safe and may you find the exit.*
+*May you safely traverse the Backrooms and find your way out.*

@@ -19,7 +19,10 @@
 
 一个**模块化、插件化的后室主题文字游戏**。
 
-本体仅提供基础框架、插件加载与游戏核心循环，所有层级、BUFF、文本、配置等内容均由**档案插件**动态提供。支持多档案版本（如 Wikidot、Fandom 等），每个版本独立打包，运行时切换。
+一个基于 Qt 的文字游戏，项目采用 C++20 编写。 
+本体仅提供基础框架、插件加载与游戏核心循环，所有层级、BUFF、文本、配置等内容基本均由 **档案插件** 动态提供。支持多档案版本（如 Wikidot、Fandom 等），每个版本独立打包，运行时切换。
+
+> 👉 想开发档案插件？请查看 [FAQ - 插件开发](#faq---插件开发)
 
 当前版本号: `v0.1.0`
 > 详细请查看: [更新日志](CHANGELOG.md)。
@@ -30,6 +33,7 @@
 
 **BackroomsArchives** 是一款受后室（Backrooms）设定启发的文字游戏。与传统的单一游戏不同，本项目的所有内容——包括层级、规则、BUFF、文本——都以**插件形式**存在，存储在不同的“档案版本”下（例如基于 Wikidot 社区的后室档案、Fandom 档案等）。本体只负责提供：
 
+- 基本的内容与资源加载框架
 - 跨平台动态库加载（Windows `.dll`、Linux `.so`、macOS `.dylib`）
 - 插件接口（`ILevel`, `IBuff`, `ArchiveCore`）
 - 游戏主循环（回合制或实时，由插件定义）
@@ -62,7 +66,11 @@
 ### 1. 系统依赖
 - **C++ 编译器**: 支持 C++20 标准（GCC 11+、Clang 14+、MSVC 2022）
 - **CMake**: 3.16 或更高版本
+- **Qt**: 5.15 或 6.x（Core、Gui、Widgets）
 - **动态链接器 / 加载库**: 各平台自带（Windows `LoadLibrary`、Linux/macOS `dlopen`）
+
+> 推荐使用Qt 6.x，CMake 会自动检测并配置。  
+  推荐使用 VS2022/2026（MSVC）进行 Windows 开发，Linux/macOS 可使用 GCC 或 Clang。
 
 ### 2. 第三方库
 - **[nlohmann/json](https://github.com/nlohmann/json)** (版本 3.12.0)
@@ -90,6 +98,9 @@ cmake -B build -DCMAKE_BUILD_TYPE=Release -DARCHIVE_VERSION=wikidot -DBUILD_ARCH
 
 - `ARCHIVE_VERSION`: 选择要构建的档案版本（对应 `archives/` 下的子目录）
 - `BUILD_ARCHIVES`: 设为 `ON` 时编译档案插件；若只需本体可设为 `OFF`
+- 对于 Qt6，CMake 通常能自动找到；若使用 Qt5，请确保 `Qt5` 包可用。
+
+> 👉 配置或编译失败？请查看 [FAQ - 编译与运行](#faq---编译与运行)
 
 ### 3. 编译
 
@@ -202,7 +213,18 @@ public:
 
 ### 5. 配置文件
 
-本体配置位于 `config/`（JSON 格式）。
+系统包含两个配置文件，按优先级从低到高依次为:
+
+- `main.json`: 主配置，优先级 0
+- `user.json`: 用户配置，优先级 1
+
+高优先级的配置项会覆盖低优先级的同路径配置。
+**注意: ** 即使有覆盖逻辑，仍不建议在不同配置文件中定义相同属性
+配置文件中 `__priority` 字段用于定义优先级，不可删除。
+
+> 若配置文件丢失将从默认配置（`DefaultConfigs.cpp`）加载，并在程序运行时自动生成缺失的配置文件。
+
+> 👉 配置文件相关问题请查看 [FAQ - 配置问题](#faq---配置问题)
 
 <details>
 <summary><b>`game.json` 示例：</b></summary>
@@ -214,6 +236,8 @@ public:
 ```
 
 </details>
+
+**注意: ** 其中 `"version"` 与 `"BackroomsArchives"` 为检查字段，内容随意，但 **请勿删除或修改** 此字段。
 
 档案版本的公共配置文件位于 `archives/wikidot/config/` 下，具体内容由档案核心插件定义。
 
@@ -294,6 +318,7 @@ BackroomsArchives/
 ├── .gitattributes                      # Git 属性配置（换行符等）
 ├── .gitignore                          # Git 忽略文件规则
 ├── BackroomArchives.qrc                # Qt 资源文件，用于打包静态资源
+├── BackroomArchives.ui                 # Qt 界面文件，用于生成 UI 类
 ├── CHANGELOG.md                        # 更新日志
 ├── CMakeLists.txt                      # CMake 主构建脚本
 ├── CMakePresets.json                   # CMake 预设配置，简化构建选项
@@ -334,22 +359,87 @@ BackroomsArchives/
 
 ## 十、FAQ
 
-<details>
-<summary><b>Q1: 编译时提示找不到 nlohmann/json.hpp</b></summary>
+### 编译与运行
 
-CMake 会在配置时自动从 GitHub 下载该头文件。如果网络问题导致下载失败，可以手动下载 [json.hpp](https://github.com/nlohmann/json/releases/download/v3.12.0/json.hpp) 并放入构建目录的 `include/nlohmann/` 下，或者修改 `CMakeLists.txt` 使用本地路径。
+<details>
+<summary><b>Q1: CMake 配置时找不到 Qt</b></summary>
+
+**现象**:
+```
+Could not find a package configuration file provided by "Qt6" or "Qt5"
+```
+
+**解决方案**:
+- 确保 Qt 已正确安装，并且 `CMAKE_PREFIX_PATH` 指向 Qt 的安装目录（例如 `C:/Qt/6.5.0/msvc2019_64`）。
+- 或者设置环境变量 `Qt6_DIR` / `Qt5_DIR`。
+- 在 Linux 上可以通过包管理器安装 Qt 开发包（如 `qt6-base-dev`），CMake 通常能自动找到。
 
 </details>
 
 <details>
-<summary><b>Q2: 插件动态库无法加载，提示找不到符号</b></summary>
+<summary><b>Q2: nlohmann/json 下载失败</b></summary>
+
+**现象**:
+CMake 配置过程中报错，无法从 GitHub 下载 `json.hpp`。
+
+**解决方案**:
+- 检查网络连接，确保能够访问 `raw.githubusercontent.com`。
+- 手动下载 [json.hpp](https://github.com/nlohmann/json/releases/download/v3.12.0/json.hpp) 并放入构建目录的 `/include/nlohmann/` 下（根据 CMake 输出路径调整）。
+- 或者修改 `CMakeLists.txt`，改用本地已下载的头文件路径。
+
+</details>
+
+<details>
+<summary><b>Q3: 插件动态库无法加载，提示找不到符号</b></summary>
 
 确保插件的源文件中正确导出了 `create_level` 和 `destroy_level` 函数，并且使用 `extern "C"` 避免 C++ 名称修饰。同时检查插件文件名是否与目录名一致（例如 `level-0.dll` 应位于 `level-0/` 目录内）。
 
 </details>
 
 <details>
-<summary><b>Q3: 如何添加一个新层级？</b></summary>
+<summary><b>Q4: 编译时出现 C++20 相关语法错误</b></summary>
+
+**现象**:
+编译器报错如 `'std::span' is not a member of 'std'` 或要求 C++20 标准。
+
+**解决方案**:
+- 确认编译器版本: GCC ≥10、Clang ≥12、MSVC ≥2022。
+- 在 CMake 配置时显式指定 C++ 标准: `-DCMAKE_CXX_STANDARD=20`。
+- 若使用旧版 IDE（如 VS2019），需要升级到 VS2022 或安装支持 C++20 的工具集。
+
+</details>
+
+### 配置问题
+
+<details>
+<summary><b>Q5: 配置文件修改后不生效</b></summary>
+
+**现象**:
+修改了 `user.json` 中的某个值，但程序运行时使用的还是旧值。
+
+**解决方案**:
+- 确认修改的文件是正确的（注意优先级: `user.json` > `system.json` > `main.json`）。如果 `system.json` 或 `main.json` 中定义了相同路径的配置，它们会被覆盖，但不会删除。
+- 重新执行 CMake 构建项目或手动将修改后的配置文件复制到构建目录的 `/config/` 下。
+- 检查 JSON 格式是否正确（如多余的逗号），可以使用在线 JSON 校验工具。
+
+</details>
+
+<details>
+<summary><b>Q6: 配置文件丢失后如何恢复？</b></summary>
+
+**现象**:
+误删了 `config/` 目录下的某个 JSON 文件，程序启动报错或使用默认值。
+
+**解决方案**:
+- 程序内置了默认配置（定义在 `DefaultConfigs.cpp`），丢失的文件会在运行时自动重新生成（前提是目录存在）。只需确保 `config/` 目录可写。
+- 也可以从源码仓库中复制 `config/` 目录下的示例文件到运行目录。
+
+</details>
+
+### 插件开发
+
+<details>
+<summary><b>Q7: 如何添加一个新层级？</b></summary>
 
 1. 在对应档案版本目录下（如 `archives/wikidot/`）创建一个新文件夹，例如 `level-2/`。
 2. 在文件夹内创建 `level-2.cpp`，实现 `ILevel` 接口并导出工厂函数。
@@ -359,7 +449,7 @@ CMake 会在配置时自动从 GitHub 下载该头文件。如果网络问题导
 </details>
 
 <details>
-<summary><b>Q4: 如何添加一个全新的档案版本（例如 Fandom）？</b></summary>
+<summary><b>Q8: 如何添加一个全新的档案版本（例如 Fandom）？</b></summary>
 
 1. 在 `archives/` 下创建 `fandom/` 目录。
 2. 复制 `archives/wikidot/CMakeLists.txt` 到 `fandom/CMakeLists.txt`。
