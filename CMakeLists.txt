@@ -60,7 +60,7 @@ target_include_directories(nlohmann_json INTERFACE "${NLOHMANN_JSON_INCLUDE_DIR}
 
 # -------------------- 查找 Qt --------------------
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Gui Widgets)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Gui Widgets WebEngineCore WebEngineWidgets)
 
 if (QT_VERSION_MAJOR EQUAL 6)
     qt_standard_project_setup()
@@ -115,6 +115,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt::Core
     Qt::Gui
     Qt::Widgets
+    Qt::WebEngineCore
+    Qt::WebEngineWidgets
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE include)

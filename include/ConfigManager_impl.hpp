@@ -8,6 +8,8 @@
 #include "ConfigManager.h"
 #include "DebugLog.h"
 
+#include <nlohmann/json.hpp>
+
 #include <mutex>
 
 // ============================================

@@ -56,9 +56,9 @@ int main(int argc, char* argv[]) {
 
     // 创建窗口
     BackroomArchives window;
-    std::string app_name = config.get_value<std::string>("app.name", "DG-LAB-Client");
+    std::string app_name = config.get_value<std::string>("app.name", "BackroomArchives");
     std::string app_version = config.get_value<std::string>("app.version", "1.0.0");
-    window.setWindowTitle(QString::fromStdString(app_name + "[" + app_version) + "]");
+    window.setWindowTitle(QString::fromStdString(app_name + "[" + app_version + "]"));
     window.setStyle(QStyleFactory::create("Fusion"));
     window.show();
     LOG_MODULE("main", "main", LOG_DEBUG, "窗口已创建，标题: " << window.windowTitle().toStdString());
