@@ -66,7 +66,9 @@
 ### 1. 系统依赖
 - **C++ 编译器**: 支持 C++20 标准（GCC 11+、Clang 14+、MSVC 2022）
 - **CMake**: 3.16 或更高版本
-- **Qt**: 5.15 或 6.x（Core、Gui、Widgets）
+- **Qt**: 5.15 或 6.x（Core、Gui、Widgets）。  
+  本项目使用了 `WebEngineCore` 和 `WebEngineWidgets`，请确保 Qt 安装时包含 `WebEngine` 模块及其依赖（`WebChannel`、`Positioning` 等）。  
+  推荐使用 Qt 6.x，并通过 Qt Maintenance Tool 勾选全部 `WebEngine` 相关组件。  
 - **动态链接器 / 加载库**: 各平台自带（Windows `LoadLibrary`、Linux/macOS `dlopen`）
 
 > 推荐使用Qt 6.x，CMake 会自动检测并配置。  
@@ -377,7 +379,28 @@ Could not find a package configuration file provided by "Qt6" or "Qt5"
 </details>
 
 <details>
-<summary><b>Q2: nlohmann/json 下载失败</b></summary>
+<summary><b>Q2: CMake 配置时报错 <code>dependency Qt6XXX could not be found</code>（如 WebChannel、Positioning）</b></summary>
+
+**现象**:
+```
+Could NOT find Qt6WebChannel (missing: Qt6WebChannel_DIR)
+Qt6WebEngineCore could not be found because dependency Qt6Positioning could not be found.
+```
+
+**解决方案**:
+- 这些错误说明 Qt 安装中缺少 `WebEngine` 所需的依赖模块（`WebChannel`、`Positioning`、`Multimedia` 等）。
+- 打开 **Qt Maintenance Tool** → “添加或移除组件” → 展开你的 Qt 版本（如 `Qt 6.9.3`）→ 确保以下组件已勾选：
+  - `Qt WebChannel`
+  - `Qt Positioning`
+  - `Qt Multimedia`（可选，但推荐）
+  - `Qt WebEngine`（会自动带上核心库）
+- 如果仍然找不到，尝试切换到官方仓库源（Maintenance Tool → 设置 → 存储库 → `https://download.qt.io/online/qtsdkrepository/`），然后重新刷新并安装。
+- 安装完成后，清理 CMake 缓存（删除 `CMakeCache.txt` 和 `CMakeFiles`），重新配置项目即可。
+
+</details>
+
+<details>
+<summary><b>Q3: nlohmann/json 下载失败</b></summary>
 
 **现象**:
 CMake 配置过程中报错，无法从 GitHub 下载 `json.hpp`。
@@ -390,14 +413,14 @@ CMake 配置过程中报错，无法从 GitHub 下载 `json.hpp`。
 </details>
 
 <details>
-<summary><b>Q3: 插件动态库无法加载，提示找不到符号</b></summary>
+<summary><b>Q4: 插件动态库无法加载，提示找不到符号</b></summary>
 
 确保插件的源文件中正确导出了 `create_level` 和 `destroy_level` 函数，并且使用 `extern "C"` 避免 C++ 名称修饰。同时检查插件文件名是否与目录名一致（例如 `level-0.dll` 应位于 `level-0/` 目录内）。
 
 </details>
 
 <details>
-<summary><b>Q4: 编译时出现 C++20 相关语法错误</b></summary>
+<summary><b>Q5: 编译时出现 C++20 相关语法错误</b></summary>
 
 **现象**:
 编译器报错如 `'std::span' is not a member of 'std'` 或要求 C++20 标准。
@@ -412,7 +435,7 @@ CMake 配置过程中报错，无法从 GitHub 下载 `json.hpp`。
 ### 配置问题
 
 <details>
-<summary><b>Q5: 配置文件修改后不生效</b></summary>
+<summary><b>Q6: 配置文件修改后不生效</b></summary>
 
 **现象**:
 修改了 `user.json` 中的某个值，但程序运行时使用的还是旧值。
@@ -425,7 +448,7 @@ CMake 配置过程中报错，无法从 GitHub 下载 `json.hpp`。
 </details>
 
 <details>
-<summary><b>Q6: 配置文件丢失后如何恢复？</b></summary>
+<summary><b>Q7: 配置文件丢失后如何恢复？</b></summary>
 
 **现象**:
 误删了 `config/` 目录下的某个 JSON 文件，程序启动报错或使用默认值。
@@ -439,7 +462,7 @@ CMake 配置过程中报错，无法从 GitHub 下载 `json.hpp`。
 ### 插件开发
 
 <details>
-<summary><b>Q7: 如何添加一个新层级？</b></summary>
+<summary><b>Q8: 如何添加一个新层级？</b></summary>
 
 1. 在对应档案版本目录下（如 `archives/wikidot/`）创建一个新文件夹，例如 `level-2/`。
 2. 在文件夹内创建 `level-2.cpp`，实现 `ILevel` 接口并导出工厂函数。
@@ -449,7 +472,7 @@ CMake 配置过程中报错，无法从 GitHub 下载 `json.hpp`。
 </details>
 
 <details>
-<summary><b>Q8: 如何添加一个全新的档案版本（例如 Fandom）？</b></summary>
+<summary><b>Q9: 如何添加一个全新的档案版本（例如 Fandom）？</b></summary>
 
 1. 在 `archives/` 下创建 `fandom/` 目录。
 2. 复制 `archives/wikidot/CMakeLists.txt` 到 `fandom/CMakeLists.txt`。

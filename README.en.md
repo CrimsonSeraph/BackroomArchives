@@ -66,7 +66,9 @@ Each archive version is completely independent, containing its own **core plugin
 ### 1. System Dependencies
 - **C++ Compiler**: with C++20 support (GCC 11+, Clang 14+, MSVC 2022)
 - **CMake**: 3.16 or higher
-- **Qt**: 5.15 or 6.x (Core, Gui, Widgets)
+- **Qt**: 5.15 or 6.x (Core, Gui, Widgets).  
+  this project uses `WebEngineCore` and `WebEngineWidgets`, make sure your Qt installation includes the `WebEngine` module together with its dependencies (`WebChannel`, `Positioning`, etc.).  
+  Qt 6.x is recommended; use the Qt Maintenance Tool to select all `WebEngine`-related components.  
 - **Dynamic linker / loader**: platform native (Windows `LoadLibrary`, Linux/macOS `dlopen`)
 
 > Qt 6.x is recommended; CMake will auto-detect and configure it.  
@@ -377,7 +379,28 @@ Could not find a package configuration file provided by "Qt6" or "Qt5"
 </details>
 
 <details>
-<summary><b>Q2: nlohmann/json download fails</b></summary>
+<summary><b>Q2: CMake configuration fails with <code>dependency Qt6XXX could not be found</code> (e.g., WebChannel, Positioning)</b></summary>
+
+**Symptom**:
+```
+Could NOT find Qt6WebChannel (missing: Qt6WebChannel_DIR)
+Qt6WebEngineCore could not be found because dependency Qt6Positioning could not be found.
+```
+
+**Solution**:
+- These errors indicate that your Qt installation is missing required dependency modules for `WebEngine` (`WebChannel`, `Positioning`, `Multimedia`, etc.).
+- Open **Qt Maintenance Tool** → “Add or remove components” → Expand your Qt version (e.g., `Qt 6.9.3`) → Make sure the following components are checked:
+  - `Qt WebChannel`
+  - `Qt Positioning`
+  - `Qt Multimedia` (optional but recommended)
+  - `Qt WebEngine` (pulls the core libraries)
+- If they are still not found, try switching to the official repository source (Maintenance Tool → Settings → Repositories → `https://download.qt.io/online/qtsdkrepository/`), then refresh and install.
+- After installation, clean CMake cache (delete `CMakeCache.txt` and `CMakeFiles` folder) and reconfigure your project.
+
+</details>
+
+<details>
+<summary><b>Q3: nlohmann/json download fails</b></summary>
 
 **Symptom**:
 During CMake configuration, an error occurs when downloading `json.hpp` from GitHub.
@@ -390,14 +413,14 @@ During CMake configuration, an error occurs when downloading `json.hpp` from Git
 </details>
 
 <details>
-<summary><b>Q3: Plugin dynamic library fails to load with symbol not found</b></summary>
+<summary><b>Q4: Plugin dynamic library fails to load with symbol not found</b></summary>
 
 Ensure that the plugin source correctly exports `create_level` and `destroy_level` functions using `extern "C"` to avoid C++ name mangling. Also verify that the plugin filename matches the directory name (e.g., `level-0.dll` inside the `level-0/` directory).
 
 </details>
 
 <details>
-<summary><b>Q4: Compilation errors related to C++20 features</b></summary>
+<summary><b>Q5: Compilation errors related to C++20 features</b></summary>
 
 **Symptom**:
 Compiler errors such as `'std::span' is not a member of 'std'` or requirement of C++20 standard.
@@ -412,7 +435,7 @@ Compiler errors such as `'std::span' is not a member of 'std'` or requirement of
 ### Configuration Issues
 
 <details>
-<summary><b>Q5: Configuration changes do not take effect</b></summary>
+<summary><b>Q6: Configuration changes do not take effect</b></summary>
 
 **Symptom**:
 Changed a value in `user.json`, but the program still uses the old value.
@@ -425,7 +448,7 @@ Changed a value in `user.json`, but the program still uses the old value.
 </details>
 
 <details>
-<summary><b>Q6: How to recover lost configuration files?</b></summary>
+<summary><b>Q7: How to recover lost configuration files?</b></summary>
 
 **Symptom**:
 Accidentally deleted a JSON file under the `config/` directory; the program reports errors or uses default values.
@@ -439,7 +462,7 @@ Accidentally deleted a JSON file under the `config/` directory; the program repo
 ### Plugin Development
 
 <details>
-<summary><b>Q7: How to add a new level?</b></summary>
+<summary><b>Q8: How to add a new level?</b></summary>
 
 1. Create a new folder under the corresponding archive version directory (e.g., `archives/wikidot/`), for example `level-2/`.
 2. Inside the folder, create `level-2.cpp` that implements the `ILevel` interface and exports the factory functions.
@@ -449,7 +472,7 @@ Accidentally deleted a JSON file under the `config/` directory; the program repo
 </details>
 
 <details>
-<summary><b>Q8: How to add a completely new archive version (e.g., Fandom)?</b></summary>
+<summary><b>Q9: How to add a completely new archive version (e.g., Fandom)?</b></summary>
 
 1. Create a `fandom/` directory under `archives/`.
 2. Copy `archives/wikidot/CMakeLists.txt` to `fandom/CMakeLists.txt`.
