@@ -18,7 +18,7 @@ BackroomsArchives/
 │   │   ├── config/                     # 全局配置文件（如全局 BUFF 定义）
 │   │   ├── level-0/                    # 层级 level-0 目录
 │   │   ├── ......                      # 其他层级目录
-│   │   ├── texts/                      # 全局文本（多语言）
+│   │   ├── pages/                      # 全局页面（多语言）
 │   │   ├── CMakeLists.txt              # wikidot 档案版本的构建脚本
 │   │   ├── core.cpp                    # wikidot 档案核心插件源文件
 │   │   ├── core.h                      # wikidot 档案核心插件头文件
@@ -50,6 +50,11 @@ BackroomsArchives/
 │   └── README.md                       # include 目录说明
 ├── licenses/                           # 第三方许可证文件
 │   └── LICENSE.MIT.txt                 # nlohmann/json 的 MIT 许可证
+├── pages/                              # 页面文本资源文件（多语言）
+│   ├── index.html                      # 首页
+│   ├── README.md                       # pages 目录说明 
+│   ├── script.js                       # 页面脚本文件
+│   └── style.css                       # 页面样式文件
 ├── screenshot/                         # 截屏资源文件
 │   └── README.md                       # screenshot 目录说明
 ├── src/                                # C++ 源文件

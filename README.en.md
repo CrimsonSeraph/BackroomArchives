@@ -20,7 +20,8 @@
 A **modular, plug-in based Backrooms-themed text game**.
 
 A Qt-based text game written in C++20.  
-The core provides only the basic framework, plugin loading, and main game loop; all levels, BUFFs, text, configuration, etc., are dynamically supplied by **Archive plugins**. Supports multiple archive versions (e.g., Wikidot, Fandom, etc.), each packaged independently and switchable at runtime.
+The core provides only the basic framework, plugin loading, and main game loop; all levels, BUFFs, text, configuration, etc., are dynamically supplied by **Archive plugins**.  
+Supports multiple archive versions (e.g., Wikidot, Fandom, etc.), each packaged independently and switchable at runtime.
 
 > 👉 Want to develop an archive plugin? Check [FAQ - Plugin Development](#faq---plugin-development)
 
@@ -262,76 +263,81 @@ The logging system provides macros `LOG_DEBUG`, `LOG_INFO`, `LOG_WARN`, `LOG_ERR
 
 ```
 BackroomsArchives/
-├── .github/                            # GitHub configuration
+├── .github/                            # GitHub configuration directory
 │   └── workflows/                      # CI/CD workflows
-│       ├── build.yml                   # Build & test workflow
+│       ├── build.yml                   # Build and test workflow
 │       └── release.yml                 # Release workflow
 ├── archives/                           # Archive versions directory
-│   ├── wikidot/                        # wikidot archive version
-│   │   ├── assets/                     # Global static resources (e.g., global images)
-│   │   ├── config/                     # Global config files (e.g., global BUFF definitions)
-│   │   ├── level-0/                    # Level level-0 directory
+│   ├── wikidot/                        # Wikidot archive version
+│   │   ├── assets/                     # Global static assets (e.g., global images)
+│   │   ├── config/                     # Global configuration files (e.g., global BUFF definitions)
+│   │   ├── level-0/                    # Level-0 directory
 │   │   ├── ......                      # Other level directories
-│   │   ├── texts/                      # Global texts (multi‑language)
-│   │   ├── CMakeLists.txt              # Build script for wikidot archive version
-│   │   ├── core.cpp                    # Source file for wikidot archive core plugin
-│   │   ├── core.h                      # Header for wikidot archive core plugin
-│   │   ├── README.md                   # wikidot archive description
+│   │   ├── pages/                      # Global pages (multi-language)
+│   │   ├── CMakeLists.txt              # Build script for the Wikidot archive version
+│   │   ├── core.cpp                    # Core plugin source file for Wikidot archive
+│   │   ├── core.h                      # Core plugin header file for Wikidot archive
+│   │   ├── README.md                   # Wikidot archive documentation
 │   │   └── version.json                # Archive metadata
-│   └── README.md                       # Description of archives directory
-├── assets/                             # Static resources (images, etc.)
-│   └── README.md                       # Description of assets directory
+│   └── README.md                       # Archives directory documentation
+├── assets/                             # Static assets (images, etc.)
+│   └── README.md                       # Assets directory documentation
 ├── config/                             # Default configuration directory
-│   ├── main.json                       # Main config file
-│   ├── README.md                       # Description of config directory
-│   └── user.json                       # User config file
-├── include/                            # Public headers
+│   ├── main.json                       # Main configuration file
+│   ├── README.md                       # Config directory documentation
+│   └── user.json                       # User configuration file
+├── include/                            # Public header files
 │   ├── plugin_api/                     # Plugin interface headers
-│   │   └── README.md                   # Description of plugin_api directory
-│   ├── AppConfig.h                     # Configuration system main interface
-│   ├── AppConfig_impl.hpp              # Template implementation of configuration system
+│   │   └── README.md                   # Plugin_api directory documentation
+│   ├── AppConfig.h                     # Main configuration system interface
+│   ├── AppConfig_impl.hpp              # Configuration system template implementation
 │   ├── AppConfig_utils.hpp             # Configuration helper utilities
 │   ├── BackroomArchives.h              # Core archive management module header
-│   ├── ConfigManager.h                 # Single config file manager
+│   ├── ConfigManager.h                 # Single configuration file manager
 │   ├── ConfigManager_impl.hpp          # ConfigManager template implementation
-│   ├── ConfigStructs.h                 # Configuration structure definitions
+│   ├── ConfigStructs.h                 # Configuration data structures
 │   ├── Console.h                       # Console management
 │   ├── DebugLog.h                      # Logging system
 │   ├── DebugLog_utils.hpp              # Logging helper utilities
 │   ├── DefaultConfigs.h                # Default configuration factory
-│   ├── MultiConfigManager.h            # Multi‑config manager
+│   ├── MultiConfigManager.h            # Multi-configuration manager
 │   ├── MultiConfigManager_impl.hpp     # MultiConfigManager template implementation
-│   └── README.md                       # Description of include directory
-├── licenses/                           # Third‑party license files
+│   └── README.md                       # Include directory documentation
+├── licenses/                           # Third-party license files
 │   └── LICENSE.MIT.txt                 # MIT license for nlohmann/json
+├── pages/                              # Page text resource files (multi-language)
+│   ├── index.html                      # Home page
+│   ├── README.md                       # Pages directory documentation
+│   ├── script.js                       # Page script file
+│   └── style.css                       # Page style file
 ├── screenshot/                         # Screenshot resource files
-│   └── README.md                       # Description of screenshot directory
+│   └── README.md                       # Screenshot directory documentation
 ├── src/                                # C++ source files
 │   ├── AppConfig.cpp                   # Configuration system implementation
 │   ├── BackroomArchives.cpp            # Core archive management module implementation
-│   ├── ConfigManager.cpp               # Single config file manager implementation
+│   ├── ConfigManager.cpp               # Single configuration manager implementation
 │   ├── ConfigStructs.cpp               # Configuration structures implementation
 │   ├── Console.cpp                     # Console management implementation
 │   ├── DebugLog.cpp                    # Logging system implementation
 │   ├── DefaultConfigs.cpp              # Default configuration factory implementation
-│   ├── MultiConfigManager.cpp          # Multi‑config manager implementation
-│   └── README.md                       # Description of src directory
+│   ├── MultiConfigManager.cpp          # Multi-configuration manager implementation
+│   └── README.md                       # Src directory documentation
 ├── .editorconfig                       # Editor code style configuration
-├── .gitattributes                      # Git attributes (line endings, etc.)
+├── .gitattributes                      # Git attributes configuration (line endings, etc.)
 ├── .gitignore                          # Git ignore rules
-├── BackroomArchives.qrc                # Qt resource file, bundles static assets
-├── BackroomArchives.ui                 # Qt UI file, generates UI class
+├── BackroomArchives.qrc                # Qt resource file for packaging static assets
+├── BackroomArchives.ui                 # Qt UI file for generating UI classes
 ├── CHANGELOG.md                        # Changelog
 ├── CMakeLists.txt                      # Main CMake build script
-├── CMakePresets.json                   # CMake presets, simplifies build options
-├── CONTRIBUTING.md                     # Contributing guide
-├── CodingStyle.md                      # Code style document
+├── CMakePresets.json                   # CMake preset configuration to simplify build options
+├── CONTRIBUTING.md                     # Contribution guidelines
+├── CodingStyle.md                      # Code style documentation
 ├── LICENSE.txt                         # GPL-3.0 license
-├── NOTICE.txt                          # Notices
+├── NOTICE.txt                          # Legal notices
 ├── README.en.md                        # English project documentation
 ├── README.md                           # Chinese project documentation
 ├── main.cpp                            # Program main entry point
-└── qt.cmake                            # Qt‑related CMake configuration module
+└── qt.cmake                            # Qt-related CMake configuration module
 ```
 
 </details>
