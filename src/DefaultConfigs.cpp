@@ -25,6 +25,9 @@ nlohmann::json DefaultConfigs::get_default_config(const std::string& config_name
                 {"log", {
                     {"console_level", 0},
                     {"only_type_info", false},
+                }},
+                {"web_pages", {
+                    {"path", "./pages"}
                 }}
             }},
             {"version", "1.0"},

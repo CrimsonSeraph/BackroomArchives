@@ -85,7 +85,7 @@ bool AppConfig::initialize(const std::string& config_dir) {
 
             std::vector<std::tuple<std::string, std::string, int>> configs = {
                 {"main", actual_config_dir + "/main.json", 0},
-                {"user", actual_config_dir + "/user.json", 2}
+                {"user", actual_config_dir + "/user.json", 1}
             };
 
             for (auto& [name, path, priority] : configs) {

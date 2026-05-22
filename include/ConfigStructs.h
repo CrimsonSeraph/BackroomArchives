@@ -94,6 +94,7 @@ struct MainConfig {
     bool debug_mode_ = false;
     int console_level_ = -1;
     bool is_only_type_info_ = false;
+    std::string web_page_path_;
 
     // -------------------- 静态方法 --------------------
     static void to_json(nlohmann::json& j, const MainConfig& config);

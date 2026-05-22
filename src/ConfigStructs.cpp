@@ -21,6 +21,7 @@ void MainConfig::to_json(nlohmann::json& j, const MainConfig& config) {
         {"app.debug", config.debug_mode_},
         {"app.log.console_level", config.console_level_},
         {"app.log.only_type_info", config.is_only_type_info_},
+        {"app.web_pages.path", config.web_page_path_}
     };
 }
 
@@ -30,6 +31,7 @@ void MainConfig::from_json(const nlohmann::json& j, MainConfig& config) {
     j.at("app.debug").get_to(config.debug_mode_);
     j.at("app.log.console_level").get_to(config.console_level_);
     j.at("app.log.only_type_info").get_to(config.is_only_type_info_);
+    j.at("app.web_pages.path").get_to(config.web_page_path_);
 }
 
 bool MainConfig::validate() const {
@@ -37,6 +39,9 @@ bool MainConfig::validate() const {
         return false;
     }
     if (app_version_.empty()) {
+        return false;
+    }
+    if(web_page_path_.empty()) {
         return false;
     }
     return true;

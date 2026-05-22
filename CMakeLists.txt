@@ -148,9 +148,9 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 )
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
-        "${CMAKE_CURRENT_SOURCE_DIR}/texts"
-        "$<TARGET_FILE_DIR:${PROJECT_NAME}>/texts"
-    COMMENT "Copying text files to output directory"
+        "${CMAKE_CURRENT_SOURCE_DIR}/pages"
+        "$<TARGET_FILE_DIR:${PROJECT_NAME}>/pages"
+    COMMENT "Copying page files to output directory"
 )
 
 # -------------------- 安装规则 --------------------
@@ -159,7 +159,7 @@ install(TARGETS ${PROJECT_NAME}
     LIBRARY DESTINATION . COMPONENT core
 )
 install(DIRECTORY config/ DESTINATION config COMPONENT core)
-install(DIRECTORY texts/ DESTINATION texts COMPONENT core)
+install(DIRECTORY pages/ DESTINATION pages COMPONENT core)
 
 # -------------------- CPack 组件打包配置 --------------------
 include(InstallRequiredSystemLibraries)

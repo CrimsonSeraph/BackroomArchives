@@ -18,7 +18,9 @@ public:
     // -------------------- 构造/析构 --------------------
     explicit BackroomArchives(QWidget* parent = nullptr);
     ~BackroomArchives();
-    
+
+    void init_index_page();
+
 private:
     Ui::BackroomArchives ui;
 
