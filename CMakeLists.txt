@@ -29,6 +29,62 @@ set(ARCHIVE_VERSION "wikidot" CACHE STRING "Which archive version to build (subd
 # 是否构建档案插件（若为 OFF 则只生成 core 包）
 option(BUILD_ARCHIVES "Build level plugins from archives/" ON)
 
+# -------------------- 网页资源扩展 --------------------
+
+# 设置下载目标目录（相对于当前构建目录）
+set(DYNAMIC_TEXT_ENGINE_DIR "${CMAKE_CURRENT_BINARY_DIR}/pages/extensions")
+
+# 定义两个文件的本地路径
+set(DYNAMIC_TEXT_ENGINE_CSS "${DYNAMIC_TEXT_ENGINE_DIR}/DynamicTextEngine.css")
+set(DYNAMIC_TEXT_ENGINE_JS  "${DYNAMIC_TEXT_ENGINE_DIR}/DynamicTextEngine.js")
+
+# 创建目录（如果不存在）
+file(MAKE_DIRECTORY "${DYNAMIC_TEXT_ENGINE_DIR}")
+
+# 下载 CSS 文件（若不存在）
+if(NOT EXISTS "${DYNAMIC_TEXT_ENGINE_CSS}")
+    message(STATUS "Downloading DynamicTextEngine.css from GitHub...")
+    file(DOWNLOAD
+        "https://raw.githubusercontent.com/CrimsonSeraph/WebUtils/main/DynamicTextEngine/DynamicTextEngine.css"
+        "${DYNAMIC_TEXT_ENGINE_CSS}"
+        STATUS DOWNLOAD_STATUS_CSS
+        SHOW_PROGRESS
+    )
+    list(GET DOWNLOAD_STATUS_CSS 0 STATUS_CODE_CSS)
+    if(STATUS_CODE_CSS EQUAL 0)
+        message(STATUS "Downloaded DynamicTextEngine.css successfully")
+    else()
+        list(GET DOWNLOAD_STATUS_CSS 1 ERROR_MSG_CSS)
+        message(FATAL_ERROR "Failed to download DynamicTextEngine.css: ${ERROR_MSG_CSS}")
+    endif()
+else()
+    message(STATUS "DynamicTextEngine.css already exists, skipping download")
+endif()
+
+# 下载 JS 文件（若不存在）
+if(NOT EXISTS "${DYNAMIC_TEXT_ENGINE_JS}")
+    message(STATUS "Downloading DynamicTextEngine.js from GitHub...")
+    file(DOWNLOAD
+        "https://raw.githubusercontent.com/CrimsonSeraph/WebUtils/main/DynamicTextEngine/DynamicTextEngine.js"
+        "${DYNAMIC_TEXT_ENGINE_JS}"
+        STATUS DOWNLOAD_STATUS_JS
+        SHOW_PROGRESS
+    )
+    list(GET DOWNLOAD_STATUS_JS 0 STATUS_CODE_JS)
+    if(STATUS_CODE_JS EQUAL 0)
+        message(STATUS "Downloaded DynamicTextEngine.js successfully")
+    else()
+        list(GET DOWNLOAD_STATUS_JS 1 ERROR_MSG_JS)
+        message(FATAL_ERROR "Failed to download DynamicTextEngine.js: ${ERROR_MSG_JS}")
+    endif()
+else()
+    message(STATUS "DynamicTextEngine.js already exists, skipping download")
+endif()
+
+# 创建一个接口库，方便其他目标引用这些文件所在的目录
+add_library(dynamic_text_engine INTERFACE)
+target_include_directories(dynamic_text_engine INTERFACE "${DYNAMIC_TEXT_ENGINE_DIR}")
+
 # -------------------- 第三方库 nlohmann/json --------------------
 include(FetchContent)
 
