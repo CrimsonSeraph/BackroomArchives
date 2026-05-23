@@ -75,9 +75,12 @@ Each archive version is completely independent, containing its own **core plugin
 > Qt 6.x is recommended; CMake will auto-detect and configure it.  
   VS2022/2026 (MSVC) is recommended for Windows development; use GCC or Clang on Linux/macOS.
 
-### 2. Third-party Libraries
+### 2. Third-party libraries
 - **[nlohmann/json](https://github.com/nlohmann/json)** (version 3.12.0)  
-  Used for JSON parsing. CMake will automatically download the single header from GitHub into the build directory during configuration.
+  Used for JSON parsing. CMake automatically downloads the single-header file from GitHub during configuration.
+
+- **[DynamicTextEngine](https://github.com/CrimsonSeraph/WebUtils/tree/main/DynamicTextEngine)** (CSS/JS)  
+  Used to enhance dynamic text effects in the web interface. CMake automatically downloads `DynamicTextEngine.css` and `DynamicTextEngine.js` into the `pages/extensions/` directory during configuration.
 
 ### 3. Runtime Dependencies
 - None. All archive plugins are dynamic libraries loaded at runtime by the core.
@@ -102,6 +105,8 @@ cmake -B build -DCMAKE_BUILD_TYPE=Release -DARCHIVE_VERSION=wikidot -DBUILD_ARCH
 - `ARCHIVE_VERSION`: choose which archive version to build (subdirectory under `archives/`)
 - `BUILD_ARCHIVES`: set to `ON` to build archive plugins; set to `OFF` if you only need the core
 - For Qt6, CMake usually finds it automatically; if using Qt5, ensure the `Qt5` package is available.
+
+> 💡 During CMake configuration, `json.hpp` (for JSON parsing) and the `DynamicTextEngine` CSS/JS files (for web extensions) are automatically downloaded. No manual download is needed.
 
 > 👉 Configuration or build failure? See [FAQ - Compilation & Runtime](#faq---compilation--runtime)
 
@@ -166,7 +171,7 @@ Users can fix the default version by setting the `"active_archive"` field in the
 archives/wikidot/
 ├── wikidot_core.dll      # Archive core plugin (optional, compiled from core.cpp)
 ├── version.json          # Archive metadata (name, description, version, etc.)
-├── texts/                # Archive common texts (multi‑language)
+├── pages/                # Archive common pages (multi‑language)
 │   ├── en/
 │   └── zh/
 ├── config/               # Archive common config (global rules, BUFF definitions, etc.)
@@ -246,8 +251,8 @@ Archive common configuration files are located under `archives/wikidot/config/`;
 
 ### 6. Multi‑language texts
 
-- **Global texts**: placed under `texts/{lang}/`, read by the core (e.g., welcome message, error prompts, etc.)
-- **Archive common texts**: placed under `archives/wikidot/texts/{lang}/`, loaded by the archive core plugin
+- **Global texts**: placed under `pages/{lang}/`, read by the core (e.g., welcome message, error prompts, etc.)
+- **Archive common texts**: placed under `archives/wikidot/pages/{lang}/`, loaded by the archive core plugin
 - **Level private texts**: placed inside the level directory (e.g., `level-0/description.json`), read by the level plugin itself
 
 ### 7. Logging

@@ -76,8 +76,11 @@
   推荐使用 VS2022/2026（MSVC）进行 Windows 开发，Linux/macOS 可使用 GCC 或 Clang。
 
 ### 2. 第三方库
-- **[nlohmann/json](https://github.com/nlohmann/json)** (版本 3.12.0)
+- **[nlohmann/json](https://github.com/nlohmann/json)** (版本 3.12.0)  
   用于 JSON 解析。CMake 会在配置时自动从 GitHub 下载单头文件到构建目录。
+
+- **[DynamicTextEngine](https://github.com/CrimsonSeraph/WebUtils/tree/main/DynamicTextEngine)** (CSS/JS)  
+  用于增强网页界面的动态文本效果。CMake 会在配置时自动从 GitHub 下载 `DynamicTextEngine.css` 和 `DynamicTextEngine.js` 到 `pages/extensions/` 目录。
 
 ### 3. 运行时依赖
 - 无额外依赖。所有档案插件均为动态库，由本体在运行时加载。
@@ -102,6 +105,8 @@ cmake -B build -DCMAKE_BUILD_TYPE=Release -DARCHIVE_VERSION=wikidot -DBUILD_ARCH
 - `ARCHIVE_VERSION`: 选择要构建的档案版本（对应 `archives/` 下的子目录）
 - `BUILD_ARCHIVES`: 设为 `ON` 时编译档案插件；若只需本体可设为 `OFF`
 - 对于 Qt6，CMake 通常能自动找到；若使用 Qt5，请确保 `Qt5` 包可用。
+
+> 💡 配置过程中会自动下载 `json.hpp`（用于 JSON 解析）以及 `DynamicTextEngine` 的 CSS/JS 文件（用于网页扩展），无需手动获取。
 
 > 👉 配置或编译失败？请查看 [FAQ - 编译与运行](#faq---编译与运行)
 
@@ -166,7 +171,7 @@ cpack --config build/CPackConfig.cmake -B package -G ZIP
 archives/wikidot/
 ├── wikidot_core.dll      # 档案核心插件（可选，编译自 core.cpp）
 ├── version.json          # 档案元信息（名称、描述、版本等）
-├── texts/                # 档案公共文本（多语言）
+├── pages/                # 档案公共页面（多语言）
 │   ├── en/
 │   └── zh/
 ├── config/               # 档案公共配置（全局规则、BUFF 定义等）
@@ -246,8 +251,8 @@ public:
 
 ### 6. 多语言文本
 
-- **全局文本**：放在 `texts/{lang}/` 下，由本体读取（如欢迎信息、错误提示等）
-- **档案公共文本**：放在 `archives/wikidot/texts/{lang}/` 下，由档案核心插件负责加载
+- **全局文本**：放在 `pages/{lang}/` 下，由本体读取（如欢迎信息、错误提示等）
+- **档案公共文本**：放在 `archives/wikidot/pages/{lang}/` 下，由档案核心插件负责加载
 - **层级私有文本**：放在层级目录内（如 `level-0/description.json`），由层级插件自行读取
 
 ### 7. 日志
