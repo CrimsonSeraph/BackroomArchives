@@ -1,14 +1,90 @@
+<!--Copyright (c) 2026 CrimsonSeraph(ltyy.leoyu@gmail.com)-->
+<!--SPDX-License-Identifier: GPL-3.0-only-->
+
 <html>
 <head>
     <title>Backroom Archives</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="extensions/DynamicTextEngine.css">
 </head>
 <body>
-    <h1>Backroom Archives</h1>
-    <p>Welcome to the Backroom Archives!</p>
+    <div class="game-container">
+        <!-- 档案馆英雄区 -->
+        <header class="hero-section">
+            <h1 class="game-title" data-glow="true">Backroom Archives</h1>
+            <div class="subtitle-area">
+                <span class="dynamic-slogan changing-color" data-colors="rgba(183, 140, 240, 1), rgba(240, 166, 192, 1), rgba(249, 217, 118, 1), rgba(166, 193, 238, 1)" data-duration="4s">✦ 阈限档案 · 不可名状的回响 ✦</span>
+            </div>
+            <div class="crt-stats">
+                <span class="mono-color stat-badge" data-color="rgba(170, 134, 217, 1)">◈ 模拟信号强度: 临界 ◈</span>
+                <div class="stat-warning">
+                    <span class="shake-individual mono-color"
+                          data-speed="slow"
+                          data-type="warning">现实稳定性: </span>
+                    <div class="text-switch random-mode"
+                         data-disappear-to-right="true"
+                         data-appear-from-right="true"
+                         data-order-rtl="true"
+                         data-animation-speed="fast"
+                         data-delay="800"
+                         data-interval="25000">
+                        <span class="text-switch-original shake-individual mono-color"
+                              data-speed="slow"
+                              data-type="muted">测定中...</span>
+                        <div class="text-switch-extra" style="display: none;">
+                            <span class="shake-individual mono-color"
+                                  data-speed="slow"
+                                  data-color="red">⚠️ 0.92 ⚠️</span>
+                            <span class="shake-individual mono-color"
+                                  data-speed="slow"
+                                  data-type="warning">⚠️ 0.73 ⚠️</span>
+                            <span class="shake-individual mono-color"
+                                  data-speed="slow">⚠️ 0.45 ⚠️</span>
+                            <span class="shake-individual mono-color"
+                                  data-speed="slow"
+                                  data-color="green">⚠️ 0.16 ⚠️</span>
+                            <span class="shake-individual changing-color"
+                                  data-speed="slow">⚠️ ?.?? ⚠️</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 核心游戏操作面板 -->
+        <div class="action-panel">
+            <div class="button-group">
+                <button class="game-btn btn-enter" data-action="start">📁 进入档案库</button>
+                <button class="game-btn btn-record" data-action="records">📖 阅读记录</button>
+                <button class="game-btn btn-bestiary" data-action="bestiary">🔍 可公开资料库</button>
+            </div>
+            <!-- 氛围句柄：动态特效文本展示 -->
+            <div class="atmosphere-quote">
+                <div class="quote-line">
+                    <span class="mono-color" data-color="rgba(180, 160, 229, 1)">» 后室指引: 不要相信走廊尽头的荧光 «</span>
+                </div>
+                <div class="quote-line obfuscation-demo">
+                    <span class="obfuscated-text" data-obfuscate="true" data-charset="⍟⟁⌇◬⨀⌖⎔" data-original-text="M.E.G. 加密备忘录：第7层发现未知实体痕迹">M.E.G. 加密备忘录：第7层发现未知实体痕迹</span>
+                </div>
+                <div class="quote-line dynamic-gradient">
+                    <span class="changing-color" data-colors="rgba(224, 122, 95, 1), rgba(129, 178, 154, 1), rgba(242, 204, 143, 1), rgba(224, 122, 95, 1)" data-duration="5s">✦ 档案馆实时异动监测 · 正在解析 ✦</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部信息：版本/档案归属 + 动态小彩蛋 -->
+        <footer class="game-footer">
+            <div class="footer-left">
+                <span class="mono-color" data-color="rgba(124, 110, 158, 1)">◈ BACKROOM ARCHIVES v0.1.0 ◈</span>
+            </div>
+            <div class="footer-right">
+                <span class="shake-global" data-speed="slower">⚙️ 模拟磁带录音 ⚙️</span>
+                <span class="obfuscated-text mini-obf" data-obfuscate="true" data-charset="▒▓░▒▓" data-original-text="signal stable">signal stable</span>
+            </div>
+        </footer>
+    </div>
+
     <script src="script.js"></script>
     <script src="extensions/DynamicTextEngine.js"></script>
 </body>

@@ -1,0 +1,307 @@
+/*
+ * Copyright (c) 2026 CrimsonSeraph(ltyy.leoyu@gmail.com)
+ * SPDX-License-Identifier: GPL-3.0-only
+ */
+
+:root {
+    /* ---------- 字体系统 (rem 基准) ---------- */
+    --fs-xs: 0.75rem;
+    --fs-sm: 0.875rem;
+    --fs-base: 1rem;
+    --fs-md: 1.125rem;
+    --fs-lg: 1.25rem;
+    --fs-xl: 1.5rem;
+    --fs-2xl: 2rem;
+    --fs-3xl: 2.8rem;
+    --fs-4xl: 3.5rem;
+    /* 字重/行高 */
+    --fw-normal: 400;
+    --fw-bold: 700;
+    --line-height-tight: 1.2;
+    --line-height-normal: 1.5;
+    /* ---------- 基础色彩 (rgba) 潮湿档案室氛围 ---------- */
+    --color-bg-deep: rgba(10, 8, 18, 0.96);
+    --color-surface-dark: rgba(20, 18, 30, 0.85);
+    --color-panel: rgba(16, 14, 26, 0.75);
+    --color-border-dim: rgba(100, 80, 150, 0.35);
+    --color-primary-glow: rgba(130, 90, 210, 0.9);
+    --color-accent-warm: rgba(210, 110, 75, 0.9);
+    --color-muted-text: rgba(170, 160, 200, 0.85);
+    --color-light-text: rgba(230, 225, 245, 0.96);
+    --color-dark-text: rgba(200, 195, 220, 0.9);
+    /* 按钮特定渐变及交互色 (rgba) */
+    --gradient-start: rgba(105, 70, 195, 1);
+    --gradient-end: rgba(165, 70, 125, 1);
+    --gradient-hover-start: rgba(125, 85, 215, 1);
+    --gradient-hover-end: rgba(190, 80, 140, 1);
+    --btn-border: rgba(190, 150, 245, 0.4);
+    /* 背景图片 (噪点纹理 + 复古叠加) 资源定义在头部 */
+    --bg-noise-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.12'/%3E%3C/svg%3E");
+    --bg-vignette: radial-gradient(circle at center, rgba(0,0,0,0) 50%, rgba(0,0,0,0.7) 100%);
+    --scan-line: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.2) 0px, rgba(0, 0, 0, 0.2) 2px, transparent 2px, transparent 6px);
+    /* 圆角 / 阴影 / 间距系统 */
+    --radius-sm: 0.6rem;
+    --radius-md: 1.2rem;
+    --radius-lg: 2rem;
+    --shadow-btn: 0 8px 18px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--btn-border);
+    --shadow-glow: 0 0 12px rgba(130, 90, 210, 0.5);
+    --spacing-2: 0.5rem;
+    --spacing-4: 1rem;
+    --spacing-6: 1.8rem;
+    --spacing-8: 2.5rem;
+    --spacing-12: 3.5rem;
+}
+
+/* 全局重置 & 背景氛围 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none; /* 档案馆沉浸避免文字拖拽干扰 */
+}
+
+body {
+    background-color: rgba(6, 5, 12, 1);
+    background-image: var(--bg-noise-url), var(--scan-line), var(--bg-vignette);
+    background-blend-mode: overlay, normal;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Courier New', 'Fira Code', 'JetBrains Mono', monospace;
+    padding: var(--spacing-6);
+    position: relative;
+}
+
+/* 主容器：确保内容呼吸感 */
+.game-container {
+    max-width: 1300px;
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+    z-index: 5;
+    backdrop-filter: blur(1px);
+}
+
+/* ========= 英雄区 ========= */
+.hero-section {
+    text-align: center;
+    margin-bottom: var(--spacing-8);
+    padding: var(--spacing-8) var(--spacing-6);
+    background: var(--color-panel);
+    backdrop-filter: blur(12px);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border-dim);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    transition: all 0.3s;
+}
+
+.game-title {
+    font-size: var(--fs-4xl);
+    font-weight: var(--fw-bold);
+    line-height: var(--line-height-tight);
+    background: linear-gradient(125deg, #c9b6ff, #e8a2c6, #ffc085);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    margin-bottom: var(--spacing-4);
+    letter-spacing: -0.02em;
+    text-shadow: 0 0 15px rgba(150, 100, 230, 0.5);
+    animation: subtleFlicker 3s infinite alternate;
+}
+
+@keyframes subtleFlicker {
+    0% {
+        opacity: 0.96;
+        text-shadow: 0 0 2px #b77eff;
+    }
+
+    100% {
+        opacity: 1;
+        text-shadow: 0 0 12px #c98eff;
+    }
+}
+
+.subtitle-area {
+    margin: var(--spacing-4) 0;
+}
+
+/* 动态标语独占效果，不干扰布局 — 仅对 .changing-color 提供特效，无布局侵入 */
+.dynamic-slogan {
+    font-size: var(--fs-md);
+    font-weight: var(--fw-normal);
+    letter-spacing: 1px;
+    display: inline-block;
+}
+
+.crt-stats {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--spacing-4);
+    margin-top: var(--spacing-6);
+    font-size: var(--fs-sm);
+}
+
+.stat-badge, .stat-warning {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(4px);
+    padding: 0.3rem 1rem;
+    border-radius: 40px;
+    border-left: 3px solid var(--color-primary-glow);
+}
+
+.stat-warning {
+    border-left-color: var(--color-accent-warm);
+}
+
+/* ========= 三大操作按钮面板 ========= */
+.action-panel {
+    background: rgba(8, 6, 18, 0.65);
+    backdrop-filter: blur(16px);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-8) var(--spacing-6);
+    margin: var(--spacing-6) 0 var(--spacing-8);
+    border: 1px solid rgba(100, 70, 160, 0.55);
+    box-shadow: 0 15px 35px -10px black;
+}
+
+.button-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--spacing-6);
+    margin-bottom: var(--spacing-8);
+}
+
+/* 按钮样式 （无游戏js逻辑，仅视觉） */
+.game-btn {
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+    border: none;
+    padding: 0.9rem 2rem;
+    font-size: var(--fs-lg);
+    font-weight: var(--fw-bold);
+    font-family: inherit;
+    color: var(--color-light-text);
+    border-radius: 60px;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    box-shadow: var(--shadow-btn);
+    letter-spacing: 1.5px;
+    backdrop-filter: blur(2px);
+    min-width: 200px;
+    text-shadow: 0 1px 2px black;
+}
+
+    .game-btn:hover {
+        transform: translateY(-4px);
+        background: linear-gradient(135deg, var(--gradient-hover-start), var(--gradient-hover-end));
+        box-shadow: 0 18px 28px -6px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(200, 160, 255, 0.6);
+        letter-spacing: 2px;
+    }
+
+    .game-btn:active {
+        transform: translateY(2px);
+        transition: 0.05s;
+    }
+
+/* 氛围引语区域（替代之前的碎片卡片，保证无四个多余标签） */
+.atmosphere-quote {
+    margin-top: var(--spacing-4);
+    padding: var(--spacing-4) var(--spacing-4);
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: var(--radius-sm);
+    border-top: 1px solid rgba(110, 80, 170, 0.5);
+    border-bottom: 1px solid rgba(110, 80, 170, 0.3);
+}
+
+.quote-line {
+    margin: var(--spacing-2) 0;
+    text-align: center;
+    font-size: var(--fs-sm);
+    letter-spacing: 0.3px;
+    color: var(--color-muted-text);
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-2);
+    flex-wrap: wrap;
+}
+
+/* 针对乱码文本容器，保证布局不被内部特效破坏 */
+.obfuscation-demo {
+    background: rgba(0, 0, 0, 0.4);
+    padding: 0.3rem 0.6rem;
+    border-radius: 20px;
+    width: fit-content;
+    margin: 0 auto;
+}
+
+.dynamic-gradient {
+    margin-top: 0.25rem;
+}
+
+/* ========= 页脚 ========= */
+.game-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--spacing-4);
+    margin-top: var(--spacing-8);
+    padding: var(--spacing-4) var(--spacing-6);
+    font-size: var(--fs-xs);
+    color: var(--color-muted-text);
+    border-top: 1px solid rgba(90, 70, 130, 0.5);
+    backdrop-filter: blur(8px);
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-sm);
+}
+
+.footer-left, .footer-right {
+    display: flex;
+    gap: var(--spacing-4);
+    align-items: baseline;
+    flex-wrap: wrap;
+}
+
+.mini-obf {
+    font-size: var(--fs-xs);
+}
+
+/* 响应式支持 */
+@media (max-width: 720px) {
+    body {
+        padding: var(--spacing-4);
+    }
+
+    .game-title {
+        font-size: var(--fs-3xl);
+    }
+
+    .button-group {
+        gap: var(--spacing-4);
+    }
+
+    .game-btn {
+        padding: 0.6rem 1.2rem;
+        font-size: var(--fs-base);
+        min-width: 150px;
+    }
+
+    .action-panel {
+        padding: var(--spacing-6) var(--spacing-4);
+    }
+
+    .crt-stats {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .game-footer {
+        flex-direction: column;
+        text-align: center;
+    }
+}
