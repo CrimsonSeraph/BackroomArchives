@@ -59,6 +59,7 @@
 - **基于 JSON 的配置与文本**：使用 `nlohmann/json` 解析，支持多语言文本（按层级或全局存放）
 - **组件化打包**：利用 CPack 生成 `core-only` 包（仅本体）和完整包（本体+指定档案版本）
 - **自动化 CI**：GitHub Actions 自动构建多平台、多档案版本，并发布到 Releases
+- - **硬件加速渲染**：Release 模式下自动启用 QtWebEngine 的 GPU 加速（OpenGL + WebGL），确保页面动画流畅；Debug 模式以软件渲染运行，便于排查逻辑问题（性能较低）
 
 ---
 
@@ -115,6 +116,10 @@ cmake -B build -DCMAKE_BUILD_TYPE=Release -DARCHIVE_VERSION=wikidot -DBUILD_ARCH
 ```bash
 cmake --build build --config Release
 ```
+
+> ⚠️ **性能提示**：请务必使用 **Release** 模式编译。  
+> Debug 模式下会禁用 QtWebEngine 的硬件加速，导致页面动画卡顿、帧率下降。  
+> 若需测试 Debug 模式，请做好性能会明显劣化的心理准备（未来可能会加入动画自动降级逻辑）。
 
 ### 4. 安装到临时目录（查看结果）
 
@@ -443,10 +448,37 @@ CMake 配置过程中报错，无法从 GitHub 下载 `json.hpp`。
 
 </details>
 
+<details>
+<summary><b>Q6: Debug 模式下游戏页面卡顿，如何解决？</b></summary>
+
+**现象**：  
+使用 Debug 模式编译运行后，程序主界面（基于 WebEngine 的页面）动画不流畅、响应缓慢，而 Release 模式却非常丝滑。
+
+**原因**：  
+为了便于调试，项目在 **Debug 模式下禁用了 QtWebEngine 的硬件加速**（包括 2D Canvas 和 WebGL 加速）。所有渲染工作回退到 CPU 软件模拟，导致性能大幅下降。相关代码见 `main.cpp`：
+
+```cpp
+#ifdef NDEBUG
+    // 仅 Release 模式启用硬件加速
+    settings->setAttribute(QWebEngineSettings::Accelerated2dCanvasEnabled, true);
+    settings->setAttribute(QWebEngineSettings::WebGLEnabled, true);
+#else
+    LOG_MODULE(... "当前为 Debug，禁止启用硬件加速");
+#endif
+```
+
+**解决方案**：  
+- **推荐**：始终使用 **Release** 模式进行日常游戏或性能测试。  
+- 如果确实需要在 Debug 模式下调试页面逻辑，可临时修改 `main.cpp`，将上述 `#ifdef NDEBUG` 改为 `#if 1` 强制开启加速（但可能干扰调试器对 GPU 进程的跟踪）。  
+- 未来计划：当检测到硬件加速不可用（如 Debug 模式或旧显卡）时，程序可自动降低动画刷新率、简化特效，避免过度卡顿。目前尚未实现此优化。
+
+> 如果你正在开发档案插件或调试界面，建议使用 Release 模式 + 日志输出，兼顾性能与可调试性。
+</details>
+
 ### 配置问题
 
 <details>
-<summary><b>Q6: 配置文件修改后不生效</b></summary>
+<summary><b>Q7: 配置文件修改后不生效</b></summary>
 
 **现象**:
 修改了 `user.json` 中的某个值，但程序运行时使用的还是旧值。
@@ -459,7 +491,7 @@ CMake 配置过程中报错，无法从 GitHub 下载 `json.hpp`。
 </details>
 
 <details>
-<summary><b>Q7: 配置文件丢失后如何恢复？</b></summary>
+<summary><b>Q8: 配置文件丢失后如何恢复？</b></summary>
 
 **现象**:
 误删了 `config/` 目录下的某个 JSON 文件，程序启动报错或使用默认值。
@@ -473,7 +505,7 @@ CMake 配置过程中报错，无法从 GitHub 下载 `json.hpp`。
 ### 插件开发
 
 <details>
-<summary><b>Q8: 如何添加一个新层级？</b></summary>
+<summary><b>Q9: 如何添加一个新层级？</b></summary>
 
 1. 在对应档案版本目录下（如 `archives/wikidot/`）创建一个新文件夹，例如 `level-2/`。
 2. 在文件夹内创建 `level-2.cpp`，实现 `ILevel` 接口并导出工厂函数。
@@ -483,7 +515,7 @@ CMake 配置过程中报错，无法从 GitHub 下载 `json.hpp`。
 </details>
 
 <details>
-<summary><b>Q9: 如何添加一个全新的档案版本（例如 Fandom）？</b></summary>
+<summary><b>Q10: 如何添加一个全新的档案版本（例如 Fandom）？</b></summary>
 
 1. 在 `archives/` 下创建 `fandom/` 目录。
 2. 复制 `archives/wikidot/CMakeLists.txt` 到 `fandom/CMakeLists.txt`。

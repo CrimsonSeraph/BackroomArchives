@@ -59,6 +59,7 @@ Each archive version is completely independent, containing its own **core plugin
 - **JSON-based configuration & text**: uses `nlohmann/json` for parsing, supports multi‑language texts (per level or global)
 - **Componentised packaging**: uses CPack to generate `core-only` package (core only) and complete packages (core + specified archive version)
 - **Automated CI**: GitHub Actions automatically builds multi‑platform, multi‑archive versions and publishes them to Releases
+- - **Hardware‑accelerated rendering**: In Release mode, QtWebEngine uses GPU acceleration (OpenGL + WebGL) for smooth animations. Debug mode falls back to software rendering (slower, intended for debugging only).
 
 ---
 
@@ -115,6 +116,10 @@ cmake -B build -DCMAKE_BUILD_TYPE=Release -DARCHIVE_VERSION=wikidot -DBUILD_ARCH
 ```bash
 cmake --build build --config Release
 ```
+
+> ⚠️ **Performance note**: Always build in **Release** mode for normal gameplay.  
+> In Debug mode, QtWebEngine's hardware acceleration (2D canvas & WebGL) is **disabled** by default, causing sluggish animations and low frame rates.  
+> If you must run Debug builds, expect poor performance. Future updates may add automatic fallback (e.g., disabling certain animations).
 
 ### 4. Install to a temporary directory (to inspect results)
 
@@ -443,10 +448,37 @@ Compiler errors such as `'std::span' is not a member of 'std'` or requirement of
 
 </details>
 
+<details>
+<summary><b>Q6: The game stutters badly in Debug mode. How can I fix it?</b></summary>
+
+**Symptoms**:  
+When compiled in Debug mode, the main WebEngine‑based interface becomes choppy and unresponsive, while the Release build runs perfectly smooth.
+
+**Root cause**:  
+To simplify debugging, hardware acceleration (including accelerated 2D canvas and WebGL) is **explicitly disabled in Debug builds**. All rendering falls back to CPU software emulation, which is significantly slower. See `main.cpp`:
+
+```cpp
+#ifdef NDEBUG
+    // Only Release enables hardware acceleration
+    settings->setAttribute(QWebEngineSettings::Accelerated2dCanvasEnabled, true);
+    settings->setAttribute(QWebEngineSettings::WebGLEnabled, true);
+#else
+    LOG_MODULE(... "Debug mode, hardware acceleration disabled");
+#endif
+```
+
+**Solutions**:
+- **Recommended**: Always use **Release** mode for playing or performance testing.
+- If you really need Debug mode for debugging page logic, you can temporarily edit `main.cpp` and change `#ifdef NDEBUG` to `#if 1` to force acceleration on (but this might interfere with GPU‑process debugging).
+- **Future plan**: When hardware acceleration is unavailable (e.g., Debug mode or old GPUs), the program may automatically reduce animation rates or disable heavy effects. This optimization is not yet implemented.
+
+> If you are developing archive plugins or debugging the UI, consider using Release mode combined with logging – it offers both good performance and sufficient debuggability.
+</details>
+
 ### Configuration Issues
 
 <details>
-<summary><b>Q6: Configuration changes do not take effect</b></summary>
+<summary><b>Q7: Configuration changes do not take effect</b></summary>
 
 **Symptom**:
 Changed a value in `user.json`, but the program still uses the old value.
@@ -459,7 +491,7 @@ Changed a value in `user.json`, but the program still uses the old value.
 </details>
 
 <details>
-<summary><b>Q7: How to recover lost configuration files?</b></summary>
+<summary><b>Q8: How to recover lost configuration files?</b></summary>
 
 **Symptom**:
 Accidentally deleted a JSON file under the `config/` directory; the program reports errors or uses default values.
@@ -473,7 +505,7 @@ Accidentally deleted a JSON file under the `config/` directory; the program repo
 ### Plugin Development
 
 <details>
-<summary><b>Q8: How to add a new level?</b></summary>
+<summary><b>Q9: How to add a new level?</b></summary>
 
 1. Create a new folder under the corresponding archive version directory (e.g., `archives/wikidot/`), for example `level-2/`.
 2. Inside the folder, create `level-2.cpp` that implements the `ILevel` interface and exports the factory functions.
@@ -483,7 +515,7 @@ Accidentally deleted a JSON file under the `config/` directory; the program repo
 </details>
 
 <details>
-<summary><b>Q9: How to add a completely new archive version (e.g., Fandom)?</b></summary>
+<summary><b>Q10: How to add a completely new archive version (e.g., Fandom)?</b></summary>
 
 1. Create a `fandom/` directory under `archives/`.
 2. Copy `archives/wikidot/CMakeLists.txt` to `fandom/CMakeLists.txt`.

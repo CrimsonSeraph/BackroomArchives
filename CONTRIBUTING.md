@@ -149,6 +149,37 @@ Prevent Bridge.py from hanging when server is unreachable.
 - 如果你需要升级 Qt 版本或 Python 依赖，请先在 Issue 中讨论，因为可能影响构建环境。
 - 修改 `CMakeLists.txt` 中的依赖下载方式时，注意保持向后兼容。
 
+## 关于硬件加速与 Debug/Release 模式
+
+本项目的主界面基于 QtWebEngine 渲染，并依赖 **GPU 硬件加速** 来保证页面动画（尤其是 JS 动画）的流畅性。
+
+### Debug 与 Release 的区别
+
+- **Release 模式**（`NDEBUG` 已定义）：  
+  自动启用 `Accelerated2dCanvasEnabled` 和 `WebGLEnabled`，所有网页渲染由 GPU 分担，性能最优。
+
+- **Debug 模式**（`NDEBUG` 未定义）：  
+  **硬件加速被强制禁用**，所有渲染回退到 CPU 软件模拟。这会导致页面卡顿、帧率明显下降，尤其当页面包含复杂 JS 动画时。
+
+上述行为在 `main.cpp` 中通过 `#ifdef NDEBUG` 控制。**这是设计如此**，目的是避免 GPU 进程干扰调试器（断点、单步执行等）。
+
+### 对贡献者的建议
+
+1. **日常开发和性能测试**：请始终使用 **Release 模式** 编译运行（例如 `cmake --build build --config Release`）。  
+   如果你需要调试页面逻辑，可以开启日志输出（`app.debug=true`），Release 模式下的日志同样可用。
+
+2. **如果你确实需要在 Debug 模式下验证页面行为**（例如排查偶现的 JS 错误）：  
+   - 可以临时修改 `main.cpp`，将 `#ifdef NDEBUG` 改为 `#if 1` 强制开启硬件加速，但请注意这可能会使调试器无法正常捕获 GPU 进程的异常。  
+   - 或者改用 Release 模式 + 附加调试器（如 VS 的“附加到进程”）。
+
+3. **未来计划**：  
+   当硬件加速不可用（Debug 模式或用户电脑缺少必要驱动）时，程序将能够自动检测并**降低动画帧率、禁用部分特效**，以缓解卡顿感。目前这一优化尚未实现，欢迎贡献者提交相关实现（例如通过 `QWebEngineSettings::setAttribute` 动态调整，或在网页端通过 JS 检测 `navigator.hardwareConcurrency` 等因素降级）。
+
+### 提交 PR 时的注意事项
+
+- 如果你修改了任何与 `QWebEngineSettings` 或 GPU 初始化的代码，请在 PR 描述中说明测试时使用的构建模式（Release / Debug），并确保 Release 下性能无明显退化。
+- 如果你增加了对无硬件加速环境的降级逻辑（如 JS 侧检测并禁用部分动画），请同时更新相关文档或注释。
+
 ## 文档贡献
 
 文档（`README.md`、`CodingStyle.md`、`CONTRIBUTING.md` 等）的改进同样欢迎。请遵循与代码相同的 PR 流程，并在 `docs` 类型的 commit 中注明。
