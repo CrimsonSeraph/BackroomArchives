@@ -29,6 +29,14 @@ set(ARCHIVE_VERSION "wikidot" CACHE STRING "Which archive version to build (subd
 # 是否构建档案插件（若为 OFF 则只生成 core 包）
 option(BUILD_ARCHIVES "Build level plugins from archives/" ON)
 
+# -------------------- 查找 Qt --------------------
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Gui Widgets WebChannel WebEngineCore WebEngineWidgets REQUIRED)
+
+if (QT_VERSION_MAJOR EQUAL 6)
+    qt_standard_project_setup()
+endif()
+
 # -------------------- 网页资源扩展 --------------------
 
 # 设置下载目标目录（相对于当前构建目录）
@@ -81,6 +89,124 @@ else()
     message(STATUS "DynamicTextEngine.js already exists, skipping download")
 endif()
 
+# -------------------- 查找 qwebchannel.js --------------------
+set(QWEBCHANNEL_JS_NAME "qwebchannel.js")
+set(QWEBCHANNEL_JS_SOURCE "")
+set(DEBUG_PREFIX "[QWebChannel]")
+
+function(qwebchannel_log MSG)
+    message(STATUS "${DEBUG_PREFIX} ${MSG}")
+endfunction()
+
+# 确保 WebChannel 组件已找到
+if(NOT TARGET Qt${QT_VERSION_MAJOR}::WebChannel)
+    message(FATAL_ERROR "Qt${QT_VERSION_MAJOR}::WebChannel target not found. Check find_package.")
+endif()
+
+# 获取编译器特定的 Qt 前缀
+get_target_property(QT_QMAKE_EXECUTABLE Qt${QT_VERSION_MAJOR}::qmake LOCATION)
+if(QT_QMAKE_EXECUTABLE AND EXISTS "${QT_QMAKE_EXECUTABLE}")
+    get_filename_component(QT_BIN_DIR "${QT_QMAKE_EXECUTABLE}" DIRECTORY)
+    get_filename_component(QT_INSTALL_PREFIX "${QT_BIN_DIR}" DIRECTORY)
+    qwebchannel_log("Compiler-specific prefix: ${QT_INSTALL_PREFIX}")
+else()
+    get_target_property(QT_WEBCHANNEL_INCLUDES Qt${QT_VERSION_MAJOR}::WebChannel INTERFACE_INCLUDE_DIRECTORIES)
+    if(QT_WEBCHANNEL_INCLUDES)
+        list(GET QT_WEBCHANNEL_INCLUDES 0 FIRST_INC)
+        get_filename_component(QT_INSTALL_PREFIX "${FIRST_INC}" DIRECTORY)
+        get_filename_component(QT_INSTALL_PREFIX "${QT_INSTALL_PREFIX}" DIRECTORY)
+        qwebchannel_log("Prefix from includes: ${QT_INSTALL_PREFIX}")
+    else()
+        message(WARNING "Cannot determine Qt install prefix.")
+        set(QT_INSTALL_PREFIX "")
+    endif()
+endif()
+
+# 获取 Qt 顶级根目录
+get_filename_component(QT_TOP_DIR "${QT_INSTALL_PREFIX}" DIRECTORY)
+get_filename_component(QT_TOP_DIR "${QT_TOP_DIR}" DIRECTORY)
+qwebchannel_log("Qt top-level directory: ${QT_TOP_DIR}")
+
+# 候选路径列表
+set(QT_VERSION_FULL "${Qt${QT_VERSION_MAJOR}_VERSION}")
+set(CANDIDATE_PATHS
+    "${QT_INSTALL_PREFIX}/qml/QtWebChannel/${QWEBCHANNEL_JS_NAME}"
+    "${QT_TOP_DIR}/Examples/Qt-${QT_VERSION_FULL}/webchannel/shared/${QWEBCHANNEL_JS_NAME}"
+    "${QT_INSTALL_PREFIX}/Examples/Qt-${QT_VERSION_FULL}/webchannel/shared/${QWEBCHANNEL_JS_NAME}"
+)
+
+qwebchannel_log("Checking explicit candidate paths:")
+foreach(CANDIDATE ${CANDIDATE_PATHS})
+    if(EXISTS "${CANDIDATE}")
+        set(QWEBCHANNEL_JS_SOURCE "${CANDIDATE}")
+        qwebchannel_log("  Found at: ${CANDIDATE}")
+        break()
+    else()
+        qwebchannel_log("  Not found: ${CANDIDATE}")
+    endif()
+endforeach()
+
+# 若未找到，进行有界递归搜索
+if(NOT QWEBCHANNEL_JS_SOURCE)
+    set(SEARCH_ROOTS
+        "${QT_INSTALL_PREFIX}/qml"
+        "${QT_TOP_DIR}/Examples"
+        "${QT_INSTALL_PREFIX}/Examples"
+    )
+    qwebchannel_log("Starting recursive search in:")
+    foreach(ROOT ${SEARCH_ROOTS})
+        if(EXISTS "${ROOT}")
+            qwebchannel_log("Recursing into: ${ROOT}")
+            file(GLOB_RECURSE FOUND_FILES "${ROOT}/${QWEBCHANNEL_JS_NAME}")
+            if(FOUND_FILES)
+                list(GET FOUND_FILES 0 QWEBCHANNEL_JS_SOURCE)
+                qwebchannel_log("  Found: ${QWEBCHANNEL_JS_SOURCE}")
+                if(FOUND_FILES)
+                    qwebchannel_log("  (also found: ${FOUND_FILES})")
+                endif()
+                break()
+            else()
+                qwebchannel_log("  No matches in ${ROOT}")
+            endif()
+        else()
+            qwebchannel_log("  Directory does not exist: ${ROOT}")
+        endif()
+    endforeach()
+endif()
+
+# 最后尝试 find_file
+if(NOT QWEBCHANNEL_JS_SOURCE)
+    qwebchannel_log("Attempting find_file...")
+    find_file(QWEBCHANNEL_JS_SOURCE
+        NAMES ${QWEBCHANNEL_JS_NAME}
+        PATHS ${QT_TOP_DIR} ${QT_INSTALL_PREFIX}
+        PATH_SUFFIXES
+            Examples/Qt-*/webchannel/shared
+            qml/QtWebChannel
+        NO_DEFAULT_PATH
+    )
+    if(QWEBCHANNEL_JS_SOURCE)
+        qwebchannel_log("  find_file found: ${QWEBCHANNEL_JS_SOURCE}")
+    else()
+        qwebchannel_log("  find_file failed.")
+    endif()
+endif()
+
+# 用户自定义
+set(QWEBCHANNEL_JS_CUSTOM "" CACHE FILEPATH "Path to qwebchannel.js (manual override)")
+if(QWEBCHANNEL_JS_CUSTOM AND EXISTS "${QWEBCHANNEL_JS_CUSTOM}")
+    # 同样添加 POST_BUILD 命令，覆盖上面的
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:${PROJECT_NAME}>/pages/extensions/"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${QWEBCHANNEL_JS_CUSTOM}"
+            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/pages/extensions/${QWEBCHANNEL_JS_NAME}"
+        COMMENT "Copying qwebchannel.js from user override to output directory"
+        VERBATIM
+    )
+    qwebchannel_log("  Using user override, will copy at build time.")
+endif()
+
 # 创建一个接口库，方便其他目标引用这些文件所在的目录
 add_library(dynamic_text_engine INTERFACE)
 target_include_directories(dynamic_text_engine INTERFACE "${DYNAMIC_TEXT_ENGINE_DIR}")
@@ -113,14 +239,6 @@ endif()
 
 add_library(nlohmann_json INTERFACE)
 target_include_directories(nlohmann_json INTERFACE "${NLOHMANN_JSON_INCLUDE_DIR}")
-
-# -------------------- 查找 Qt --------------------
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Gui Widgets WebEngineCore WebEngineWidgets)
-
-if (QT_VERSION_MAJOR EQUAL 6)
-    qt_standard_project_setup()
-endif()
 
 # -------------------- 插件 API 接口库 --------------------
 add_library(BackroomsAPI INTERFACE)
@@ -171,6 +289,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt::Core
     Qt::Gui
     Qt::Widgets
+    Qt::WebChannel
     Qt::WebEngineCore
     Qt::WebEngineWidgets
 )
@@ -208,6 +327,19 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         "$<TARGET_FILE_DIR:${PROJECT_NAME}>/pages"
     COMMENT "Copying page files to output directory"
 )
+
+# 复制 qwebchannel.js
+if(QWEBCHANNEL_JS_SOURCE)
+    set(QWEBCHANNEL_JS_DEST_SRC "${CMAKE_CURRENT_SOURCE_DIR}/pages/extensions/${QWEBCHANNEL_JS_NAME}")
+    if(NOT EXISTS "${QWEBCHANNEL_JS_DEST_SRC}")
+        file(COPY "${QWEBCHANNEL_JS_SOURCE}" DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/pages/extensions/")
+        qwebchannel_log("Copied to source pages/extensions/ (will be included in output via copy_directory)")
+    else()
+        qwebchannel_log("qwebchannel.js already exists in source pages/extensions/, skipping copy")
+    endif()
+else()
+    qwebchannel_log("Failed to locate ${QWEBCHANNEL_JS_NAME}, please manually place it in pages/extensions/")
+endif()
 
 # -------------------- 安装规则 --------------------
 install(TARGETS ${PROJECT_NAME}
