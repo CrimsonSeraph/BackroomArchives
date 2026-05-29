@@ -8,13 +8,17 @@
 #include "Console.h"
 #include "DebugLog.h"
 
+#include <QWebEngineProfile>
+#include <QWebEngineSettings>
+#include <QWebEngineView>
+#include <QSurfaceFormat>
 #include <QStyleFactory>
 #include <QtWidgets/QApplication>
+#include <QtGlobal>
 
 #include <iostream>
 
 int main(int argc, char* argv[]) {
-    QApplication app(argc, argv);
     // 直接创建控制台，以便在初始化配置系统时输出日志
     Console& console = Console::get_instance();
     console.create();
@@ -53,6 +57,43 @@ int main(int argc, char* argv[]) {
     LOG_MODULE("main", "main", LOG_DEBUG, "控制台日志级别设置为: " << console_log_level);
     bool is_only_type_info = config.get_value<bool>("app.log.only_type_info", false);
     DebugLog::instance().set_only_type_info(is_only_type_info);
+
+    // OpenGL 格式设置
+    QSurfaceFormat format;
+    format.setRenderableType(QSurfaceFormat::OpenGL);
+    format.setDepthBufferSize(24);
+    format.setStencilBufferSize(8);
+    format.setVersion(4, 5);
+    format.setProfile(QSurfaceFormat::CoreProfile);
+    QSurfaceFormat::setDefaultFormat(format);
+
+    // 强制 Chromium 使用 GPU
+    qputenv("QTWEBENGINE_CHROMIUM_FLAGS",
+        "--enable-gpu-rasterization "
+        "--ignore-gpu-blacklist "
+        "--enable-zero-copy "
+        "--enable-native-gpu-memory-buffers");
+
+    QApplication app(argc, argv);
+
+#ifdef NDEBUG
+    {
+        // 启用硬件加速
+        LOG_MODULE("main", "main", LOG_DEBUG, "当前为 Release，尝试启用硬件加速");
+        // 高 DPI 支持
+        QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+        // 强制 OpenGL 资源共享
+        QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
+        // 获取设置对象
+        QWebEngineSettings* settings = QWebEngineProfile::defaultProfile()->settings();
+        // 启用 2D Canvas 硬件加速
+        settings->setAttribute(QWebEngineSettings::Accelerated2dCanvasEnabled, true);
+        // 启用 WebGL 支持
+        settings->setAttribute(QWebEngineSettings::WebGLEnabled, true);
+}
+#else
+    LOG_MODULE("main", "main", LOG_DEBUG, "当前为 Debug，禁止启用硬件加速");
+#endif
 
     // 创建窗口
     BackroomArchives window;
