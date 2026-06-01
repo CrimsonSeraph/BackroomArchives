@@ -7,18 +7,15 @@
 #include "GameStateBridge.h"
 
 GameStateBridge::GameStateBridge(QObject* parent)
-    : QObject(parent)
-{
+    : QObject(parent) {
     LOG_MODULE("GameStateBridge", "GameStateBridge", LOG_DEBUG, "GameStateBridge 构造完成");
 }
 
 bool GameStateBridge::is_started() const {
-    LOG_MODULE("GameStateBridge", "is_started", LOG_DEBUG, "调用, 当前状态: is_started=" << m_is_started);
     return m_is_started;
 }
 
 bool GameStateBridge::is_running() const {
-    LOG_MODULE("GameStateBridge", "is_running", LOG_DEBUG, "调用, 当前状态: is_running=" << m_is_running);
     return m_is_running;
 }
 

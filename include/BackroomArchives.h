@@ -7,6 +7,7 @@
 
 #include "GameStateBridge.h"
 #include "InputHandlerBridge.h"
+#include "JsConsoleBridge.h"
 
 #include <QWebChannel>
 #include <QWidget>
@@ -27,6 +28,7 @@ private:
     Ui::BackroomArchives ui;
     GameStateBridge* m_game_state_bridge;
     InputHandlerBridge* m_input_handler_bridge;
+    JsConsoleBridge* m_js_console_bridge;
     QWebChannel* m_channel;
 
     void init_index_page();

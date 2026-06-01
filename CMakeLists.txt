@@ -282,6 +282,9 @@ set(PROJECT_SOURCES
     src/InputHandlerBridge.cpp
     include/InputHandlerBridge.h
 
+    src/JsConsoleBridge.cpp
+    include/JsConsoleBridge.h
+
     src/MultiConfigManager.cpp
     include/MultiConfigManager.h
     include/MultiConfigManager_impl.hpp

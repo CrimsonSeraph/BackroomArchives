@@ -74,8 +74,6 @@ int main(int argc, char* argv[]) {
         "--enable-zero-copy "
         "--enable-native-gpu-memory-buffers");
 
-    QApplication app(argc, argv);
-
 #ifdef NDEBUG
     {
         // 启用硬件加速
@@ -84,6 +82,14 @@ int main(int argc, char* argv[]) {
         QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
         // 强制 OpenGL 资源共享
         QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
+    }
+#else
+#endif
+
+    QApplication app(argc, argv);
+
+#ifdef NDEBUG
+    {
         // 获取设置对象
         QWebEngineSettings* settings = QWebEngineProfile::defaultProfile()->settings();
         // 启用 2D Canvas 硬件加速

@@ -11,8 +11,7 @@
 #include <QVariantMap>
 
 InputHandlerBridge::InputHandlerBridge(QObject* parent)
-    : QObject(parent)
-{
+    : QObject(parent) {
     LOG_MODULE("InputHandlerBridge", "InputHandlerBridge", LOG_DEBUG, "构造完成");
 }
 
