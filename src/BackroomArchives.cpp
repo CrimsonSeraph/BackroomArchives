@@ -6,11 +6,14 @@
 #include "AppConfig.h"
 #include "BackroomArchives.h"
 #include "DebugLog.h"
+#include "GameStateBridge.h"
+#include "InputHandlerBridge.h"
 
 #include <QDir>
 #include <QFile>
 #include <QString>
 #include <QWebEngineView>
+#include <QWebChannel>
 #include <QWidget>
 
 BackroomArchives::BackroomArchives(QWidget* parent)
@@ -18,6 +21,7 @@ BackroomArchives::BackroomArchives(QWidget* parent)
     LOG_MODULE("BackroomArchives", "BackroomArchives", LOG_DEBUG, "开始初始化窗口");
     ui.setupUi(this);
 
+    init_bridge();
     init_index_page();
 }
 
@@ -44,4 +48,17 @@ void BackroomArchives::init_index_page() {
         LOG_MODULE("BackroomArchives", "init_index_page", LOG_INFO, "加载主页，路径: " << full_html_path.toStdString());
         ui.main_webview->setUrl(QUrl::fromLocalFile(full_html_path));
     }
+}
+
+void BackroomArchives::init_bridge() {
+    LOG_MODULE("BackroomArchives", "init_bridge", LOG_DEBUG, "初始化游戏状态桥接");
+    m_game_state_bridge = new GameStateBridge(this);
+    m_input_handler_bridge = new InputHandlerBridge(this);
+
+    // 将桥接对象暴露给 JavaScript
+    m_channel = new QWebChannel(this);
+    m_channel->registerObject("GameState", m_game_state_bridge);
+    m_channel->registerObject("InputHandler", m_input_handler_bridge);
+
+    ui.main_webview->page()->setWebChannel(m_channel);
 }

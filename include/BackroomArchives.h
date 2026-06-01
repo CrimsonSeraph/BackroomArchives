@@ -5,6 +5,10 @@
 
 #pragma once
 
+#include "GameStateBridge.h"
+#include "InputHandlerBridge.h"
+
+#include <QWebChannel>
 #include <QWidget>
 #include "../ui_BackroomArchives.h"
 
@@ -19,9 +23,13 @@ public:
     explicit BackroomArchives(QWidget* parent = nullptr);
     ~BackroomArchives();
 
-    void init_index_page();
-
 private:
     Ui::BackroomArchives ui;
+    GameStateBridge* m_game_state_bridge;
+    InputHandlerBridge* m_input_handler_bridge;
+    QWebChannel* m_channel;
+
+    void init_index_page();
+    void init_bridge();
 
 };

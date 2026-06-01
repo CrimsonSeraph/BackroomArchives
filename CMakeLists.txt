@@ -279,6 +279,9 @@ set(PROJECT_SOURCES
     src/GameStateBridge.cpp
     include/GameStateBridge.h
 
+    src/InputHandlerBridge.cpp
+    include/InputHandlerBridge.h
+
     src/MultiConfigManager.cpp
     include/MultiConfigManager.h
     include/MultiConfigManager_impl.hpp
