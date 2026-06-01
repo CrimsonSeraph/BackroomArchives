@@ -119,6 +119,35 @@ if (condition) {
 
 > **注意**: 重写标准库或第三方库的虚函数时，保持原有命名风格。
 
+### 3.1 JavaScript 命名规则
+
+前端 `pages/script.js` 及其他所有 JavaScript 代码**必须**遵循 JavaScript/TypeScript 社区通用命名规范，**不使用** C++ 的 `snake_case` 风格。
+
+| 元素 | 风格 | 示例 | 说明 |
+| - | - | - | - |
+| 变量 / 函数 / 方法 | 小驼峰（camelCase） | `playerHealth`, `maxLevel`, `loadPlugin()` | 首字母小写 |
+| 类 / 构造函数 | 大驼峰（PascalCase） | `GameCore`, `PluginLoader` | 与 C++ 类风格一致 |
+| 常量 | 全大写 + 下划线 | `MAX_BUFFER_SIZE` | 使用 `const` 声明，值基本不变 |
+| 私有成员（非正式） | 下划线前缀 + camelCase | `_internalState`, `_handleClick()` | 仅在模块内部使用，不建议对外暴露 |
+
+```javascript
+// 正确示例
+const MAX_RETRY = 3;
+let currentLevel = null;
+
+function loadArchive(version) { ... }
+
+class LevelManager {
+    constructor() {
+        this._cache = new Map();
+    }
+    
+    getCurrentLevel() { ... }
+}
+```
+
+> **注意**：此规则与 C++ 后端代码（`snake_case`）严格区分，便于前后端协作时快速识别代码归属。
+
 ### 4. 导入顺序（C++ `#include`）
 
 - **顺序规则**:   
