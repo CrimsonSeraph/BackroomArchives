@@ -20,6 +20,9 @@
 | `DebugLog.h` | 日志系统核心类 `DebugLog`（单例）的声明。支持模块级日志等级过滤、多个输出接收器（sink，如控制台、文件），线程安全写入。提供宏 `LOG_MODULE` 用于统一格式的日志输出。 |
 | `DebugLog_utils.hpp` | 日志辅助工具，包含 `DebugLogUtil` 命名空间下的字符串处理函数（如去除换行符、压缩空格等），便于日志格式化。 |
 | `DefaultConfigs.h` | 默认配置工厂 `DefaultConfigs` 的声明。仅包含静态方法 `get_default_config(config_name)`，返回 `"main"` 或 `"user"` 对应的默认 JSON 配置，用于首次运行时生成配置文件。 |
+| `GameStateBridge.h` | 游戏状态桥接类 `GameStateBridge` 的声明。继承 `QObject`，使用 `Q_OBJECT` 宏，暴露 `is_started` 和 `is_running` 属性（带 `NOTIFY` 信号），声明 `start_game`、`pause_game`、`resume_game`、`exit_game` 槽函数，以及 `running_changed`、`started_changed`、`game_event` 信号。用于与前端 JavaScript 通信游戏生命周期事件。 |
+| `InputHandlerBridge.h` | 键盘输入桥接类 `InputHandlerBridge` 的声明。继承 `QObject`，声明槽函数 `handle_key_event`（接收键名、按下状态、修饰键 JSON），信号 `key_processed`（传递动作名称和数据），以及私有辅助方法 `map_key_to_action`（将按键映射为游戏动作）。 |
+| `JsConsoleBridge.h` | JavaScript 控制台桥接类 `JsConsoleBridge` 的声明。继承 `QObject`，声明 `log(const QString& level, const QString& message)` 槽函数，用于接收来自 JS 的日志消息并在 C++ 端通过日志系统输出。 |
 | `MultiConfigManager.h` | 多配置管理器 `MultiConfigManager`（单例）的声明。维护多个 `ConfigManager` 实例（如 `main`、`user`），支持按优先级（`__priority` 字段）排序，提供合并读取、优先级冲突检测、文件热重载等功能。 |
 | `MultiConfigManager_impl.hpp` | `MultiConfigManager` 的模板方法实现，包括按优先级或按配置名称获取/设置配置值的模板函数，以及内部排序缓存的管理。 |
 | `plugin_api/` | 插件接口目录（当前为空，待实现）。将包含 `ILevel.h`、`IBuff.h`、`ArchiveCore.h` 等接口定义，供档案插件使用。 |

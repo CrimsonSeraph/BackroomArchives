@@ -16,6 +16,9 @@
 | `Console.cpp` | Windows 控制台辅助类（`Console`）的实现，单例模式。用于在 GUI 程序启动时分配或附加调试控制台，设置 UTF‑8 代码页、字体，并重定向 `stdout` / `stderr` / `stdin`，方便在图形界面之外输出日志信息（日志系统同时输出到文件和控制台）。非 Windows 平台下该功能为空操作。 |
 | `DebugLog.cpp` | 日志系统核心实现（`DebugLog`），单例模式。支持模块级日志等级过滤、多个输出接收器（sink，如控制台、文件），线程安全的日志写入。提供便捷的宏 `LOG_MODULE` 用于统一格式的日志输出，便于调试游戏逻辑和插件运行状态。 |
 | `DefaultConfigs.cpp` | 默认配置提供类（`DefaultConfigs`），静态方法 `get_default_config` 根据配置名称（`"main"`、`"user"`）返回对应的默认 JSON 配置，用于程序首次运行时生成配置文件。 |
+| `GameStateBridge.cpp` | 游戏状态桥接类（`GameStateBridge`）的实现。继承 `QObject`，通过 `QWebChannel` 暴露给 JavaScript，提供游戏开始、暂停、恢复、退出等槽函数，并发射 `game_event` 信号通知 JS 游戏状态变化。内部记录游戏是否已启动（`m_is_started`）和是否正在运行（`m_is_running`），所有公共方法均输出调试日志。 |
+| `InputHandlerBridge.cpp` | 键盘输入桥接类（`InputHandlerBridge`）的实现。接收 JS 传递的按键事件（键名、按下/释放状态、修饰键 JSON），解析后映射为游戏动作（如 `"pause"`），并通过 `key_processed` 信号将动作和数据回传给 JS。内部包含简单的按键映射表，可扩展。 |
+| `JsConsoleBridge.cpp` | JavaScript 控制台桥接类（`JsConsoleBridge`）的实现。提供 `log(level, message)` 槽函数，供 JS 调用以输出调试信息。JS 传入的日志级别（`debug`/`info`/`warn`/`error`）被转换为 C++ 日志等级，最终通过 `LOG_MODULE` 宏输出到日志系统，模块名标记为 `"JavaScript"`，便于过滤。 |
 | `MultiConfigManager.cpp` | 多配置管理器（`MultiConfigManager`）的实现，维护多个 `ConfigManager` 实例的注册表。支持按优先级（`__priority` 字段）排序配置，合并读取时优先级高的配置覆盖优先级低的配置；提供文件热重载功能（自动检测文件修改时间并重新加载）。用于实现 `main.json` 和 `user.json` 的优先级覆盖。 |
 
 ---

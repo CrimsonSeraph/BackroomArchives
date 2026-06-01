@@ -60,6 +60,7 @@
 - **组件化打包**：利用 CPack 生成 `core-only` 包（仅本体）和完整包（本体+指定档案版本）
 - **自动化 CI**：GitHub Actions 自动构建多平台、多档案版本，并发布到 Releases
 - - **硬件加速渲染**：Release 模式下自动启用 QtWebEngine 的 GPU 加速（OpenGL + WebGL），确保页面动画流畅；Debug 模式以软件渲染运行，便于排查逻辑问题（性能较低）
+- **C++/JavaScript 双向通信**：基于 Qt WebChannel 实现了游戏本体与前端页面的高效通信。
 
 ---
 
@@ -310,12 +311,16 @@ BackroomsArchives/
 │   ├── DebugLog.h                      # 日志系统
 │   ├── DebugLog_utils.hpp              # 日志辅助工具
 │   ├── DefaultConfigs.h                # 默认配置工厂
+│   ├── GameStateBridge.h               # 游戏状态桥接类（C++/JS 通信）
+│   ├── InputHandlerBridge.h            # 输入处理桥接类（C++/JS 通信）
+│   ├── JsConsoleBridge.h               # JavaScript 控制台桥接类（C++/JS 通信）
 │   ├── MultiConfigManager.h            # 多配置管理器
 │   ├── MultiConfigManager_impl.hpp     # MultiConfigManager 模板实现
 │   └── README.md                       # include 目录说明
 ├── licenses/                           # 第三方许可证文件
 │   └── LICENSE.MIT.txt                 # nlohmann/json 的 MIT 许可证
 ├── pages/                              # 页面文本资源文件（多语言）
+│   ├── backrooms-sdk.js                # 页面脚本公共 JS
 │   ├── index.html                      # 首页
 │   ├── README.md                       # pages 目录说明 
 │   ├── script.js                       # 页面脚本文件
@@ -330,6 +335,9 @@ BackroomsArchives/
 │   ├── Console.cpp                     # 控制台管理实现
 │   ├── DebugLog.cpp                    # 日志系统实现
 │   ├── DefaultConfigs.cpp              # 默认配置工厂实现
+│   ├── GameStateBridge.cpp             # 游戏状态桥接类实现
+│   ├── InputHandlerBridge.cpp          # 输入处理桥接类实现
+│   ├── JsConsoleBridge.cpp             # JavaScript 控制台桥接类实现
 │   ├── MultiConfigManager.cpp          # 多配置管理器实现
 │   └── README.md                       # src 目录说明
 ├── .editorconfig                       # 编辑器代码风格配置

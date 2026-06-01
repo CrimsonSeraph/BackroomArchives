@@ -45,12 +45,16 @@ BackroomsArchives/
 │   ├── DebugLog.h                      # 日志系统
 │   ├── DebugLog_utils.hpp              # 日志辅助工具
 │   ├── DefaultConfigs.h                # 默认配置工厂
+│   ├── GameStateBridge.h               # 游戏状态桥接类（C++/JS 通信）
+│   ├── InputHandlerBridge.h            # 输入处理桥接类（C++/JS 通信）
+│   ├── JsConsoleBridge.h               # JavaScript 控制台桥接类（C++/JS 通信）
 │   ├── MultiConfigManager.h            # 多配置管理器
 │   ├── MultiConfigManager_impl.hpp     # MultiConfigManager 模板实现
 │   └── README.md                       # include 目录说明
 ├── licenses/                           # 第三方许可证文件
 │   └── LICENSE.MIT.txt                 # nlohmann/json 的 MIT 许可证
 ├── pages/                              # 页面文本资源文件（多语言）
+│   ├── backrooms-sdk.js                # 页面脚本公共 JS
 │   ├── index.html                      # 首页
 │   ├── README.md                       # pages 目录说明 
 │   ├── script.js                       # 页面脚本文件
@@ -65,6 +69,9 @@ BackroomsArchives/
 │   ├── Console.cpp                     # 控制台管理实现
 │   ├── DebugLog.cpp                    # 日志系统实现
 │   ├── DefaultConfigs.cpp              # 默认配置工厂实现
+│   ├── GameStateBridge.cpp             # 游戏状态桥接类实现
+│   ├── InputHandlerBridge.cpp          # 输入处理桥接类实现
+│   ├── JsConsoleBridge.cpp             # JavaScript 控制台桥接类实现
 │   ├── MultiConfigManager.cpp          # 多配置管理器实现
 │   └── README.md                       # src 目录说明
 ├── .editorconfig                       # 编辑器代码风格配置

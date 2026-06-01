@@ -59,8 +59,8 @@ Each archive version is completely independent, containing its own **core plugin
 - **JSON-based configuration & text**: uses `nlohmann/json` for parsing, supports multi‑language texts (per level or global)
 - **Componentised packaging**: uses CPack to generate `core-only` package (core only) and complete packages (core + specified archive version)
 - **Automated CI**: GitHub Actions automatically builds multi‑platform, multi‑archive versions and publishes them to Releases
-- - **Hardware‑accelerated rendering**: In Release mode, QtWebEngine uses GPU acceleration (OpenGL + WebGL) for smooth animations. Debug mode falls back to software rendering (slower, intended for debugging only).
-
+- **Hardware‑accelerated rendering**: In Release mode, QtWebEngine uses GPU acceleration (OpenGL + WebGL) for smooth animations. Debug mode falls back to software rendering (slower, intended for debugging only).
+- **C++/JavaScript bidirectional communication**: Implemented efficient communication between the game core and the frontend page based on Qt WebChannel.
 ---
 
 ## III. Dependencies
@@ -310,12 +310,16 @@ BackroomsArchives/
 │   ├── DebugLog.h                      # Logging system
 │   ├── DebugLog_utils.hpp              # Logging helper utilities
 │   ├── DefaultConfigs.h                # Default configuration factory
+│   ├── GameStateBridge.h               # Game state bridge class (C++/JS communication)
+│   ├── InputHandlerBridge.h            # Input handler bridge class (C++/JS communication)
+│   ├── JsConsoleBridge.h               # JavaScript console bridge class (C++/JS communication)
 │   ├── MultiConfigManager.h            # Multi-configuration manager
 │   ├── MultiConfigManager_impl.hpp     # MultiConfigManager template implementation
 │   └── README.md                       # Include directory documentation
 ├── licenses/                           # Third-party license files
 │   └── LICENSE.MIT.txt                 # MIT license for nlohmann/json
 ├── pages/                              # Page text resource files (multi-language)
+│   ├── backrooms-sdk.js                # JavaScript file for the web interface, providing communication bridges and utility functions
 │   ├── index.html                      # Home page
 │   ├── README.md                       # Pages directory documentation
 │   ├── script.js                       # Page script file
@@ -330,6 +334,9 @@ BackroomsArchives/
 │   ├── Console.cpp                     # Console management implementation
 │   ├── DebugLog.cpp                    # Logging system implementation
 │   ├── DefaultConfigs.cpp              # Default configuration factory implementation
+│   ├── GameStateBridge.cpp             # Game state bridge class implementation
+│   ├── InputHandlerBridge.cpp          # Input handler bridge class implementation
+│   ├── JsConsoleBridge.cpp             # JavaScript console bridge class implementation
 │   ├── MultiConfigManager.cpp          # Multi-configuration manager implementation
 │   └── README.md                       # Src directory documentation
 ├── .editorconfig                       # Editor code style configuration
