@@ -57,7 +57,7 @@ window.js_log = function (level, message) {
         // 获取三个按钮
         const btnEnter = document.querySelector('[data-action="start"]');
         const btnRecords = document.querySelector('[data-action="records"]');
-        const btnBestiary = document.querySelector('[data-action="bestiary"]');
+        const btnArchive = document.querySelector('[data-action="archive"]');
 
         // 进入档案库（开始游戏）
         if (btnEnter) {
@@ -102,8 +102,8 @@ window.js_log = function (level, message) {
         }
 
         // 可公开资料库
-        if (btnBestiary) {
-            btnBestiary.addEventListener('click', () => {
+        if (btnArchive) {
+            btnArchive.addEventListener('click', () => {
                 if (typeof js_log === 'function') {
                     js_log('info', '[调试] 用户点击了「可公开资料库」按钮 - 准备加载实体档案');
                 } else {
@@ -127,7 +127,7 @@ window.js_log = function (level, message) {
     function bindButtonsFallback() {
         const btnEnter = document.querySelector('[data-action="start"]');
         const btnRecords = document.querySelector('[data-action="records"]');
-        const btnBestiary = document.querySelector('[data-action="bestiary"]');
+        const btnArchive = document.querySelector('[data-action="archive"]');
 
         if (btnEnter) {
             btnEnter.addEventListener('click', () => {
@@ -140,8 +140,8 @@ window.js_log = function (level, message) {
                 console.log('[降级调试] 点击了「阅读记录」（API 未初始化）');
             });
         }
-        if (btnBestiary) {
-            btnBestiary.addEventListener('click', () => {
+        if (btnArchive) {
+            btnArchive.addEventListener('click', () => {
                 console.log('[降级调试] 点击了「可公开资料库」（API 未初始化）');
             });
         }
