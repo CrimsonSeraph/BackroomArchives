@@ -81,7 +81,7 @@ Each archive version is completely independent, containing its own **core plugin
   Used for JSON parsing. CMake automatically downloads the single-header file from GitHub during configuration.
 
 - **[DynamicTextEngine](https://github.com/CrimsonSeraph/WebUtils/tree/main/DynamicTextEngine)** (CSS/JS)  
-  Used to enhance dynamic text effects in the web interface. CMake automatically downloads `DynamicTextEngine.css` and `DynamicTextEngine.js` into the `pages/extensions/` directory during configuration.
+  Used to enhance dynamic text effects in the web interface. CMake automatically downloads `DynamicTextEngine.js` into the `pages/extensions/` directory during configuration.
 
 ### 3. Runtime Dependencies
 - None. All archive plugins are dynamic libraries loaded at runtime by the core.

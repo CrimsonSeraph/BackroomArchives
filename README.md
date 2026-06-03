@@ -82,7 +82,7 @@
   用于 JSON 解析。CMake 会在配置时自动从 GitHub 下载单头文件到构建目录。
 
 - **[DynamicTextEngine](https://github.com/CrimsonSeraph/WebUtils/tree/main/DynamicTextEngine)** (CSS/JS)  
-  用于增强网页界面的动态文本效果。CMake 会在配置时自动从 GitHub 下载 `DynamicTextEngine.css` 和 `DynamicTextEngine.js` 到 `pages/extensions/` 目录。
+  用于增强网页界面的动态文本效果。CMake 会在配置时自动从 GitHub 下载 `DynamicTextEngine.js` 到 `pages/extensions/` 目录。
 
 ### 3. 运行时依赖
 - 无额外依赖。所有档案插件均为动态库，由本体在运行时加载。
