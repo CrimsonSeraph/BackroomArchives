@@ -6,6 +6,9 @@
 class PageManager {
     constructor(containerId) {
         this.container = document.getElementById(containerId);
+        if (!this.container) {
+            throw new Error(`PageManager: 找不到容器元素 #${containerId}`);
+        }
         this.currentPageId = null;
         this.currentDestroy = null;
         // 记录已加载的外部脚本
