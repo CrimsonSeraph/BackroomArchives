@@ -1,0 +1,70 @@
+<!--Copyright (c) 2026 CrimsonSeraph(ltyy.leoyu@gmail.com)-->
+<!--SPDX-License-Identifier: GPL-3.0-only-->
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backroom Archives-wikidot</title>
+
+    <link rel="stylesheet" href="style-wikidot.css">
+    <script src="/pages/backrooms-sdk.js"></script>
+    <script src="/pages/extensions/DynamicTextEngine.js"></script>
+</head>
+<body>
+    <header class="header">
+        <h1>示例页面标题</h1>
+        <nav>导航栏</nav>
+    </header>
+
+    <main id="index-wikidot-root" class="dynamic-text-engine content">
+        <h2>这是一个示例内容区</h2>
+        <p class="mono-color" data-type="info">本页面展示动态加载 + 独立预览的工作模式。</p>
+        <div class="color-segment" data-type="warning">颜色片段：警告色</div>
+        <div class="shake-global" data-speed="medium" style="margin-top: 1rem;">这段文字会有整体抖动效果</div>
+        <button class="btn" data-action="sampleClick">示例按钮</button>
+    </main>
+
+    <footer class="footer">
+        <p>示例页脚 – 独立运行时可见，动态加载时只显示上方主内容区</p>
+    </footer>
+
+    <script>
+        (function () {
+            window.PageIndexWikidot = {
+                init: function (container) {
+                    console.log('[Sample] 初始化示例页面', container);
+                    // 绑定容器内的按钮
+                    const btn = container.querySelector('[data-action="sampleClick"]');
+                    if (btn) {
+                        btn.addEventListener('click', () => {
+                            alert('示例按钮被点击（嵌入模式）');
+                        });
+                    }
+                },
+                destroy: function (container) {
+                    console.log('[Sample] 销毁示例页面', container);
+                    // 清理事件等
+                    const btn = container.querySelector('[data-action="sampleClick"]');
+                    if (btn) btn.removeEventListener('click');
+                }
+            };
+
+            // 独立运行时自动初始化
+            if (window.parent === window) {
+                window.addEventListener('DOMContentLoaded', () => {
+                    const container = document.getElementById('index-wikidot-root');
+                    if (container && window.PageIndexWikidot && window.PageIndexWikidot.init) {
+                        window.PageIndexWikidot.init(container);
+                    }
+                    // 启动动态文本引擎效果
+                    if (window.DynamicTextEngine && typeof window.DynamicTextEngine.refresh === 'function') {
+                        window.DynamicTextEngine.refresh();
+                    }
+                });
+            }
+        })();
+    </script>
+</body>
+</html>

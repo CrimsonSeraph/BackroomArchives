@@ -24,6 +24,10 @@ window.js_log = function (level, message) {
 
         // 创建 API 实例
         const api = new BackroomsAPI();
+        // 初始化页面管理器
+        const pageManager = new PageManager('page-root');
+        // 限定菜单容器
+        const menuContainer = document.getElementById('page-root');
 
         try {
             // 初始化 SDK，建立与 C++ 后端的通信通道
@@ -32,12 +36,10 @@ window.js_log = function (level, message) {
             // 将 api 实例挂载到全局
             window.api = api;
 
-            // 限定菜单容器
-            const menuContainer = document.getElementById('main-menu');
             if (menuContainer) {
                 bindButtons(menuContainer, api);
             } else {
-                console.warn('[Script] 未找到 #main-menu，按钮绑定失败');
+                console.warn('[Script] 未找到 #page-root，按钮绑定失败');
             }
 
             // 输出初始化成功的调试信息
@@ -47,13 +49,10 @@ window.js_log = function (level, message) {
                 console.log('[Script] BackroomsAPI 初始化成功，但 js_log 不可用，将使用 console 输出');
             }
 
-            // 绑定按钮事件
-            bindButtons(api);
-
         } catch (error) {
             console.error('[Script] BackroomsAPI 初始化失败:', error);
             // API 初始化失败时也绑定按钮，但使用降级日志
-            bindButtonsFallback();
+            bindButtonsFallback(menuContainer);
         }
     });
 
@@ -62,6 +61,14 @@ window.js_log = function (level, message) {
      * @param {BackroomsAPI} api - 已初始化的 API 实例
      */
     function bindButtons(scope, api) {
+        if (!scope || typeof scope.querySelector !== 'function') {
+            if (typeof js_log === 'function') {
+                js_log('error', '[Script] bindButtons 收到无效的 scope:', scope);
+            } else {
+                console.error('[Script] bindButtons 收到无效的 scope:', scope);
+            }
+            return;
+        }
         // 获取三个按钮
         const btnEnter = scope.querySelector('[data-action="start"]');
         const btnRecords = scope.querySelector('[data-action="records"]');
@@ -94,13 +101,14 @@ window.js_log = function (level, message) {
 
         // 阅读记录
         if (btnRecords) {
-            btnRecords.addEventListener('click', () => {
+            btnRecords.addEventListener('click', async () => {
                 if (typeof js_log === 'function') {
                     js_log('info', '[调试] 用户点击了「阅读记录」按钮 - 功能开发中，后续将展示档案记录');
                 } else {
                     console.log('[调试] 用户点击了「阅读记录」按钮，功能待完善');
                 }
-
+                // 加载测试页面
+                await pageManager.load('index-wikidot', '/archives/wikidot/pages/index-wikidot.html');
                 if (window.api && window.api.js_console) {
                     window.api.js_console.log('debug', '阅读记录按钮被触发，当前游戏状态: ' + (api.game_state ? '已连接' : '未连接'));
                 }
@@ -111,7 +119,7 @@ window.js_log = function (level, message) {
 
         // 可公开资料库
         if (btnArchive) {
-            btnArchive.addEventListener('click', () => {
+            btnArchive.addEventListener('click', async () => {
                 if (typeof js_log === 'function') {
                     js_log('info', '[调试] 用户点击了「可公开资料库」按钮 - 准备加载实体档案');
                 } else {

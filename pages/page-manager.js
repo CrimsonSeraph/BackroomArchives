@@ -20,12 +20,27 @@ class PageManager {
     }
 
     async load(pageId, pageUrl) {
+        // 使用统一的日志输出
+        const log = (level, ...args) => {
+            if (typeof js_log === 'function') {
+                js_log(level, ...args);
+            } else {
+                switch (level) {
+                    case 'error': console.error(...args); break;
+                    case 'warn': console.warn(...args); break;
+                    default: console.log(...args);
+                }
+            }
+        };
+
+        log('log', `[Load] 开始加载 ${pageUrl}`);
+
         // 销毁当前页面
         if (this.currentDestroy) {
             try {
                 this.currentDestroy();
             } catch (e) {
-                console.warn(`[PageManager] destroy error for ${this.currentPageId}:`, e);
+                log('warn', `[PageManager] destroy error for ${this.currentPageId}:`, e);
             }
         }
 
@@ -36,10 +51,15 @@ class PageManager {
         let html;
         try {
             const res = await fetch(pageUrl);
+            log('log', `[PageManager] 响应状态: ${res.status}`);
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             html = await res.text();
         } catch (err) {
-            this.container.innerHTML = `<div class="error">加载失败: ${err.message}</div>`;
+            log('error', `[PageManager] 加载失败:`, err);
+            log('error', `[PageManager] Name: ${err.name}`);
+            log('error', `[PageManager] Message: ${err.message}`);
+            log('error', `[PageManager] Stack: ${err.stack}`);
+            this.container.innerHTML = `<div style="color:red;">加载失败: ${err.message}</div>`;
             return;
         }
 
@@ -48,6 +68,7 @@ class PageManager {
         const rootId = `${pageId}-root`;
         const newContent = doc.getElementById(rootId);
         if (!newContent) {
+            log('error', `[PageManager] 未找到根容器 #${rootId}`);
             this.container.innerHTML = `<div class="error">未找到根容器 #${rootId}</div>`;
             return;
         }
@@ -77,17 +98,25 @@ class PageManager {
                 });
                 externalPromises.push(promise);
             } else {
-                // 内联脚本：立即执行
-                const inlineScript = document.createElement('script');
-                inlineScript.textContent = oldScript.textContent;
-                document.body.appendChild(inlineScript);
-                // 执行后立即移除
-                inlineScript.remove();
+                // 先将内联脚本暂存，稍后统一执行
+                if (!this._pendingInlineScripts) this._pendingInlineScripts = [];
+                this._pendingInlineScripts.push(oldScript.textContent);
             }
         }
 
         // 等待所有外部脚本加载完成
         await Promise.all(externalPromises);
+
+        // 执行暂存的内联脚本（按原始顺序）
+        if (this._pendingInlineScripts && this._pendingInlineScripts.length) {
+            for (const code of this._pendingInlineScripts) {
+                const inlineScript = document.createElement('script');
+                inlineScript.textContent = code;
+                document.body.appendChild(inlineScript);
+                inlineScript.remove();
+            }
+            delete this._pendingInlineScripts;
+        }
 
         // 调用子页面的 init 函数
         const moduleName = `Page${pageId.charAt(0).toUpperCase() + pageId.slice(1)}`;
@@ -107,7 +136,7 @@ class PageManager {
                 }
             };
         } else {
-            console.warn(`[PageManager] 未找到 ${moduleName}.init，跳过初始化`);
+            log('warn', `[PageManager] 未找到 ${moduleName}.init，跳过初始化`);
             this.currentDestroy = null;
         }
 
@@ -122,5 +151,5 @@ class PageManager {
 
 // 等待主页面脚本加载完成后启动管理器
 window.addEventListener('load', () => {
-    window.pageManager = new PageManager('page-container');
+    window.pageManager = new PageManager('page-root');
 });
