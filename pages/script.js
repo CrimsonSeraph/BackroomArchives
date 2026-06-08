@@ -32,6 +32,14 @@ window.js_log = function (level, message) {
             // 将 api 实例挂载到全局
             window.api = api;
 
+            // 限定菜单容器
+            const menuContainer = document.getElementById('main-menu');
+            if (menuContainer) {
+                bindButtons(menuContainer, api);
+            } else {
+                console.warn('[Script] 未找到 #main-menu，按钮绑定失败');
+            }
+
             // 输出初始化成功的调试信息
             if (typeof js_log === 'function') {
                 js_log('info', '[Script] BackroomsAPI 初始化成功，按钮事件已准备就绪');
@@ -53,11 +61,11 @@ window.js_log = function (level, message) {
      * 绑定按钮的点击事件
      * @param {BackroomsAPI} api - 已初始化的 API 实例
      */
-    function bindButtons(api) {
+    function bindButtons(scope, api) {
         // 获取三个按钮
-        const btnEnter = document.querySelector('[data-action="start"]');
-        const btnRecords = document.querySelector('[data-action="records"]');
-        const btnArchive = document.querySelector('[data-action="archive"]');
+        const btnEnter = scope.querySelector('[data-action="start"]');
+        const btnRecords = scope.querySelector('[data-action="records"]');
+        const btnArchive = scope.querySelector('[data-action="archive"]');
 
         // 进入档案库（开始游戏）
         if (btnEnter) {
@@ -124,10 +132,10 @@ window.js_log = function (level, message) {
     /**
      * 降级绑定方案：当 BackroomsAPI 初始化失败时使用（仅 console 输出，保证页面不报错）
      */
-    function bindButtonsFallback() {
-        const btnEnter = document.querySelector('[data-action="start"]');
-        const btnRecords = document.querySelector('[data-action="records"]');
-        const btnArchive = document.querySelector('[data-action="archive"]');
+    function bindButtonsFallback(scope) {
+        const btnEnter = scope.querySelector('[data-action="start"]');
+        const btnRecords = scope.querySelector('[data-action="records"]');
+        const btnArchive = scope.querySelector('[data-action="archive"]');
 
         if (btnEnter) {
             btnEnter.addEventListener('click', () => {
