@@ -7,7 +7,7 @@
 ## 目录结构
 
 ```text
-BackroomsArchives/
+BackroomArchives/
 ├── .github/                            # GitHub 配置目录
 │   └── workflows/                      # CI/CD 工作流
 │       ├── build.yml                   # 构建与测试工作流

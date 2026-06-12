@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(BackroomsArchives LANGUAGES CXX)
+project(BackroomArchives LANGUAGES CXX)
 
 # 启用 /EHsc 异常处理（仅 MSVC）
 if(MSVC)
@@ -343,7 +343,7 @@ include(InstallRequiredSystemLibraries)
 set(CPACK_COMPONENTS_ALL core archives)
 
 # 包名根据档案版本变化
-set(CPACK_PACKAGE_NAME "BackroomsArchives-${ARCHIVE_VERSION}")
+set(CPACK_PACKAGE_NAME "BackroomArchives-${ARCHIVE_VERSION}")
 set(CPACK_PACKAGE_VENDOR "CrimsonSeraph")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Modular Backrooms text game (${ARCHIVE_VERSION} archive)")
 set(CPACK_PACKAGE_VERSION_MAJOR "0")

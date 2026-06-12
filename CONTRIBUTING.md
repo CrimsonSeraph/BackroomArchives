@@ -1,6 +1,6 @@
-# Contributing to BackroomsArchives
+# Contributing to BackroomArchives
 
-感谢你考虑为 BackroomsArchives 贡献代码！我们欢迎任何形式的贡献，包括提交 Bug 报告、功能请求、代码改进、文档更新等。
+感谢你考虑为 BackroomArchives 贡献代码！我们欢迎任何形式的贡献，包括提交 Bug 报告、功能请求、代码改进、文档更新等。
 
 在参与贡献之前，请花一点时间阅读本指南，以确保你的贡献能够顺利被合并。
 
@@ -12,7 +12,7 @@
 
 ## 如何报告问题（Issue）
 
-如果你发现了 Bug、有功能建议或对文档有疑问，请在 [GitHub Issues](https://github.com/CrimsonSeraph/BackroomsArchives/issues) 页面提交。
+如果你发现了 Bug、有功能建议或对文档有疑问，请在 [GitHub Issues](https://github.com/CrimsonSeraph/BackroomArchives/issues) 页面提交。
 
 ### 提交前请先检查
 

@@ -1,6 +1,6 @@
 # 配置文件目录（config）
 
-本目录存放 BackroomsArchives 的全部系统配置内容。客户端启动时会自动加载本目录下的 JSON 配置文件，并通过优先级规则合并为最终配置。
+本目录存放 BackroomArchives 的全部系统配置内容。客户端启动时会自动加载本目录下的 JSON 配置文件，并通过优先级规则合并为最终配置。
 
 ---
 
@@ -18,7 +18,7 @@
 所有配置文件必须包含以下固定字段: 
 - `"__priority"`: 用于定义优先级（不可删除，值需与文件名对应）。
 - `"version"`: 默认版本号为 `"1.0"`。
-- `"BackroomsArchives"`: 固定为 `"BackroomsArchives"`，用于识别配置文件归属。
+- `"BackroomArchives"`: 固定为 `"BackroomArchives"`，用于识别配置文件归属。
 
 ---
 
@@ -49,7 +49,7 @@
     "app": {
     },
     "version": "1.0",
-    "BackroomsArchives": "BackroomsArchives"
+    "BackroomArchives": "BackroomArchives"
 }
 ```
 
@@ -62,4 +62,4 @@
 - 配置文件必须为合法的 JSON 格式，否则客户端将无法解析。
 - 修改配置文件后，客户端通常支持热重载（部分模块需重新加载配置）。
 - 如果某个文件缺失，客户端可能无法正常工作，请务必保留两个文件以确保配置完整性。
-- 请勿删除或修改 `__priority`、`version`、`BackroomsArchives` 这三个保留字段。
+- 请勿删除或修改 `__priority`、`version`、`BackroomArchives` 这三个保留字段。

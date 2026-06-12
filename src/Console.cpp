@@ -140,7 +140,7 @@ bool Console::create_debug_console() {
         SetConsoleMode(hOutput, dwMode);
     }
 
-    SetConsoleTitleW(L"BackroomsArchives Debug Console");
+    SetConsoleTitleW(L"BackroomArchives Debug Console");
     return true;
 }
 #endif

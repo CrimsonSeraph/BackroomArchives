@@ -1,4 +1,4 @@
-# BackroomsArchives
+# BackroomArchives
 
 **[English](README.en.md) | 中文**
 
@@ -32,7 +32,7 @@ Current version: `v0.1.0`
 
 ## I. Project Introduction
 
-**BackroomsArchives** is a text game inspired by the Backrooms setting. Unlike traditional single games, all content – levels, rules, BUFFs, texts – exist as **plugins** stored under different "archive versions" (e.g., the Wikidot community Backrooms archive, Fandom archive, etc.). The core only provides:
+**BackroomArchives** is a text game inspired by the Backrooms setting. Unlike traditional single games, all content – levels, rules, BUFFs, texts – exist as **plugins** stored under different "archive versions" (e.g., the Wikidot community Backrooms archive, Fandom archive, etc.). The core only provides:
 
 - Basic content and resource loading framework
 - Cross-platform dynamic library loading (Windows `.dll`, Linux `.so`, macOS `.dylib`)
@@ -93,8 +93,8 @@ Each archive version is completely independent, containing its own **core plugin
 ### 1. Get the source code
 
 ```bash
-git clone https://github.com/CrimsonSeraph/BackroomsArchives.git
-cd BackroomsArchives
+git clone https://github.com/CrimsonSeraph/BackroomArchives.git
+cd BackroomArchives
 ```
 
 ### 2. Configure CMake (using wikidot archive version as an example)
@@ -133,10 +133,10 @@ See [Project Structure](#vii-project-structure) for the installed directory layo
 
 ```bash
 # Windows
-./install_full/BackroomsArchives.exe
+./install_full/BackroomArchives.exe
 
 # Linux / macOS
-./install_full/BackroomsArchives
+./install_full/BackroomArchives
 ```
 
 The program will scan for available archive versions under `install_full/archives/`, prompt the user to select one (if only one exists it loads it automatically), and then enter the main game loop.
@@ -147,7 +147,7 @@ The program will scan for available archive versions under `install_full/archive
 cpack --config build/CPackConfig.cmake -B package -G ZIP
 ```
 
-The generated complete packages are located in the `package/` directory, named like `BackroomsArchives-wikidot-Windows.zip`.
+The generated complete packages are located in the `package/` directory, named like `BackroomArchives-wikidot-Windows.zip`.
 
 ---
 
@@ -250,7 +250,7 @@ The `__priority` field in the config files defines the priority and must not be 
 
 </details>
 
-**Note:** The `"version"` and `"BackroomsArchives"` fields are mandatory. Their content can be anything, but **do not delete or modify** these fields.
+**Note:** The `"version"` and `"BackroomArchives"` fields are mandatory. Their content can be anything, but **do not delete or modify** these fields.
 
 Archive common configuration files are located under `archives/wikidot/config/`; their specific content is defined by the archive core plugin.
 
@@ -272,7 +272,7 @@ The logging system provides macros `LOG_DEBUG`, `LOG_INFO`, `LOG_WARN`, `LOG_ERR
 <summary> Click to expand directory tree </summary>
 
 ```
-BackroomsArchives/
+BackroomArchives/
 ├── .github/                            # GitHub configuration directory
 │   └── workflows/                      # CI/CD workflows
 │       ├── build.yml                   # Build and test workflow
@@ -563,7 +563,7 @@ For the full text of third‑party licenses and notices, see [NOTICE.txt](NOTICE
 - Author: [CrimsonSeraph]
 - BiliBili: [浪天幽影(UID: 1741002917)](https://space.bilibili.com/1741002917?spm_id_from=333.1007.0.0)
 - X: [𝒞𝓇𝒾𝓂𝓈𝑜𝓃𝒮𝑒𝓇𝒶𝓅𝒽✟升天✟(@CrimSeraph_QwQ)](https://x.com/CrimSeraph_QwQ)
-- Project homepage: [https://github.com/CrimsonSeraph/BackroomsArchives](https://github.com/CrimsonSeraph/BackroomsArchives)
+- Project homepage: [https://github.com/CrimsonSeraph/BackroomArchives](https://github.com/CrimsonSeraph/BackroomArchives)
 
 ---
 

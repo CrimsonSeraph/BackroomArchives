@@ -1,17 +1,17 @@
 {
+    "BackroomArchives": "BackroomArchives",
     "__priority": 0,
     "app": {
-        "name": "BackroomsArchives",
-        "version": "0.1.0",
         "debug": false,
         "log": {
             "console_level": 0,
             "only_type_info": false
         },
+        "name": "BackroomArchives",
+        "version": "0.1.0",
         "web_pages": {
             "path": "./pages"
         }
     },
-    "version": "1.0",
-    "BackroomsArchives": "BackroomsArchives"
+    "version": "1.0"
 }

@@ -19,7 +19,7 @@ nlohmann::json DefaultConfigs::get_default_config(const std::string& config_name
         return {
             {"__priority", 0},
             {"app", {
-                {"name", "BackroomsArchives"},
+                {"name", "BackroomArchives"},
                 {"version", "0.6.0"},
                 {"debug", false},
                 {"log", {
@@ -31,7 +31,7 @@ nlohmann::json DefaultConfigs::get_default_config(const std::string& config_name
                 }}
             }},
             {"version", "1.0"},
-            {"BackroomsArchives", "BackroomsArchives"}
+            {"BackroomArchives", "BackroomArchives"}
         };
     }
     else if (config_name == "user") {
@@ -40,7 +40,7 @@ nlohmann::json DefaultConfigs::get_default_config(const std::string& config_name
             {"app", {
             }},
             {"version", "1.0"},
-            {"BackroomsArchives", "BackroomsArchives"}
+            {"BackroomArchives", "BackroomArchives"}
         };
     }
     else {
@@ -49,7 +49,7 @@ nlohmann::json DefaultConfigs::get_default_config(const std::string& config_name
             {"__priority", 0},
             {"app", {}},
             {"version", "1.0"},
-            {"BackroomsArchives", "BackroomsArchives"}
+            {"BackroomArchives", "BackroomArchives"}
         };
     }
 }

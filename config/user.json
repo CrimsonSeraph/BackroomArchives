@@ -1,7 +1,6 @@
 {
+    "BackroomArchives": "BackroomArchives",
     "__priority": 1,
-    "app": {
-    },
-    "version": "1.0",
-    "BackroomsArchives": "BackroomsArchives"
+    "app": {},
+    "version": "1.0"
 }

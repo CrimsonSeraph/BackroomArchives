@@ -1,4 +1,4 @@
-# BackroomsArchives
+# BackroomArchives
 
 **[English](README.en.md) | 中文**
 
@@ -32,7 +32,7 @@
 
 ## 一、项目简介
 
-**BackroomsArchives** 是一款受后室（Backrooms）设定启发的文字游戏。与传统的单一游戏不同，本项目的所有内容——包括层级、规则、BUFF、文本——都以**插件形式**存在，存储在不同的“档案版本”下（例如基于 Wikidot 社区的后室档案、Fandom 档案等）。本体只负责提供：
+**BackroomArchives** 是一款受后室（Backrooms）设定启发的文字游戏。与传统的单一游戏不同，本项目的所有内容——包括层级、规则、BUFF、文本——都以**插件形式**存在，存储在不同的“档案版本”下（例如基于 Wikidot 社区的后室档案、Fandom 档案等）。本体只负责提供：
 
 - 基本的内容与资源加载框架
 - 跨平台动态库加载（Windows `.dll`、Linux `.so`、macOS `.dylib`）
@@ -94,8 +94,8 @@
 ### 1. 获取源码
 
 ```bash
-git clone https://github.com/CrimsonSeraph/BackroomsArchives.git
-cd BackroomsArchives
+git clone https://github.com/CrimsonSeraph/BackroomArchives.git
+cd BackroomArchives
 ```
 
 ### 2. 配置 CMake（以 wikidot 档案版本为例）
@@ -134,10 +134,10 @@ cmake --install build --prefix install_full
 
 ```bash
 # Windows
-./install_full/BackroomsArchives.exe
+./install_full/BackroomArchives.exe
 
 # Linux / macOS
-./install_full/BackroomsArchives
+./install_full/BackroomArchives
 ```
 
 程序会扫描 `install_full/archives/` 下的可用档案版本，提示用户选择（若只有一个版本则直接加载），然后进入游戏主循环。
@@ -148,7 +148,7 @@ cmake --install build --prefix install_full
 cpack --config build/CPackConfig.cmake -B package -G ZIP
 ```
 
-生成的完整包位于 `package/` 目录下，命名如 `BackroomsArchives-wikidot-Windows.zip`。
+生成的完整包位于 `package/` 目录下，命名如 `BackroomArchives-wikidot-Windows.zip`。
 
 ---
 
@@ -251,7 +251,7 @@ public:
 
 </details>
 
-**注意: ** 其中 `"version"` 与 `"BackroomsArchives"` 为检查字段，内容随意，但 **请勿删除或修改** 此字段。
+**注意: ** 其中 `"version"` 与 `"BackroomArchives"` 为检查字段，内容随意，但 **请勿删除或修改** 此字段。
 
 档案版本的公共配置文件位于 `archives/wikidot/config/` 下，具体内容由档案核心插件定义。
 
@@ -273,7 +273,7 @@ public:
 <summary> 点击展开目录树 </summary>
 
 ```
-BackroomsArchives/
+BackroomArchives/
 ├── .github/                            # GitHub 配置目录
 │   └── workflows/                      # CI/CD 工作流
 │       ├── build.yml                   # 构建与测试工作流
@@ -564,7 +564,7 @@ CMake 配置过程中报错，无法从 GitHub 下载 `json.hpp`。
 - 作者: [CrimsonSeraph]
 - BiliBili: [浪天幽影(UID: 1741002917)](https://space.bilibili.com/1741002917?spm_id_from=333.1007.0.0)
 - X: [𝒞𝓇𝒾𝓂𝓈𝑜𝓃𝒮𝑒𝓇𝒶𝓅𝒽✟升天✟(@CrimSeraph_QwQ)](https://x.com/CrimSeraph_QwQ)
-- 项目主页: [https://github.com/CrimsonSeraph/BackroomsArchives](https://github.com/CrimsonSeraph/BackroomsArchives)
+- 项目主页: [https://github.com/CrimsonSeraph/BackroomArchives](https://github.com/CrimsonSeraph/BackroomArchives)
 
 ---
 
