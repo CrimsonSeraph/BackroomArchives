@@ -56,7 +56,7 @@ BackroomArchives/
 ├── pages/                              # 页面文本资源文件（多语言）
 │   ├── backrooms-sdk.js                # 页面脚本公共 JS
 │   ├── index.html                      # 首页
-│   ├── README.md                       # pages 目录说明 
+│   ├── README.md                       # pages 目录说明
 │   ├── script.js                       # 页面脚本文件
 │   └── style.css                       # 页面样式文件
 ├── screenshot/                         # 截屏资源文件
@@ -103,7 +103,7 @@ BackroomArchives/
 ### 2. 缩进与空白
 
 - **缩进方式**: 4 个空格（不使用 Tab）
-> 若使用 Tab，必须设置为等同于 4 个空格且最后文件保存时转换为 4 个空格
+    > 若使用 Tab，必须设置为等同于 4 个空格且最后文件保存时转换为 4 个空格
 - **行最大长度**: 暂不作严格限制，但建议不超过 120 字符
 - **括号风格**: 左括号与语句同行（K&R 风格）
 
@@ -116,13 +116,13 @@ if (condition) {
 
 ### 3. 命名规则
 
-| 元素 | 风格 | 示例 |
-| - | - | - |
-| 类名 | 双驼峰（PascalCase） | `GameCore`, `PluginLoader` |
-| 变量名 | 小写 + 下划线（snake_case） | `player_health`, `max_level` |
-| 函数名 | 小写 + 下划线（snake_case） | `load_plugin()`, `register_level()` |
-| 常量/宏 | 全大写 + 下划线 | `MAX_BUFFER_SIZE` |
-| 接口类（抽象基类） | 前缀 `I` + PascalCase | `ILevel`, `IBuff` |
+| 元素               | 风格                        | 示例                                |
+| ------------------ | --------------------------- | ----------------------------------- |
+| 类名               | 双驼峰（PascalCase）        | `GameCore`, `PluginLoader`          |
+| 变量名             | 小写 + 下划线（snake_case） | `player_health`, `max_level`        |
+| 函数名             | 小写 + 下划线（snake_case） | `load_plugin()`, `register_level()` |
+| 常量/宏            | 全大写 + 下划线             | `MAX_BUFFER_SIZE`                   |
+| 接口类（抽象基类） | 前缀 `I` + PascalCase       | `ILevel`, `IBuff`                   |
 
 > **注意**: 重写标准库或第三方库的虚函数时，保持原有命名风格。
 
@@ -130,12 +130,12 @@ if (condition) {
 
 前端 `pages/script.js` 及其他所有 JavaScript 代码**必须**遵循 JavaScript/TypeScript 社区通用命名规范，**不使用** C++ 的 `snake_case` 风格。
 
-| 元素 | 风格 | 示例 | 说明 |
-| - | - | - | - |
-| 变量 / 函数 / 方法 | 小驼峰（camelCase） | `playerHealth`, `maxLevel`, `loadPlugin()` | 首字母小写 |
-| 类 / 构造函数 | 大驼峰（PascalCase） | `GameCore`, `PluginLoader` | 与 C++ 类风格一致 |
-| 常量 | 全大写 + 下划线 | `MAX_BUFFER_SIZE` | 使用 `const` 声明，值基本不变 |
-| 私有成员（非正式） | 下划线前缀 + camelCase | `_internalState`, `_handleClick()` | 仅在模块内部使用，不建议对外暴露 |
+| 元素               | 风格                   | 示例                                       | 说明                             |
+| ------------------ | ---------------------- | ------------------------------------------ | -------------------------------- |
+| 变量 / 函数 / 方法 | 小驼峰（camelCase）    | `playerHealth`, `maxLevel`, `loadPlugin()` | 首字母小写                       |
+| 类 / 构造函数      | 大驼峰（PascalCase）   | `GameCore`, `PluginLoader`                 | 与 C++ 类风格一致                |
+| 常量               | 全大写 + 下划线        | `MAX_BUFFER_SIZE`                          | 使用 `const` 声明，值基本不变    |
+| 私有成员（非正式） | 下划线前缀 + camelCase | `_internalState`, `_handleClick()`         | 仅在模块内部使用，不建议对外暴露 |
 
 ```javascript
 // 正确示例
@@ -148,7 +148,7 @@ class LevelManager {
     constructor() {
         this._cache = new Map();
     }
-    
+
     getCurrentLevel() { ... }
 }
 ```
@@ -157,10 +157,10 @@ class LevelManager {
 
 ### 4. 导入顺序（C++ `#include`）
 
-- **顺序规则**:   
-  1. 自定义头文件（`include/` 下的文件）  
-  2. 第三方库（如 nlohmann/json）  
-  3. 标准库
+- **顺序规则**:
+    1. 自定义头文件（`include/` 下的文件）
+    2. 第三方库（如 nlohmann/json）
+    3. 标准库
 
 - **内部排序**: 每组内按字母顺序排列
 
@@ -180,7 +180,7 @@ class LevelManager {
 
 ### 5. 头文件中的各项定义顺序
 
-类声明中各分区必须按以下顺序排列（若某分区为空，可省略）: 
+类声明中各分区必须按以下顺序排列（若某分区为空，可省略）:
 
 ```
 public: → protected: → private:
@@ -188,43 +188,43 @@ public: → protected: → private:
 
 #### 5.1 各分区内部成员排列顺序
 
-- **`public` 分区**  
-  1. 构造函数 / 析构函数  
-  2. 公共接口（普通成员函数）  
-  3. 公共成员变量（极少使用）
+- **`public` 分区**
+    1. 构造函数 / 析构函数
+    2. 公共接口（普通成员函数）
+    3. 公共成员变量（极少使用）
 
-- **`protected` 分区**  
-  1. 重写的虚函数（`override`）  
-  2. 其他受保护方法  
-  3. 受保护成员变量
+- **`protected` 分区**
+    1. 重写的虚函数（`override`）
+    2. 其他受保护方法
+    3. 受保护成员变量
 
-- **`private` 分区**  
-  1. 常量（`static constexpr` / `const`）  
-  2. 成员变量  
-  3. 私有辅助函数
+- **`private` 分区**
+    1. 常量（`static constexpr` / `const`）
+    2. 成员变量
+    3. 私有辅助函数
 
 #### 5.2 特殊成员的放置位置（按优先级）
 
-- **友元声明**: 紧接在 `private:` 标签之后的第一行  
-- **静态成员变量**: 放在 `private:` 区的最开头（常量之前）  
-- **静态成员函数**: 放在所属分区（`public` / `private`）的普通成员函数之前  
+- **友元声明**: 紧接在 `private:` 标签之后的第一行
+- **静态成员变量**: 放在 `private:` 区的最开头（常量之前）
+- **静态成员函数**: 放在所属分区（`public` / `private`）的普通成员函数之前
 
 #### 5.3 模板函数与静态工具函数
 
-- **模板函数**: 仅声明在头文件中，定义放入同名的 `类名_impl.hpp` 文件（同一目录）。  
+- **模板函数**: 仅声明在头文件中，定义放入同名的 `类名_impl.hpp` 文件（同一目录）。
 - **静态工具函数**: 不要放在类声明内，应独立到 `_utils.hpp` / `_utils.cpp` 文件中。
 
 ### 6. 源文件组织规范
 
-- 函数定义的顺序**必须**与头文件中各分区的声明顺序严格一致。  
-- 每个分区内，函数定义的顺序也必须与头文件中声明的顺序相同。  
+- 函数定义的顺序**必须**与头文件中各分区的声明顺序严格一致。
+- 每个分区内，函数定义的顺序也必须与头文件中声明的顺序相同。
 - 若头文件有调整（如成员函数重排），源文件需同步调整定义顺序。
 
 ### 7. 函数注释规范
 
-为每个函数添加说明注释，推荐使用 Doxygen 风格: 
+为每个函数添加说明注释，推荐使用 Doxygen 风格:
 
-- 复杂函数使用以下格式: 
+- 复杂函数使用以下格式:
 
 ```cpp
 /// @brief 简短功能描述
@@ -235,7 +235,7 @@ public: → protected: → private:
 int calculate(int param1, double param2);
 ```
 
-- 简单函数可在函数前一行使用 `//` 进行简短描述: 
+- 简单函数可在函数前一行使用 `//` 进行简短描述:
 
 ```cpp
 // 检查游戏是否正在进行
@@ -246,7 +246,7 @@ bool is_game_running();
 
 ### 8. 日志规范
 
-本项目使用自定义日志宏（如 `LOG_DEBUG`、`LOG_INFO`、`LOG_WARN`、`LOG_ERROR` 等），遵循以下原则: 
+本项目使用自定义日志宏（如 `LOG_DEBUG`、`LOG_INFO`、`LOG_WARN`、`LOG_ERROR` 等），遵循以下原则:
 
 #### 8.1 添加调试信息的位置
 
@@ -264,12 +264,12 @@ bool is_game_running();
 
 #### 8.3 日志级别使用
 
-| 级别 | 用途 |
-| - | - |
-| `LOG_ERROR` | 严重错误，影响功能（如无法加载插件、配置文件损坏） |
+| 级别        | 用途                                                     |
+| ----------- | -------------------------------------------------------- |
+| `LOG_ERROR` | 严重错误，影响功能（如无法加载插件、配置文件损坏）       |
 | `LOG_WARN`  | 可恢复的异常情况（如某层级资源缺失、插件接口版本不匹配） |
-| `LOG_INFO`  | 重要的状态变化、模块初始化/销毁、用户操作等 |
-| `LOG_DEBUG` | 详细调试信息，默认可能在 Release 版本禁用 |
+| `LOG_INFO`  | 重要的状态变化、模块初始化/销毁、用户操作等              |
+| `LOG_DEBUG` | 详细调试信息，默认可能在 Release 版本禁用                |
 
 > 根据实际情况选择合适的级别，不要滥用 `LOG_INFO` 和 `LOG_ERROR`。
 
@@ -279,7 +279,7 @@ bool is_game_running();
 
 ### 9. 注释规范（基本）
 
-- **单行注释（独占一行）**: 放在代码块前面，与代码块开头保持相同缩进级别。  
+- **单行注释（独占一行）**: 放在代码块前面，与代码块开头保持相同缩进级别。
   `//` 后跟一个空格，再写注释内容。
 
 ```cpp
@@ -304,6 +304,61 @@ bool game_over = false;  // 游戏结束标志
 - 未在本规范中明确提及的内容（如 switch 语句格式、异常处理方式等），可保持个人习惯，后续逐步补充。
 - 模板函数定义已分离到 `_impl.hpp`。
 - 静态工具函数移出类声明，放入独立 `_utils`。
+
+### 11. clang-format 配置
+
+项目使用 `clang-format` 统一代码格式。请在项目根目录放置以下 `.clang-format` 配置文件：
+
+```yaml
+BasedOnStyle: LLVM
+ColumnLimit: 120
+IndentWidth: 4
+UseTab: Never
+BreakBeforeBraces: Custom
+NamespaceIndentation: All
+AccessModifierOffset: -4
+AllowShortEnumsOnASingleLine: false
+AlwaysBreakTemplateDeclarations: Yes
+BraceWrapping:
+    AfterControlStatement: false
+    AfterClass: false
+    AfterFunction: false
+    AfterStruct: false
+    AfterEnum: false
+    AfterNamespace: false
+    BeforeElse: true
+    BeforeCatch: true
+```
+
+#### 配置说明
+
+- **缩进与空白**
+  `IndentWidth: 4`、`UseTab: Never` → 与规范“缩进4个空格，不使用 Tab”一致。
+  `ColumnLimit: 120` → 与规范“建议不超过120字符”一致。
+
+- **括号风格（K&R 变体）**
+  `BreakBeforeBraces: Custom` + `BraceWrapping` 子项：
+  - `AfterControlStatement: false` → `if`、`for` 等左括号不换行。
+  - `AfterFunction: false` → 函数左括号不换行。
+  - `BeforeElse: true` → `}` 后换行再写 `else`（规范未严格限定，此处显式声明）。
+  - `BeforeCatch: true` → `}` 后换行再写 `catch`。
+
+- **访问修饰符缩进**
+  `AccessModifierOffset: -4` → `public:`、`private:` 等相对于类内部普通成员减少 4 个空格缩进，使其与 `class` 关键字对齐。
+
+- **命名空间缩进**
+  `NamespaceIndentation: All` → 命名空间内的内容整体缩进一级（包含左花括号后的所有代码）。
+
+- **枚举换行**
+  `AllowShortEnumsOnASingleLine: false` → 强制每个枚举值单独占一行，无论枚举长短。
+
+- **模板声明换行**
+  `AlwaysBreakTemplateDeclarations: Yes` → `template <...>` 单独占一行，后跟函数/类定义。
+
+- **基础风格**
+  `BasedOnStyle: LLVM` → 未显式指定的选项继承 LLVM 默认值。
+
+使用上述配置后，可通过 `clang-format -i <文件>` 或在编辑器（如 VS Code + Clang-Format 插件）中自动格式化代码，确保与本文档规范一致。
 
 ## 开发环境
 
