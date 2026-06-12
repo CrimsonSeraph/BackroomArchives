@@ -17,7 +17,7 @@
 // ConfigTemplate - 通用配置模板结构体
 // ============================================
 
-template<typename Tag>
+template <typename Tag>
 struct ConfigTemplate {
     // -------------------- 成员变量 --------------------
     // 基础字段
@@ -39,16 +39,14 @@ struct ConfigTemplate {
 
     // -------------------- 静态方法 --------------------
     /// @brief JSON 序列化
-    inline static void to_json(nlohmann::json& j, const ConfigTemplate& config) {
-        j = nlohmann::json{
-            {"name", config.name},
-            {"value", config.value},
-            {"enabled", config.enabled},
-            {"items", config.items},
-            {"settings", config.settings},
-            {"timeout", config.timeout.count()},
-            {"interval", config.interval.count()}
-        };
+    inline static void to_json(nlohmann::json &j, const ConfigTemplate &config) {
+        j = nlohmann::json{{"name", config.name},
+                           {"value", config.value},
+                           {"enabled", config.enabled},
+                           {"items", config.items},
+                           {"settings", config.settings},
+                           {"timeout", config.timeout.count()},
+                           {"interval", config.interval.count()}};
 
         if (config.description.has_value()) {
             j["description"] = config.description.value();
@@ -59,7 +57,7 @@ struct ConfigTemplate {
     }
 
     /// @brief JSON 反序列化
-    inline static void from_json(const nlohmann::json& j, ConfigTemplate& config) {
+    inline static void from_json(const nlohmann::json &j, ConfigTemplate &config) {
         j.at("name").get_to(config.name);
         j.at("value").get_to(config.value);
         j.at("enabled").get_to(config.enabled);
@@ -78,9 +76,7 @@ struct ConfigTemplate {
     }
 
     /// @brief 配置验证
-    inline bool validate() const {
-        return !name.empty() && value >= 0;
-    }
+    inline bool validate() const { return !name.empty() && value >= 0; }
 };
 
 // ============================================
@@ -97,8 +93,8 @@ struct MainConfig {
     std::string web_page_path_;
 
     // -------------------- 静态方法 --------------------
-    static void to_json(nlohmann::json& j, const MainConfig& config);
-    static void from_json(const nlohmann::json& j, MainConfig& config);
+    static void to_json(nlohmann::json &j, const MainConfig &config);
+    static void from_json(const nlohmann::json &j, MainConfig &config);
     bool validate() const;
 };
 
@@ -110,12 +106,12 @@ struct UserConfig {
     // -------------------- 成员变量 --------------------
 
     // -------------------- 静态方法 --------------------
-    static void to_json(nlohmann::json& j, const UserConfig& config);
-    static void from_json(const nlohmann::json& j, UserConfig& config);
+    static void to_json(nlohmann::json &j, const UserConfig &config);
+    static void from_json(const nlohmann::json &j, UserConfig &config);
     bool validate() const;
 };
 
 // 字段映射宏（预留，未使用）
-//BEGIN_FIELD_MAP(Struct)
+// BEGIN_FIELD_MAP(Struct)
 //    FIELD(Struct, <T>, name)
-//END_FIELD_MAP()
+// END_FIELD_MAP()

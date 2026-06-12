@@ -1,5 +1,5 @@
 ================================================================================
-                              NOTICE
+NOTICE
 ================================================================================
 
 This product is licensed under the GNU General Public License, version 3
@@ -10,9 +10,11 @@ However, this product incorporates or depends on third-party software
 components that are distributed under their own license terms. Those
 components and their licenses are listed below.
 
--------------------------------------------------------------------------------
+---
+
 1. JSON for Modern C++ (nlohmann/json)
--------------------------------------------------------------------------------
+
+---
 
 Copyright (c) 2013-2022 Niels Lohmann
 
@@ -21,32 +23,36 @@ json.hpp). It is distributed under the MIT License.
 
 The complete text of the MIT License is provided in the "licenses/"
 directory as:
-   - LICENSE.MIT
+
+- LICENSE.MIT
 
 The library is obtained automatically during the build process from:
-   https://github.com/nlohmann/json
+https://github.com/nlohmann/json
 
--------------------------------------------------------------------------------
+---
+
 2. DynamicTextEngine (CSS/JS)
--------------------------------------------------------------------------------
+
+---
 
 This product includes the DynamicTextEngine CSS and JavaScript files obtained
 from:
-   https://github.com/CrimsonSeraph/WebUtils/tree/main/DynamicTextEngine
+https://github.com/CrimsonSeraph/WebUtils/tree/main/DynamicTextEngine
 
 These files are downloaded automatically during the CMake configuration step
 from the following URLs:
-   - https://raw.githubusercontent.com/CrimsonSeraph/WebUtils/main/DynamicTextEngine/DynamicTextEngine.css
-   - https://raw.githubusercontent.com/CrimsonSeraph/WebUtils/main/DynamicTextEngine/DynamicTextEngine.js
+
+- https://raw.githubusercontent.com/CrimsonSeraph/WebUtils/main/DynamicTextEngine/DynamicTextEngine.css
+- https://raw.githubusercontent.com/CrimsonSeraph/WebUtils/main/DynamicTextEngine/DynamicTextEngine.js
 
 LICENSE:
-   The DynamicTextEngine is distributed under the MIT License.
-   A copy of the MIT License can be found in the "licenses/" directory as LICENSE.MIT,
-   or at https://opensource.org/licenses/MIT.
+The DynamicTextEngine is distributed under the MIT License.
+A copy of the MIT License can be found in the "licenses/" directory as LICENSE.MIT,
+or at https://opensource.org/licenses/MIT.
 
--------------------------------------------------------------------------------
-LICENSE SCOPE (Important)
--------------------------------------------------------------------------------
+---
+
+## LICENSE SCOPE (Important)
 
 Each third-party component listed above is governed solely by its own
 license. The use of these components does not change the license of your

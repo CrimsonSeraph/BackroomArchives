@@ -3,6 +3,7 @@
 **[English](README.en.md) | 中文**
 
 > **Table of Contents**
+>
 > - [I. Project Introduction](#i-project-introduction)
 > - [II. Features](#ii-features)
 > - [III. Dependencies](#iii-dependencies)
@@ -19,13 +20,14 @@
 
 A **modular, plug-in based Backrooms-themed text game**.
 
-A Qt-based text game written in C++20.  
-The core provides only the basic framework, plugin loading, and main game loop; all levels, BUFFs, text, configuration, etc., are dynamically supplied by **Archive plugins**.  
+A Qt-based text game written in C++20.
+The core provides only the basic framework, plugin loading, and main game loop; all levels, BUFFs, text, configuration, etc., are dynamically supplied by **Archive plugins**.
 Supports multiple archive versions (e.g., Wikidot, Fandom, etc.), each packaged independently and switchable at runtime.
 
 > 👉 Want to develop an archive plugin? Check [FAQ - Plugin Development](#faq---plugin-development)
 
-Current version: `v0.1.0`  
+Current version: `v0.1.0`
+
 > See [Changelog](CHANGELOG.md) for details.
 
 ---
@@ -61,29 +63,33 @@ Each archive version is completely independent, containing its own **core plugin
 - **Automated CI**: GitHub Actions automatically builds multi‑platform, multi‑archive versions and publishes them to Releases
 - **Hardware‑accelerated rendering**: In Release mode, QtWebEngine uses GPU acceleration (OpenGL + WebGL) for smooth animations. Debug mode falls back to software rendering (slower, intended for debugging only).
 - **C++/JavaScript bidirectional communication**: Implemented efficient communication between the game core and the frontend page based on Qt WebChannel.
+
 ---
 
 ## III. Dependencies
 
 ### 1. System Dependencies
+
 - **C++ Compiler**: with C++20 support (GCC 11+, Clang 14+, MSVC 2022)
 - **CMake**: 3.16 or higher
-- **Qt**: 5.15 or 6.x (Core, Gui, Widgets).  
-  this project uses `WebEngineCore` and `WebEngineWidgets`, make sure your Qt installation includes the `WebEngine` module together with its dependencies (`WebChannel`, `Positioning`, etc.).  
-  Qt 6.x is recommended; use the Qt Maintenance Tool to select all `WebEngine`-related components.  
+- **Qt**: 5.15 or 6.x (Core, Gui, Widgets).
+  this project uses `WebEngineCore` and `WebEngineWidgets`, make sure your Qt installation includes the `WebEngine` module together with its dependencies (`WebChannel`, `Positioning`, etc.).
+  Qt 6.x is recommended; use the Qt Maintenance Tool to select all `WebEngine`-related components.
 - **Dynamic linker / loader**: platform native (Windows `LoadLibrary`, Linux/macOS `dlopen`)
 
-> Qt 6.x is recommended; CMake will auto-detect and configure it.  
-  VS2022/2026 (MSVC) is recommended for Windows development; use GCC or Clang on Linux/macOS.
+> Qt 6.x is recommended; CMake will auto-detect and configure it.
+> VS2022/2026 (MSVC) is recommended for Windows development; use GCC or Clang on Linux/macOS.
 
 ### 2. Third-party libraries
-- **[nlohmann/json](https://github.com/nlohmann/json)** (version 3.12.0)  
+
+- **[nlohmann/json](https://github.com/nlohmann/json)** (version 3.12.0)
   Used for JSON parsing. CMake automatically downloads the single-header file from GitHub during configuration.
 
-- **[DynamicTextEngine](https://github.com/CrimsonSeraph/WebUtils/tree/main/DynamicTextEngine)** (CSS/JS)  
+- **[DynamicTextEngine](https://github.com/CrimsonSeraph/WebUtils/tree/main/DynamicTextEngine)** (CSS/JS)
   Used to enhance dynamic text effects in the web interface. CMake automatically downloads `DynamicTextEngine.js` into the `pages/extensions/` directory during configuration.
 
 ### 3. Runtime Dependencies
+
 - None. All archive plugins are dynamic libraries loaded at runtime by the core.
 
 ---
@@ -117,8 +123,8 @@ cmake -B build -DCMAKE_BUILD_TYPE=Release -DARCHIVE_VERSION=wikidot -DBUILD_ARCH
 cmake --build build --config Release
 ```
 
-> ⚠️ **Performance note**: Always build in **Release** mode for normal gameplay.  
-> In Debug mode, QtWebEngine's hardware acceleration (2D canvas & WebGL) is **disabled** by default, causing sluggish animations and low frame rates.  
+> ⚠️ **Performance note**: Always build in **Release** mode for normal gameplay.
+> In Debug mode, QtWebEngine's hardware acceleration (2D canvas & WebGL) is **disabled** by default, causing sluggish animations and low frame rates.
 > If you must run Debug builds, expect poor performance. Future updates may add automatic fallback (e.g., disabling certain animations).
 
 ### 4. Install to a temporary directory (to inspect results)
@@ -231,8 +237,8 @@ The system uses two configuration files, ordered by priority from low to high:
 - `main.json`: main config, priority 0
 - `user.json`: user config, priority 1
 
-Higher priority config values override same‑path values from lower priority configs.  
-**Note:** Even with override logic, it is still not recommended to define identical properties in different config files.  
+Higher priority config values override same‑path values from lower priority configs.
+**Note:** Even with override logic, it is still not recommended to define identical properties in different config files.
 The `__priority` field in the config files defines the priority and must not be deleted.
 
 > If a config file is missing, defaults will be loaded from `DefaultConfigs.cpp`, and the missing config file will be auto‑generated at runtime.
@@ -243,9 +249,7 @@ The `__priority` field in the config files defines the priority and must not be 
 <summary><b>`game.json` example:</b></summary>
 
 ```json
-{
-
-}
+{}
 ```
 
 </details>
@@ -390,11 +394,13 @@ Before submitting code, please ensure it adheres to the above style.
 <summary><b>Q1: CMake configuration cannot find Qt</b></summary>
 
 **Symptom**:
+
 ```
 Could not find a package configuration file provided by "Qt6" or "Qt5"
 ```
 
 **Solution**:
+
 - Make sure Qt is installed correctly and `CMAKE_PREFIX_PATH` points to the Qt installation directory (e.g., `C:/Qt/6.5.0/msvc2019_64`).
 - Or set the environment variable `Qt6_DIR` / `Qt5_DIR`.
 - On Linux, install the Qt development package via the package manager (e.g., `qt6-base-dev`); CMake will usually find it automatically.
@@ -405,18 +411,20 @@ Could not find a package configuration file provided by "Qt6" or "Qt5"
 <summary><b>Q2: CMake configuration fails with <code>dependency Qt6XXX could not be found</code> (e.g., WebChannel, Positioning)</b></summary>
 
 **Symptom**:
+
 ```
 Could NOT find Qt6WebChannel (missing: Qt6WebChannel_DIR)
 Qt6WebEngineCore could not be found because dependency Qt6Positioning could not be found.
 ```
 
 **Solution**:
+
 - These errors indicate that your Qt installation is missing required dependency modules for `WebEngine` (`WebChannel`, `Positioning`, `Multimedia`, etc.).
 - Open **Qt Maintenance Tool** → “Add or remove components” → Expand your Qt version (e.g., `Qt 6.9.3`) → Make sure the following components are checked:
-  - `Qt WebChannel`
-  - `Qt Positioning`
-  - `Qt Multimedia` (optional but recommended)
-  - `Qt WebEngine` (pulls the core libraries)
+    - `Qt WebChannel`
+    - `Qt Positioning`
+    - `Qt Multimedia` (optional but recommended)
+    - `Qt WebEngine` (pulls the core libraries)
 - If they are still not found, try switching to the official repository source (Maintenance Tool → Settings → Repositories → `https://download.qt.io/online/qtsdkrepository/`), then refresh and install.
 - After installation, clean CMake cache (delete `CMakeCache.txt` and `CMakeFiles` folder) and reconfigure your project.
 
@@ -429,6 +437,7 @@ Qt6WebEngineCore could not be found because dependency Qt6Positioning could not 
 During CMake configuration, an error occurs when downloading `json.hpp` from GitHub.
 
 **Solution**:
+
 - Check your network connection and ensure access to `raw.githubusercontent.com`.
 - Download [json.hpp](https://github.com/nlohmann/json/releases/download/v3.12.0/json.hpp) manually and place it under `/include/nlohmann/` in the build directory (adjust path according to CMake output).
 - Or modify `CMakeLists.txt` to use a local path of the header.
@@ -449,6 +458,7 @@ Ensure that the plugin source correctly exports `create_level` and `destroy_leve
 Compiler errors such as `'std::span' is not a member of 'std'` or requirement of C++20 standard.
 
 **Solution**:
+
 - Verify compiler version: GCC ≥10, Clang ≥12, MSVC ≥2022.
 - Explicitly specify C++ standard in CMake configuration: `-DCMAKE_CXX_STANDARD=20`.
 - If using an older IDE (e.g., VS2019), upgrade to VS2022 or install a toolset that supports C++20.
@@ -458,10 +468,10 @@ Compiler errors such as `'std::span' is not a member of 'std'` or requirement of
 <details>
 <summary><b>Q6: The game stutters badly in Debug mode. How can I fix it?</b></summary>
 
-**Symptoms**:  
+**Symptoms**:
 When compiled in Debug mode, the main WebEngine‑based interface becomes choppy and unresponsive, while the Release build runs perfectly smooth.
 
-**Root cause**:  
+**Root cause**:
 To simplify debugging, hardware acceleration (including accelerated 2D canvas and WebGL) is **explicitly disabled in Debug builds**. All rendering falls back to CPU software emulation, which is significantly slower. See `main.cpp`:
 
 ```cpp
@@ -475,11 +485,13 @@ To simplify debugging, hardware acceleration (including accelerated 2D canvas an
 ```
 
 **Solutions**:
+
 - **Recommended**: Always use **Release** mode for playing or performance testing.
 - If you really need Debug mode for debugging page logic, you can temporarily edit `main.cpp` and change `#ifdef NDEBUG` to `#if 1` to force acceleration on (but this might interfere with GPU‑process debugging).
 - **Future plan**: When hardware acceleration is unavailable (e.g., Debug mode or old GPUs), the program may automatically reduce animation rates or disable heavy effects. This optimization is not yet implemented.
 
 > If you are developing archive plugins or debugging the UI, consider using Release mode combined with logging – it offers both good performance and sufficient debuggability.
+
 </details>
 
 ### Configuration Issues
@@ -491,6 +503,7 @@ To simplify debugging, hardware acceleration (including accelerated 2D canvas an
 Changed a value in `user.json`, but the program still uses the old value.
 
 **Solution**:
+
 - Confirm you are editing the correct file (priority order: `user.json` > `system.json` > `main.json`). If `system.json` or `main.json` define the same configuration path, they will be overridden but not deleted.
 - Re‑run CMake to rebuild the project, or manually copy the modified config file to the `config/` directory under the build output.
 - Check for JSON syntax errors (e.g., extra commas) using an online JSON validator.
@@ -504,6 +517,7 @@ Changed a value in `user.json`, but the program still uses the old value.
 Accidentally deleted a JSON file under the `config/` directory; the program reports errors or uses default values.
 
 **Solution**:
+
 - The program has built‑in default configurations (defined in `DefaultConfigs.cpp`). Missing files will be auto‑generated at runtime (provided the directory is writable).
 - Alternatively, copy the example files from the `config/` directory in the source repository to the runtime directory.
 
@@ -552,6 +566,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed process.
 The source code of this project itself is open‑sourced under the **GNU General Public License v3.0 only** (GPL-3.0-only). See the [LICENSE](LICENSE.txt) file in the project root for details.
 
 Third‑party components used by this project are subject to their own licenses:
+
 - **nlohmann/json**: MIT License
 
 For the full text of third‑party licenses and notices, see [NOTICE.txt](NOTICE.txt) and the `licenses/` directory.
@@ -567,4 +582,4 @@ For the full text of third‑party licenses and notices, see [NOTICE.txt](NOTICE
 
 ---
 
-*May you safely traverse the Backrooms and find your way out.*
+_May you safely traverse the Backrooms and find your way out._

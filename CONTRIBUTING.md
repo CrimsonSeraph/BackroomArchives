@@ -28,6 +28,7 @@
 清晰简洁地描述问题是什么。
 
 **复现步骤**
+
 1. 执行 ... 命令/操作
 2. 点击 ... 按钮
 3. 看到错误信息 ...
@@ -39,6 +40,7 @@
 如果有，请附上相关截图或控制台输出日志（注意脱敏）。
 
 **环境信息**
+
 - 操作系统: Windows 10 / macOS 14 / Ubuntu 22.04
 - 项目版本或 commit hash: v0.5.1 或 xxxxxx
 
@@ -77,14 +79,15 @@
 本项目有详细的编码规范，请务必遵守 **[CodingStyle.md](CodingStyle.md)** 中的规则。
 
 关键要点回顾:
+
 - **编码**: UTF‑8 without BOM，换行符 CRLF（Windows 风格），文件末尾保留一个空行。
 - **缩进**: 4 个空格，不使用 Tab。
 - **命名**:
-  - C++ 类: `PascalCase`
-  - 变量/函数: `snake_case`
-  - 常量/宏: `UPPER_CASE`
-  - Python 模块文件名: `PascalCase`（如 `Bridge.py`）
-  - Qt 虚函数（如 `paintEvent`）保持 Qt 原有风格。
+    - C++ 类: `PascalCase`
+    - 变量/函数: `snake_case`
+    - 常量/宏: `UPPER_CASE`
+    - Python 模块文件名: `PascalCase`（如 `Bridge.py`）
+    - Qt 虚函数（如 `paintEvent`）保持 Qt 原有风格。
 - **头文件**: 使用 `#pragma once`。
 - **头文件分区顺序**: `public:` → `protected:` → `private:` → `signals:` → `private slots:`。每个分区内部按规则排列。
 - **源文件**: 函数定义顺序必须与头文件声明顺序一致。
@@ -137,9 +140,9 @@ Prevent Bridge.py from hanging when server is unreachable.
 
 - 推送到你自己的 fork 仓库后，在 GitHub 上发起 Pull Request。
 - PR 标题应简明扼要，内容描述:
-  - 解决了什么问题（关联 Issue 编号）。
-  - 改动的简要概述。
-  - 如果引入破坏性更改，请说明。
+    - 解决了什么问题（关联 Issue 编号）。
+    - 改动的简要概述。
+    - 如果引入破坏性更改，请说明。
 - 确保 PR 的 base 分支是 `main`。
 - 如果 CI 检查（GitHub Actions）失败，请及时修复。
 - 等待代码审查。审查者可能会要求修改，请积极回应。
@@ -155,24 +158,24 @@ Prevent Bridge.py from hanging when server is unreachable.
 
 ### Debug 与 Release 的区别
 
-- **Release 模式**（`NDEBUG` 已定义）：  
+- **Release 模式**（`NDEBUG` 已定义）：
   自动启用 `Accelerated2dCanvasEnabled` 和 `WebGLEnabled`，所有网页渲染由 GPU 分担，性能最优。
 
-- **Debug 模式**（`NDEBUG` 未定义）：  
+- **Debug 模式**（`NDEBUG` 未定义）：
   **硬件加速被强制禁用**，所有渲染回退到 CPU 软件模拟。这会导致页面卡顿、帧率明显下降，尤其当页面包含复杂 JS 动画时。
 
 上述行为在 `main.cpp` 中通过 `#ifdef NDEBUG` 控制。**这是设计如此**，目的是避免 GPU 进程干扰调试器（断点、单步执行等）。
 
 ### 对贡献者的建议
 
-1. **日常开发和性能测试**：请始终使用 **Release 模式** 编译运行（例如 `cmake --build build --config Release`）。  
+1. **日常开发和性能测试**：请始终使用 **Release 模式** 编译运行（例如 `cmake --build build --config Release`）。
    如果你需要调试页面逻辑，可以开启日志输出（`app.debug=true`），Release 模式下的日志同样可用。
 
-2. **如果你确实需要在 Debug 模式下验证页面行为**（例如排查偶现的 JS 错误）：  
-   - 可以临时修改 `main.cpp`，将 `#ifdef NDEBUG` 改为 `#if 1` 强制开启硬件加速，但请注意这可能会使调试器无法正常捕获 GPU 进程的异常。  
-   - 或者改用 Release 模式 + 附加调试器（如 VS 的“附加到进程”）。
+2. **如果你确实需要在 Debug 模式下验证页面行为**（例如排查偶现的 JS 错误）：
+    - 可以临时修改 `main.cpp`，将 `#ifdef NDEBUG` 改为 `#if 1` 强制开启硬件加速，但请注意这可能会使调试器无法正常捕获 GPU 进程的异常。
+    - 或者改用 Release 模式 + 附加调试器（如 VS 的“附加到进程”）。
 
-3. **未来计划**：  
+3. **未来计划**：
    当硬件加速不可用（Debug 模式或用户电脑缺少必要驱动）时，程序将能够自动检测并**降低动画帧率、禁用部分特效**，以缓解卡顿感。目前这一优化尚未实现，欢迎贡献者提交相关实现（例如通过 `QWebEngineSettings::setAttribute` 动态调整，或在网页端通过 JS 检测 `navigator.hardwareConcurrency` 等因素降级）。
 
 ### 提交 PR 时的注意事项

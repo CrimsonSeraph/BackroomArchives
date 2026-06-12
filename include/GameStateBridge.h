@@ -9,14 +9,13 @@
 #include <QString>
 #include <QVariantMap>
 
-class GameStateBridge : public QObject
-{
+class GameStateBridge : public QObject {
     Q_OBJECT
-        Q_PROPERTY(bool is_running READ is_running NOTIFY running_changed)
-        Q_PROPERTY(bool is_started READ is_started NOTIFY started_changed)
+    Q_PROPERTY(bool is_running READ is_running NOTIFY running_changed)
+    Q_PROPERTY(bool is_started READ is_started NOTIFY started_changed)
 
 public:
-    explicit GameStateBridge(QObject* parent = nullptr);
+    explicit GameStateBridge(QObject *parent = nullptr);
 
     bool is_started() const;
     bool is_running() const;
@@ -30,10 +29,9 @@ public slots:
 signals:
     void running_changed(bool is_running);
     void started_changed(bool is_started);
-    void game_event(const QString& event, const QVariantMap& data);
+    void game_event(const QString &event, const QVariantMap &data);
 
 private:
     bool m_is_started = false;
     bool m_is_running = false;
-
 };

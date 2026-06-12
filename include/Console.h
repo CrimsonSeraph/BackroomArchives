@@ -19,7 +19,7 @@ class Console {
 public:
     // -------------------- 单例 --------------------
     /// @brief 获取单例实例
-    static Console& get_instance();
+    static Console &get_instance();
 
     // -------------------- 公共接口 --------------------
     /// @brief 创建控制台（Windows 上实际创建，其他平台返回 false）
@@ -33,8 +33,8 @@ public:
     inline bool is_created() const { return is_created_; }
 
     // 禁止拷贝
-    Console(const Console&) = delete;
-    Console& operator=(const Console&) = delete;
+    Console(const Console &) = delete;
+    Console &operator=(const Console &) = delete;
 
 private:
     // -------------------- 构造/析构（单例私有）--------------------
@@ -42,7 +42,7 @@ private:
     ~Console();
 
     // -------------------- 成员变量 --------------------
-    bool is_created_ = false;   ///< 控制台是否已创建
+    bool is_created_ = false; ///< 控制台是否已创建
 
 #ifdef _WIN32
     // -------------------- 私有辅助函数（Windows 专用）--------------------

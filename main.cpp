@@ -8,22 +8,22 @@
 #include "Console.h"
 #include "DebugLog.h"
 
+#include <QStyleFactory>
+#include <QSurfaceFormat>
 #include <QWebEngineProfile>
 #include <QWebEngineSettings>
 #include <QWebEngineView>
-#include <QSurfaceFormat>
-#include <QStyleFactory>
-#include <QtWidgets/QApplication>
 #include <QtGlobal>
+#include <QtWidgets/QApplication>
 
 #include <iostream>
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
     // 直接创建控制台，以便在初始化配置系统时输出日志
-    Console& console = Console::get_instance();
+    Console &console = Console::get_instance();
     console.create();
     // 配置初始化
-    auto& config = AppConfig::instance();
+    auto &config = AppConfig::instance();
     std::string config_dir = "./config";
     try {
         if (!config.initialize(config_dir)) {
@@ -31,7 +31,7 @@ int main(int argc, char* argv[]) {
             LOG_MODULE("main", "main", LOG_WARN, "配置系统初始化失败，使用内存配置");
         }
     }
-    catch (const std::exception& e) {
+    catch (const std::exception &e) {
         LOG_MODULE("main", "main", LOG_ERROR, "初始化时发生异常: " << e.what());
     }
     std::string error_msg;
@@ -42,7 +42,7 @@ int main(int argc, char* argv[]) {
     // 启用控制台
     bool enable_console = config.get_value<bool>("app.debug", false);
     if (enable_console) {
-        Console& console = Console::get_instance();
+        Console &console = Console::get_instance();
         if (console.create()) {
             LOG_MODULE("main", "main", LOG_DEBUG, "控制台已启用");
             LOG_MODULE("main", "main", LOG_INFO, "配置初始化完成，debug模式=" << enable_console);
@@ -68,11 +68,10 @@ int main(int argc, char* argv[]) {
     QSurfaceFormat::setDefaultFormat(format);
 
     // 强制 Chromium 使用 GPU
-    qputenv("QTWEBENGINE_CHROMIUM_FLAGS",
-        "--enable-gpu-rasterization "
-        "--ignore-gpu-blacklist "
-        "--enable-zero-copy "
-        "--enable-native-gpu-memory-buffers");
+    qputenv("QTWEBENGINE_CHROMIUM_FLAGS", "--enable-gpu-rasterization "
+                                          "--ignore-gpu-blacklist "
+                                          "--enable-zero-copy "
+                                          "--enable-native-gpu-memory-buffers");
 
 #ifdef NDEBUG
     {
@@ -91,12 +90,12 @@ int main(int argc, char* argv[]) {
 #ifdef NDEBUG
     {
         // 获取设置对象
-        QWebEngineSettings* settings = QWebEngineProfile::defaultProfile()->settings();
+        QWebEngineSettings *settings = QWebEngineProfile::defaultProfile()->settings();
         // 启用 2D Canvas 硬件加速
         settings->setAttribute(QWebEngineSettings::Accelerated2dCanvasEnabled, true);
         // 启用 WebGL 支持
         settings->setAttribute(QWebEngineSettings::WebGLEnabled, true);
-}
+    }
 #else
     LOG_MODULE("main", "main", LOG_DEBUG, "当前为 Debug，禁止启用硬件加速");
 #endif

@@ -3,6 +3,7 @@
 **[English](README.en.md) | 中文**
 
 > **目录**
+>
 > - [一、项目简介](#一项目简介)
 > - [二、功能特性](#二功能特性)
 > - [三、依赖项](#三依赖项)
@@ -19,13 +20,14 @@
 
 一个**模块化、插件化的后室主题文字游戏**。
 
-一个基于 Qt 的文字游戏，项目采用 C++20 编写。 
-本体仅提供基础框架、插件加载与游戏核心循环，所有层级、BUFF、文本、配置等内容基本均由 **档案插件** 动态提供。  
+一个基于 Qt 的文字游戏，项目采用 C++20 编写。
+本体仅提供基础框架、插件加载与游戏核心循环，所有层级、BUFF、文本、配置等内容基本均由 **档案插件** 动态提供。
 支持多档案版本（如 Wikidot、Fandom 等），每个版本独立打包，运行时切换。
 
 > 👉 想开发档案插件？请查看 [FAQ - 插件开发](#faq---插件开发)
 
 当前版本号: `v0.1.0`
+
 > 详细请查看: [更新日志](CHANGELOG.md)。
 
 ---
@@ -59,7 +61,7 @@
 - **基于 JSON 的配置与文本**：使用 `nlohmann/json` 解析，支持多语言文本（按层级或全局存放）
 - **组件化打包**：利用 CPack 生成 `core-only` 包（仅本体）和完整包（本体+指定档案版本）
 - **自动化 CI**：GitHub Actions 自动构建多平台、多档案版本，并发布到 Releases
-- - **硬件加速渲染**：Release 模式下自动启用 QtWebEngine 的 GPU 加速（OpenGL + WebGL），确保页面动画流畅；Debug 模式以软件渲染运行，便于排查逻辑问题（性能较低）
+-   - **硬件加速渲染**：Release 模式下自动启用 QtWebEngine 的 GPU 加速（OpenGL + WebGL），确保页面动画流畅；Debug 模式以软件渲染运行，便于排查逻辑问题（性能较低）
 - **C++/JavaScript 双向通信**：基于 Qt WebChannel 实现了游戏本体与前端页面的高效通信。
 
 ---
@@ -67,24 +69,27 @@
 ## 三、依赖项
 
 ### 1. 系统依赖
+
 - **C++ 编译器**: 支持 C++20 标准（GCC 11+、Clang 14+、MSVC 2022）
 - **CMake**: 3.16 或更高版本
-- **Qt**: 5.15 或 6.x（Core、Gui、Widgets）。  
-  本项目使用了 `WebEngineCore` 和 `WebEngineWidgets`，请确保 Qt 安装时包含 `WebEngine` 模块及其依赖（`WebChannel`、`Positioning` 等）。  
-  推荐使用 Qt 6.x，并通过 Qt Maintenance Tool 勾选全部 `WebEngine` 相关组件。  
+- **Qt**: 5.15 或 6.x（Core、Gui、Widgets）。
+  本项目使用了 `WebEngineCore` 和 `WebEngineWidgets`，请确保 Qt 安装时包含 `WebEngine` 模块及其依赖（`WebChannel`、`Positioning` 等）。
+  推荐使用 Qt 6.x，并通过 Qt Maintenance Tool 勾选全部 `WebEngine` 相关组件。
 - **动态链接器 / 加载库**: 各平台自带（Windows `LoadLibrary`、Linux/macOS `dlopen`）
 
-> 推荐使用Qt 6.x，CMake 会自动检测并配置。  
-  推荐使用 VS2022/2026（MSVC）进行 Windows 开发，Linux/macOS 可使用 GCC 或 Clang。
+> 推荐使用Qt 6.x，CMake 会自动检测并配置。
+> 推荐使用 VS2022/2026（MSVC）进行 Windows 开发，Linux/macOS 可使用 GCC 或 Clang。
 
 ### 2. 第三方库
-- **[nlohmann/json](https://github.com/nlohmann/json)** (版本 3.12.0)  
+
+- **[nlohmann/json](https://github.com/nlohmann/json)** (版本 3.12.0)
   用于 JSON 解析。CMake 会在配置时自动从 GitHub 下载单头文件到构建目录。
 
-- **[DynamicTextEngine](https://github.com/CrimsonSeraph/WebUtils/tree/main/DynamicTextEngine)** (CSS/JS)  
+- **[DynamicTextEngine](https://github.com/CrimsonSeraph/WebUtils/tree/main/DynamicTextEngine)** (CSS/JS)
   用于增强网页界面的动态文本效果。CMake 会在配置时自动从 GitHub 下载 `DynamicTextEngine.js` 到 `pages/extensions/` 目录。
 
 ### 3. 运行时依赖
+
 - 无额外依赖。所有档案插件均为动态库，由本体在运行时加载。
 
 ---
@@ -118,8 +123,8 @@ cmake -B build -DCMAKE_BUILD_TYPE=Release -DARCHIVE_VERSION=wikidot -DBUILD_ARCH
 cmake --build build --config Release
 ```
 
-> ⚠️ **性能提示**：请务必使用 **Release** 模式编译。  
-> Debug 模式下会禁用 QtWebEngine 的硬件加速，导致页面动画卡顿、帧率下降。  
+> ⚠️ **性能提示**：请务必使用 **Release** 模式编译。
+> Debug 模式下会禁用 QtWebEngine 的硬件加速，导致页面动画卡顿、帧率下降。
 > 若需测试 Debug 模式，请做好性能会明显劣化的心理准备（未来可能会加入动画自动降级逻辑）。
 
 ### 4. 安装到临时目录（查看结果）
@@ -244,9 +249,7 @@ public:
 <summary><b>`game.json` 示例：</b></summary>
 
 ```json
-{
-
-}
+{}
 ```
 
 </details>
@@ -322,7 +325,7 @@ BackroomArchives/
 ├── pages/                              # 页面文本资源文件（多语言）
 │   ├── backrooms-sdk.js                # 页面脚本公共 JS
 │   ├── index.html                      # 首页
-│   ├── README.md                       # pages 目录说明 
+│   ├── README.md                       # pages 目录说明
 │   ├── script.js                       # 页面脚本文件
 │   └── style.css                       # 页面样式文件
 ├── screenshot/                         # 截屏资源文件
@@ -391,11 +394,13 @@ BackroomArchives/
 <summary><b>Q1: CMake 配置时找不到 Qt</b></summary>
 
 **现象**:
+
 ```
 Could not find a package configuration file provided by "Qt6" or "Qt5"
 ```
 
 **解决方案**:
+
 - 确保 Qt 已正确安装，并且 `CMAKE_PREFIX_PATH` 指向 Qt 的安装目录（例如 `C:/Qt/6.5.0/msvc2019_64`）。
 - 或者设置环境变量 `Qt6_DIR` / `Qt5_DIR`。
 - 在 Linux 上可以通过包管理器安装 Qt 开发包（如 `qt6-base-dev`），CMake 通常能自动找到。
@@ -406,18 +411,20 @@ Could not find a package configuration file provided by "Qt6" or "Qt5"
 <summary><b>Q2: CMake 配置时报错 <code>dependency Qt6XXX could not be found</code>（如 WebChannel、Positioning）</b></summary>
 
 **现象**:
+
 ```
 Could NOT find Qt6WebChannel (missing: Qt6WebChannel_DIR)
 Qt6WebEngineCore could not be found because dependency Qt6Positioning could not be found.
 ```
 
 **解决方案**:
+
 - 这些错误说明 Qt 安装中缺少 `WebEngine` 所需的依赖模块（`WebChannel`、`Positioning`、`Multimedia` 等）。
 - 打开 **Qt Maintenance Tool** → “添加或移除组件” → 展开你的 Qt 版本（如 `Qt 6.9.3`）→ 确保以下组件已勾选：
-  - `Qt WebChannel`
-  - `Qt Positioning`
-  - `Qt Multimedia`（可选，但推荐）
-  - `Qt WebEngine`（会自动带上核心库）
+    - `Qt WebChannel`
+    - `Qt Positioning`
+    - `Qt Multimedia`（可选，但推荐）
+    - `Qt WebEngine`（会自动带上核心库）
 - 如果仍然找不到，尝试切换到官方仓库源（Maintenance Tool → 设置 → 存储库 → `https://download.qt.io/online/qtsdkrepository/`），然后重新刷新并安装。
 - 安装完成后，清理 CMake 缓存（删除 `CMakeCache.txt` 和 `CMakeFiles`），重新配置项目即可。
 
@@ -430,6 +437,7 @@ Qt6WebEngineCore could not be found because dependency Qt6Positioning could not 
 CMake 配置过程中报错，无法从 GitHub 下载 `json.hpp`。
 
 **解决方案**:
+
 - 检查网络连接，确保能够访问 `raw.githubusercontent.com`。
 - 手动下载 [json.hpp](https://github.com/nlohmann/json/releases/download/v3.12.0/json.hpp) 并放入构建目录的 `/include/nlohmann/` 下（根据 CMake 输出路径调整）。
 - 或者修改 `CMakeLists.txt`，改用本地已下载的头文件路径。
@@ -450,6 +458,7 @@ CMake 配置过程中报错，无法从 GitHub 下载 `json.hpp`。
 编译器报错如 `'std::span' is not a member of 'std'` 或要求 C++20 标准。
 
 **解决方案**:
+
 - 确认编译器版本: GCC ≥10、Clang ≥12、MSVC ≥2022。
 - 在 CMake 配置时显式指定 C++ 标准: `-DCMAKE_CXX_STANDARD=20`。
 - 若使用旧版 IDE（如 VS2019），需要升级到 VS2022 或安装支持 C++20 的工具集。
@@ -459,10 +468,10 @@ CMake 配置过程中报错，无法从 GitHub 下载 `json.hpp`。
 <details>
 <summary><b>Q6: Debug 模式下游戏页面卡顿，如何解决？</b></summary>
 
-**现象**：  
+**现象**：
 使用 Debug 模式编译运行后，程序主界面（基于 WebEngine 的页面）动画不流畅、响应缓慢，而 Release 模式却非常丝滑。
 
-**原因**：  
+**原因**：
 为了便于调试，项目在 **Debug 模式下禁用了 QtWebEngine 的硬件加速**（包括 2D Canvas 和 WebGL 加速）。所有渲染工作回退到 CPU 软件模拟，导致性能大幅下降。相关代码见 `main.cpp`：
 
 ```cpp
@@ -475,12 +484,14 @@ CMake 配置过程中报错，无法从 GitHub 下载 `json.hpp`。
 #endif
 ```
 
-**解决方案**：  
-- **推荐**：始终使用 **Release** 模式进行日常游戏或性能测试。  
-- 如果确实需要在 Debug 模式下调试页面逻辑，可临时修改 `main.cpp`，将上述 `#ifdef NDEBUG` 改为 `#if 1` 强制开启加速（但可能干扰调试器对 GPU 进程的跟踪）。  
+**解决方案**：
+
+- **推荐**：始终使用 **Release** 模式进行日常游戏或性能测试。
+- 如果确实需要在 Debug 模式下调试页面逻辑，可临时修改 `main.cpp`，将上述 `#ifdef NDEBUG` 改为 `#if 1` 强制开启加速（但可能干扰调试器对 GPU 进程的跟踪）。
 - 未来计划：当检测到硬件加速不可用（如 Debug 模式或旧显卡）时，程序可自动降低动画刷新率、简化特效，避免过度卡顿。目前尚未实现此优化。
 
 > 如果你正在开发档案插件或调试界面，建议使用 Release 模式 + 日志输出，兼顾性能与可调试性。
+
 </details>
 
 ### 配置问题
@@ -492,6 +503,7 @@ CMake 配置过程中报错，无法从 GitHub 下载 `json.hpp`。
 修改了 `user.json` 中的某个值，但程序运行时使用的还是旧值。
 
 **解决方案**:
+
 - 确认修改的文件是正确的（注意优先级: `user.json` > `system.json` > `main.json`）。如果 `system.json` 或 `main.json` 中定义了相同路径的配置，它们会被覆盖，但不会删除。
 - 重新执行 CMake 构建项目或手动将修改后的配置文件复制到构建目录的 `/config/` 下。
 - 检查 JSON 格式是否正确（如多余的逗号），可以使用在线 JSON 校验工具。
@@ -505,6 +517,7 @@ CMake 配置过程中报错，无法从 GitHub 下载 `json.hpp`。
 误删了 `config/` 目录下的某个 JSON 文件，程序启动报错或使用默认值。
 
 **解决方案**:
+
 - 程序内置了默认配置（定义在 `DefaultConfigs.cpp`），丢失的文件会在运行时自动重新生成（前提是目录存在）。只需确保 `config/` 目录可写。
 - 也可以从源码仓库中复制 `config/` 目录下的示例文件到运行目录。
 
@@ -553,6 +566,7 @@ CMake 配置过程中报错，无法从 GitHub 下载 `json.hpp`。
 本项目自身源代码采用 **GNU General Public License v3.0 only**（GPL-3.0-only）开源。详情请参阅项目根目录下的 [LICENSE](LICENSE.txt) 文件。
 
 本项目依赖的第三方组件适用不同的许可证:
+
 - **nlohmann/json**: MIT 许可证
 
 有关第三方许可证的完整声明和文本，请查看 [NOTICE.txt](NOTICE.txt) 及 `licenses/` 目录。
@@ -568,4 +582,4 @@ CMake 配置过程中报错，无法从 GitHub 下载 `json.hpp`。
 
 ---
 
-*祝你安全穿越后室，愿你找到出口。*
+_祝你安全穿越后室，愿你找到出口。_

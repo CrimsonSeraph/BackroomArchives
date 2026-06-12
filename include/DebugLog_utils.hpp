@@ -18,11 +18,15 @@ namespace DebugLogUtil {
     /// @brief 将 nlohmann::json 转换为可读字符串
     /// @param val JSON 值
     /// @return 字符串表示
-    inline std::string json_value_to_string(const nlohmann::json& val) {
-        if (val.is_string()) return val.get<std::string>();
-        if (val.is_number()) return std::to_string(val.get<double>());
-        if (val.is_boolean()) return val.get<bool>() ? "true" : "false";
-        if (val.is_null()) return "null";
+    inline std::string json_value_to_string(const nlohmann::json &val) {
+        if (val.is_string())
+            return val.get<std::string>();
+        if (val.is_number())
+            return std::to_string(val.get<double>());
+        if (val.is_boolean())
+            return val.get<bool>() ? "true" : "false";
+        if (val.is_null())
+            return "null";
         if (val.is_array())
             return val.dump();
         if (val.is_object())
@@ -33,7 +37,7 @@ namespace DebugLogUtil {
     /// @brief 移除字符串中的换行符，并将连续多个空格压缩为一个
     /// @param str 输入字符串
     /// @return 处理后的字符串
-    inline std::string remove_newline(const std::string& str) {
+    inline std::string remove_newline(const std::string &str) {
         std::string result;
         result.reserve(str.size());
         bool lastCharWasSpace = false;
@@ -56,4 +60,4 @@ namespace DebugLogUtil {
         return result;
     }
 
-}   // namespace DebugLogUtil
+} // namespace DebugLogUtil

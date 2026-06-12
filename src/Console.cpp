@@ -22,15 +22,13 @@ Console::Console() : is_created_(false) {
     // 构造函数不自动创建控制台
 }
 
-Console::~Console() {
-    destroy();
-}
+Console::~Console() { destroy(); }
 
 // ============================================
 // 单例（public）
 // ============================================
 
-Console& Console::get_instance() {
+Console &Console::get_instance() {
     static Console instance;
     return instance;
 }
@@ -89,9 +87,7 @@ bool Console::create_debug_console() {
     HANDLE hInput = GetStdHandle(STD_INPUT_HANDLE);
     HANDLE hError = GetStdHandle(STD_ERROR_HANDLE);
 
-    if (hOutput == INVALID_HANDLE_VALUE ||
-        hInput == INVALID_HANDLE_VALUE ||
-        hError == INVALID_HANDLE_VALUE) {
+    if (hOutput == INVALID_HANDLE_VALUE || hInput == INVALID_HANDLE_VALUE || hError == INVALID_HANDLE_VALUE) {
         return false;
     }
 
@@ -100,7 +96,7 @@ bool Console::create_debug_console() {
     SetConsoleCP(CP_UTF8);
 
     // 重定向标准流到控制台
-    FILE* fp;
+    FILE *fp;
 
     freopen_s(&fp, "CONOUT$", "w", stdout);
     freopen_s(&fp, "CONOUT$", "w", stderr);
@@ -115,18 +111,13 @@ bool Console::create_debug_console() {
     std::cin.clear();
 
     // 设置控制台字体
-    CONSOLE_FONT_INFOEX cf = { 0 };
+    CONSOLE_FONT_INFOEX cf = {0};
     cf.cbSize = sizeof(cf);
     cf.dwFontSize.Y = 14;
 
-    const wchar_t* fontNames[] = {
-        L"Consolas",
-        L"Lucida Console",
-        L"DejaVu Sans Mono",
-        L"MS Gothic"
-    };
+    const wchar_t *fontNames[] = {L"Consolas", L"Lucida Console", L"DejaVu Sans Mono", L"MS Gothic"};
 
-    for (const wchar_t* fontName : fontNames) {
+    for (const wchar_t *fontName : fontNames) {
         wcscpy_s(cf.FaceName, fontName);
         if (SetCurrentConsoleFontEx(hOutput, FALSE, &cf)) {
             break;

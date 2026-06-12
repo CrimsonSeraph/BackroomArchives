@@ -3,24 +3,20 @@
  * SPDX-License-Identifier: GPL-3.0-only
  */
 
-#include "DebugLog.h"
 #include "GameStateBridge.h"
+#include "DebugLog.h"
 
-GameStateBridge::GameStateBridge(QObject* parent)
-    : QObject(parent) {
+GameStateBridge::GameStateBridge(QObject *parent) : QObject(parent) {
     LOG_MODULE("GameStateBridge", "GameStateBridge", LOG_DEBUG, "GameStateBridge 构造完成");
 }
 
-bool GameStateBridge::is_started() const {
-    return m_is_started;
-}
+bool GameStateBridge::is_started() const { return m_is_started; }
 
-bool GameStateBridge::is_running() const {
-    return m_is_running;
-}
+bool GameStateBridge::is_running() const { return m_is_running; }
 
 void GameStateBridge::start_game() {
-    LOG_MODULE("GameStateBridge", "start_game", LOG_DEBUG, "调用, 当前状态: is_started=" << m_is_started << ", is_running=" << m_is_running);
+    LOG_MODULE("GameStateBridge", "start_game", LOG_DEBUG,
+               "调用, 当前状态: is_started=" << m_is_started << ", is_running=" << m_is_running);
 
     if (m_is_started || m_is_running) {
         LOG_MODULE("GameStateBridge", "start_game", LOG_WARN, "游戏已经启动或正在运行，忽略启动请求");
@@ -35,7 +31,8 @@ void GameStateBridge::start_game() {
 }
 
 void GameStateBridge::pause_game() {
-    LOG_MODULE("GameStateBridge", "pause_game", LOG_DEBUG, "调用, 当前状态: is_started=" << m_is_started << ", is_running=" << m_is_running);
+    LOG_MODULE("GameStateBridge", "pause_game", LOG_DEBUG,
+               "调用, 当前状态: is_started=" << m_is_started << ", is_running=" << m_is_running);
 
     if (!m_is_started || !m_is_running) {
         LOG_MODULE("GameStateBridge", "pause_game", LOG_WARN, "游戏未启动或未运行，无法暂停");
@@ -48,7 +45,8 @@ void GameStateBridge::pause_game() {
 }
 
 void GameStateBridge::resume_game() {
-    LOG_MODULE("GameStateBridge", "resume_game", LOG_DEBUG, "调用, 当前状态: is_started=" << m_is_started << ", is_running=" << m_is_running);
+    LOG_MODULE("GameStateBridge", "resume_game", LOG_DEBUG,
+               "调用, 当前状态: is_started=" << m_is_started << ", is_running=" << m_is_running);
 
     if (!m_is_started || m_is_running) {
         LOG_MODULE("GameStateBridge", "resume_game", LOG_WARN, "游戏未启动或已在运行，无法恢复");
@@ -61,7 +59,8 @@ void GameStateBridge::resume_game() {
 }
 
 void GameStateBridge::exit_game() {
-    LOG_MODULE("GameStateBridge", "exit_game", LOG_DEBUG, "调用, 当前状态: is_started=" << m_is_started << ", is_running=" << m_is_running);
+    LOG_MODULE("GameStateBridge", "exit_game", LOG_DEBUG,
+               "调用, 当前状态: is_started=" << m_is_started << ", is_running=" << m_is_running);
 
     if (!m_is_started) {
         LOG_MODULE("GameStateBridge", "exit_game", LOG_WARN, "游戏未启动，无需退出");

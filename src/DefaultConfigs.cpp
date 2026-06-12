@@ -10,46 +10,31 @@
 #include <nlohmann/json.hpp>
 #include <string>
 
- // ============================================
- // 默认配置工厂实现
- // ============================================
+// ============================================
+// 默认配置工厂实现
+// ============================================
 
-nlohmann::json DefaultConfigs::get_default_config(const std::string& config_name) {
+nlohmann::json DefaultConfigs::get_default_config(const std::string &config_name) {
     if (config_name == "main") {
-        return {
-            {"__priority", 0},
-            {"app", {
-                {"name", "BackroomArchives"},
-                {"version", "0.6.0"},
-                {"debug", false},
-                {"log", {
-                    {"console_level", 0},
-                    {"only_type_info", false},
-                }},
-                {"web_pages", {
-                    {"path", "./pages"}
-                }}
-            }},
-            {"version", "1.0"},
-            {"BackroomArchives", "BackroomArchives"}
-        };
+        return {{"__priority", 0},
+                {"app",
+                 {{"name", "BackroomArchives"},
+                  {"version", "0.6.0"},
+                  {"debug", false},
+                  {"log",
+                   {
+                       {"console_level", 0},
+                       {"only_type_info", false},
+                   }},
+                  {"web_pages", {{"path", "./pages"}}}}},
+                {"version", "1.0"},
+                {"BackroomArchives", "BackroomArchives"}};
     }
     else if (config_name == "user") {
-        return {
-            {"__priority", 1},
-            {"app", {
-            }},
-            {"version", "1.0"},
-            {"BackroomArchives", "BackroomArchives"}
-        };
+        return {{"__priority", 1}, {"app", {}}, {"version", "1.0"}, {"BackroomArchives", "BackroomArchives"}};
     }
     else {
         // 通用默认配置
-        return {
-            {"__priority", 0},
-            {"app", {}},
-            {"version", "1.0"},
-            {"BackroomArchives", "BackroomArchives"}
-        };
+        return {{"__priority", 0}, {"app", {}}, {"version", "1.0"}, {"BackroomArchives", "BackroomArchives"}};
     }
 }

@@ -8,13 +8,12 @@
 #include <QObject>
 #include <QString>
 
-class JsConsoleBridge : public QObject
-{
+class JsConsoleBridge : public QObject {
     Q_OBJECT
 
 public:
-    explicit JsConsoleBridge(QObject* parent = nullptr);
+    explicit JsConsoleBridge(QObject *parent = nullptr);
 
 public slots:
-    void log(const QString& level, const QString& message);
+    void log(const QString &level, const QString &message);
 };

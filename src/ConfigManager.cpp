@@ -14,7 +14,7 @@
 // ============================================
 // 内部辅助函数（非成员，用于复用写入逻辑）
 // ============================================
-static void write_default_config_to_file(const nlohmann::json& config, const std::string& path) {
+static void write_default_config_to_file(const nlohmann::json &config, const std::string &path) {
     try {
         std::ofstream out_file(path);
         if (out_file.is_open()) {
@@ -26,7 +26,7 @@ static void write_default_config_to_file(const nlohmann::json& config, const std
             LOG_MODULE("ConfigManager", "write_default_config", LOG_WARN, "无法写入默认配置文件: " << path);
         }
     }
-    catch (const std::exception& e) {
+    catch (const std::exception &e) {
         LOG_MODULE("ConfigManager", "write_default_config", LOG_ERROR, "写入默认配置文件异常: " << e.what());
     }
     catch (...) {
@@ -38,8 +38,7 @@ static void write_default_config_to_file(const nlohmann::json& config, const std
 // 构造/析构（public）
 // ============================================
 
-ConfigManager::ConfigManager(const std::string& path)
-    : config_path_(path) {
+ConfigManager::ConfigManager(const std::string &path) : config_path_(path) {
     DebugLog::instance().set_log_level("ConfigManager", LOG_DEBUG);
 }
 
@@ -84,8 +83,9 @@ bool ConfigManager::load() {
         LOG_MODULE("ConfigManager", "load", LOG_INFO, "配置加载成功: " << config_path_);
         return true;
     }
-    catch (const std::exception& e) {
-        LOG_MODULE("ConfigManager", "load", LOG_ERROR, "加载配置时异常: " << e.what() << "，使用默认配置: " << config_path_);
+    catch (const std::exception &e) {
+        LOG_MODULE("ConfigManager", "load", LOG_ERROR,
+                   "加载配置时异常: " << e.what() << "，使用默认配置: " << config_path_);
         config_ = get_default_config();
         loaded_ = true;
         write_default_config_to_file(config_, config_path_);
@@ -112,7 +112,7 @@ bool ConfigManager::save() const {
         LOG_MODULE("ConfigManager", "save", LOG_INFO, "配置保存成功: " << config_path_);
         return true;
     }
-    catch (const std::exception& e) {
+    catch (const std::exception &e) {
         LOG_MODULE("ConfigManager", "save", LOG_ERROR, "保存配置失败: " << e.what());
         return false;
     }
@@ -122,33 +122,34 @@ bool ConfigManager::save() const {
 // 批量操作（public）
 // ============================================
 
-bool ConfigManager::update(const nlohmann::json& patch) {
+bool ConfigManager::update(const nlohmann::json &patch) {
     LOG_MODULE("ConfigManager", "update", LOG_DEBUG, "开始批量更新配置，补丁内容: " << patch.dump());
     std::lock_guard<std::recursive_mutex> lock(mutex_);
 
     try {
-        config_.merge_patch(patch);   // merge_patch 无返回值，直接应用
+        config_.merge_patch(patch); // merge_patch 无返回值，直接应用
         LOG_MODULE("ConfigManager", "update", LOG_DEBUG, "批量更新配置成功");
         notify_listeners();
         return true;
     }
-    catch (const std::exception& e) {
+    catch (const std::exception &e) {
         LOG_MODULE("ConfigManager", "update", LOG_ERROR, "批量更新配置失败: " << e.what());
         return false;
     }
 }
 
-bool ConfigManager::remove(const std::string& key_path) {
+bool ConfigManager::remove(const std::string &key_path) {
     LOG_MODULE("ConfigManager", "remove", LOG_DEBUG, "开始删除配置项: " << key_path);
     std::lock_guard<std::recursive_mutex> lock(mutex_);
 
     try {
         auto keys = split_key_path(key_path);
-        nlohmann::json* current = &config_;
+        nlohmann::json *current = &config_;
 
         for (size_t i = 0; i < keys.size() - 1; ++i) {
             if (!current->contains(keys[i])) {
-                LOG_MODULE("ConfigManager", "remove", LOG_WARN, "键路径不存在: " << key_path << " (在 " << keys[i] << " 处)");
+                LOG_MODULE("ConfigManager", "remove", LOG_WARN,
+                           "键路径不存在: " << key_path << " (在 " << keys[i] << " 处)");
                 return false;
             }
             current = &(*current)[keys[i]];
@@ -163,13 +164,13 @@ bool ConfigManager::remove(const std::string& key_path) {
         }
         return erased;
     }
-    catch (const std::exception& e) {
+    catch (const std::exception &e) {
         LOG_MODULE("ConfigManager", "remove", LOG_ERROR, "删除配置项时异常 [" << key_path << "]: " << e.what());
         return false;
     }
 }
 
-void ConfigManager::add_listener(std::function<void(const nlohmann::json&)> listener) {
+void ConfigManager::add_listener(std::function<void(const nlohmann::json &)> listener) {
     LOG_MODULE("ConfigManager", "add_listener", LOG_DEBUG, "添加配置监听器，当前数量: " << observers_.size());
     observers_.push_back(std::move(listener));
     LOG_MODULE("ConfigManager", "add_listener", LOG_DEBUG, "监听器添加完成，现在共 " << observers_.size() << " 个");
@@ -181,9 +182,9 @@ void ConfigManager::add_listener(std::function<void(const nlohmann::json&)> list
 
 bool ConfigManager::validate() const {
     LOG_MODULE("ConfigManager", "validate", LOG_DEBUG, "开始验证配置");
-    const std::vector<std::string> required = { "version", "BackroomArchives" };
+    const std::vector<std::string> required = {"version", "BackroomArchives"};
 
-    for (const auto& field : required) {
+    for (const auto &field : required) {
         if (!get<std::string>(field).has_value()) {
             LOG_MODULE("ConfigManager", "validate", LOG_ERROR, "缺少必需字段: " << field);
             return false;
@@ -204,15 +205,13 @@ bool ConfigManager::validate() const {
 // 保护方法（protected）
 // ============================================
 
-nlohmann::json ConfigManager::get_default_config() const {
-    return DefaultConfigs::get_default_config("");
-}
+nlohmann::json ConfigManager::get_default_config() const { return DefaultConfigs::get_default_config(""); }
 
 // ============================================
 // 私有辅助函数实现（private）
 // ============================================
 
-std::vector<std::string> ConfigManager::split_key_path(const std::string& key_path) const {
+std::vector<std::string> ConfigManager::split_key_path(const std::string &key_path) const {
     // 注意: 调用此函数前必须已持有 mutex_，因此内部不再加锁
     auto it = split_cache_.find(key_path);
     if (it != split_cache_.end()) {
@@ -242,11 +241,11 @@ std::vector<std::string> ConfigManager::split_key_path(const std::string& key_pa
 
 void ConfigManager::notify_listeners() const {
     LOG_MODULE("ConfigManager", "notify_listeners", LOG_DEBUG, "开始通知配置监听器，共 " << observers_.size() << " 个");
-    for (const auto& listener : observers_) {
+    for (const auto &listener : observers_) {
         try {
             listener(config_);
         }
-        catch (const std::exception& e) {
+        catch (const std::exception &e) {
             LOG_MODULE("ConfigManager", "notify_listeners", LOG_ERROR, "监听器执行异常: " << e.what());
         }
     }
